@@ -1,0 +1,717 @@
+vars: {
+  d2-config: {
+    layout-engine: elk
+    theme-id: 0
+    pad: 64
+  }
+  ink: "#0F172A"
+  muted: "#64748B"
+  accent: "#2563EB"
+  canvas: "#F7F8FA"
+  card: "#FFFFFF"
+  border: "#CBD5E1"
+}
+
+# Canvas fill via a full-bleed background shape is handled in post-process.
+direction: right
+
+
+title: |md
+  # Event-Driven Order Platform
+  15+ services · Kafka backbone · CQRS
+| {
+  near: top-center
+  style: {
+    fill: "#FFFFFF"
+    stroke: "#CBD5E1"
+    border-radius: 10
+    font-color: "#0F172A"
+  }
+}
+
+
+board: " " {
+  grid-columns: 3
+  grid-gap: 56
+  style: {
+    fill: "transparent"
+    stroke: "transparent"
+    font-size: 8
+    font-color: "transparent"
+  }
+  edge: "Edge" {
+    grid-columns: 3
+    style: {
+      fill: "#EEF2FF"
+      stroke: "#6366F1"
+      stroke-width: 2
+      border-radius: 12
+      font-size: 15
+      bold: true
+      font-color: "#0F172A"
+    }
+    web: "Web App\nNext.js" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/nextjs.svg"
+      style: {
+        fill: "#F8FAFC"
+        stroke: "#94A3B8"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+    mobile: "Mobile" {
+      shape: person
+      style: {
+        fill: "#F8FAFC"
+        stroke: "#94A3B8"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+    cdn: "CDN" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/cloudflare.svg"
+      style: {
+        fill: "#F0F9FF"
+        stroke: "#0EA5E9"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+  }
+
+  bff: "BFF / Gateways" {
+    grid-columns: 3
+    style: {
+      fill: "#EEF2FF"
+      stroke: "#6366F1"
+      stroke-width: 2
+      border-radius: 12
+      font-size: 15
+      bold: true
+      font-color: "#0F172A"
+    }
+    apigw: "API Gateway\nrate limit · auth" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/apigateway.svg"
+      style: {
+        fill: "#FFF7ED"
+        stroke: "#F97316"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+    bff_web: "Web BFF\nGraphQL" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/graphql.svg"
+      style: {
+        fill: "#FFF7ED"
+        stroke: "#F97316"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+    bff_mobile: "Mobile BFF\nREST" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/nginx.svg"
+      style: {
+        fill: "#FFF7ED"
+        stroke: "#F97316"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+  }
+
+  core: "Core Domain" {
+    grid-columns: 4
+    style: {
+      fill: "#EEF2FF"
+      stroke: "#6366F1"
+      stroke-width: 2
+      border-radius: 12
+      font-size: 15
+      bold: true
+      font-color: "#0F172A"
+    }
+    orders: "Orders\nwrite model" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/go.svg"
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#3B82F6"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+    inventory: "Inventory" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/go.svg"
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#3B82F6"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+    pricing: "Pricing" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/python.svg"
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#3B82F6"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+    catalog: "Catalog" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/typescript.svg"
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#3B82F6"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+    customers: "Customers" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/nodejs.svg"
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#3B82F6"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+    payments: "Payments" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/go.svg"
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#3B82F6"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+  }
+
+  ops: "Ops & Fulfillment" {
+    grid-columns: 4
+    style: {
+      fill: "#EEF2FF"
+      stroke: "#6366F1"
+      stroke-width: 2
+      border-radius: 12
+      font-size: 15
+      bold: true
+      font-color: "#0F172A"
+    }
+    shipping: "Shipping" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/python.svg"
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#3B82F6"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+    warehouse: "Warehouse" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/go.svg"
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#3B82F6"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+    returns: "Returns" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/typescript.svg"
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#3B82F6"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+    notify: "Notifications" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/nodejs.svg"
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#3B82F6"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+    analytics: "Analytics" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/python.svg"
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#3B82F6"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+  }
+
+  data: "Data & Messaging" {
+    grid-columns: 4
+    style: {
+      fill: "#EEF2FF"
+      stroke: "#6366F1"
+      stroke-width: 2
+      border-radius: 12
+      font-size: 15
+      bold: true
+      font-color: "#0F172A"
+    }
+    kafka: "Kafka\nevent backbone" {
+      shape: queue
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/kafka.svg"
+      style: {
+        fill: "#F5F3FF"
+        stroke: "#8B5CF6"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+    pg_orders: "Orders DB" {
+      shape: cylinder
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/postgresql.svg"
+      style: {
+        fill: "#ECFDF5"
+        stroke: "#10B981"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+    pg_inv: "Inventory DB" {
+      shape: cylinder
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/postgresql.svg"
+      style: {
+        fill: "#ECFDF5"
+        stroke: "#10B981"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+    mongo_cat: "Catalog DB" {
+      shape: cylinder
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/mongodb.svg"
+      style: {
+        fill: "#ECFDF5"
+        stroke: "#10B981"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+    redis: "Redis" {
+      shape: cylinder
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/redis.svg"
+      style: {
+        fill: "#ECFDF5"
+        stroke: "#10B981"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+    es: "Search Index" {
+      shape: cylinder
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/elasticsearch.svg"
+      style: {
+        fill: "#ECFDF5"
+        stroke: "#10B981"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+  }
+
+  plat: "Platform" {
+    grid-columns: 3
+    style: {
+      fill: "#EEF2FF"
+      stroke: "#6366F1"
+      stroke-width: 2
+      border-radius: 12
+      font-size: 15
+      bold: true
+      font-color: "#0F172A"
+    }
+    auth: "Auth" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/auth0.svg"
+      style: {
+        fill: "#FEF2F2"
+        stroke: "#EF4444"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+    config: "Config" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/consul.svg"
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#3B82F6"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+    otel: "Tracing" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/jaeger.svg"
+      style: {
+        fill: "#FDF2F8"
+        stroke: "#EC4899"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#0F172A"
+      }
+    }
+  }
+}
+
+
+
+web -> cdn {
+  style: {
+    stroke: "#334155"
+    stroke-width: 2
+  }
+}
+mobile -> apigw {
+  style: {
+    stroke: "#334155"
+    stroke-width: 2
+  }
+}
+cdn -> apigw {
+  style: {
+    stroke: "#334155"
+    stroke-width: 2
+  }
+}
+apigw -> auth: "validate" {
+  style: {
+    stroke: "#334155"
+    stroke-width: 2
+  }
+}
+apigw -> bff_web {
+  style: {
+    stroke: "#334155"
+    stroke-width: 2
+  }
+}
+apigw -> bff_mobile {
+  style: {
+    stroke: "#334155"
+    stroke-width: 2
+  }
+}
+bff_web -> orders {
+  style: {
+    stroke: "#334155"
+    stroke-width: 2
+  }
+}
+bff_web -> catalog {
+  style: {
+    stroke: "#334155"
+    stroke-width: 2
+  }
+}
+bff_web -> customers {
+  style: {
+    stroke: "#334155"
+    stroke-width: 2
+  }
+}
+bff_mobile -> orders {
+  style: {
+    stroke: "#334155"
+    stroke-width: 2
+  }
+}
+bff_mobile -> pricing {
+  style: {
+    stroke: "#334155"
+    stroke-width: 2
+  }
+}
+orders -> pg_orders {
+  style: {
+    stroke: "#059669"
+    stroke-width: 3
+  }
+}
+inventory -> pg_inv {
+  style: {
+    stroke: "#059669"
+    stroke-width: 3
+  }
+}
+catalog -> mongo_cat {
+  style: {
+    stroke: "#059669"
+    stroke-width: 3
+  }
+}
+catalog -> es {
+  style: {
+    stroke: "#059669"
+    stroke-width: 3
+  }
+}
+catalog -> redis {
+  style: {
+    stroke: "#059669"
+    stroke-width: 3
+  }
+}
+orders -> kafka: "OrderCreated" {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+payments -> kafka: "PaymentCaptured" {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+inventory -> kafka: "StockReserved" {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+kafka -> shipping: "consume" {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+kafka -> warehouse: "consume" {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+kafka -> notify: "consume" {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+kafka -> analytics: "consume" {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+kafka -> returns: "consume" {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+orders -> payments: "authorize" {
+  style: {
+    stroke: "#334155"
+    stroke-width: 2
+  }
+}
+orders -> inventory: "reserve" {
+  style: {
+    stroke: "#334155"
+    stroke-width: 2
+  }
+}
+pricing -> redis {
+  style: {
+    stroke: "#059669"
+    stroke-width: 3
+  }
+}
+config -> orders {
+  style: {
+    stroke: "#334155"
+    stroke-width: 2
+  }
+}
+otel -> orders {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+
+
+legend: Legend {
+  near: bottom-center
+  style: {
+    fill: "#FFFFFF"
+    stroke: "#CBD5E1"
+    border-radius: 10
+    font-color: "#64748B"
+    font-size: 13
+  }
+  leg_0: "Service" {
+  shape: rectangle
+  style: {
+    fill: "#EFF6FF"
+    stroke: "#3B82F6"
+    border-radius: 6
+    font-size: 12
+    font-color: "#0F172A"
+  }
+}
+  leg_1: "Gateway" {
+  shape: rectangle
+  style: {
+    fill: "#FFF7ED"
+    stroke: "#F97316"
+    border-radius: 6
+    font-size: 12
+    font-color: "#0F172A"
+  }
+}
+  leg_2: "Queue / bus" {
+  shape: rectangle
+  style: {
+    fill: "#F5F3FF"
+    stroke: "#8B5CF6"
+    border-radius: 6
+    font-size: 12
+    font-color: "#0F172A"
+  }
+}
+  leg_3: "Database" {
+  shape: rectangle
+  style: {
+    fill: "#ECFDF5"
+    stroke: "#10B981"
+    border-radius: 6
+    font-size: 12
+    font-color: "#0F172A"
+  }
+}
+  leg_4: "Sync call" {
+  shape: rectangle
+  style: {
+    fill: "#FFFFFF"
+    stroke: "#334155"
+    stroke-width: 2
+    border-radius: 6
+    font-size: 12
+    font-color: "#0F172A"
+  }
+}
+  leg_5: "Async event" {
+  shape: rectangle
+  style: {
+    fill: "#FFFFFF"
+    stroke: "#7C3AED"
+    stroke-width: 2
+    border-radius: 6
+    font-size: 12
+    font-color: "#0F172A"
+    stroke-dash: 3
+  }
+}
+}

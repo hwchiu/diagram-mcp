@@ -1,0 +1,66 @@
+%%{init: {"flowchart": {"htmlLabels": false, "curve": "basis", "padding": 28, "nodeSpacing": 45, "rankSpacing": 55}} }%%
+flowchart TD
+  title_block["Incident Severity Triage — On-call decision tree"]
+  style title_block fill:#FFFFFF,stroke:#2563EB,color:#0F172A,stroke-width:2px
+  title_block --> q_user_impact
+  q_user_impact{User-facing impact?}
+  style q_user_impact fill:#F0F9FF,stroke:#0EA5E9,color:#0F172A,stroke-width:2px
+  q_pct{Over 5% of traffic?}
+  style q_pct fill:#F0F9FF,stroke:#0EA5E9,color:#0F172A,stroke-width:2px
+  q_data{Data loss or corruption?}
+  style q_data fill:#F0F9FF,stroke:#0EA5E9,color:#0F172A,stroke-width:2px
+  q_security{Security incident?}
+  style q_security fill:#F0F9FF,stroke:#0EA5E9,color:#0F172A,stroke-width:2px
+  q_workaround{Workaround available?}
+  style q_workaround fill:#F0F9FF,stroke:#0EA5E9,color:#0F172A,stroke-width:2px
+  q_single{Single tenant or region?}
+  style q_single fill:#F0F9FF,stroke:#0EA5E9,color:#0F172A,stroke-width:2px
+  a_sev1([SEV-1 - Page incident command])
+  style a_sev1 fill:#FEF2F2,stroke:#EF4444,color:#0F172A,stroke-width:2px
+  a_sev2([SEV-2 - Page primary + secondary])
+  style a_sev2 fill:#FEF2F2,stroke:#EF4444,color:#0F172A,stroke-width:2px
+  a_sev3([SEV-3 - Next business day])
+  style a_sev3 fill:#ECFDF5,stroke:#10B981,color:#0F172A,stroke-width:2px
+  a_sev4([SEV-4 - Backlog])
+  style a_sev4 fill:#ECFDF5,stroke:#10B981,color:#0F172A,stroke-width:2px
+  act_bridge[Open Zoom bridge]
+  style act_bridge fill:#EFF6FF,stroke:#3B82F6,color:#0F172A,stroke-width:2px
+  act_status[Update status page]
+  style act_status fill:#EFF6FF,stroke:#3B82F6,color:#0F172A,stroke-width:2px
+  act_comms[Notify incidents channel]
+  style act_comms fill:#EFF6FF,stroke:#3B82F6,color:#0F172A,stroke-width:2px
+  act_ticket[File Jira ticket]
+  style act_ticket fill:#EFF6FF,stroke:#3B82F6,color:#0F172A,stroke-width:2px
+  q_user_impact -->|yes| q_pct
+  q_user_impact -->|no| q_security
+  q_pct -->|yes| q_data
+  q_pct -->|no| q_workaround
+  q_data -->|yes| a_sev1
+  q_data -->|no| act_bridge
+  act_bridge --> act_status
+  act_status --> a_sev1
+  q_workaround -->|yes| q_single
+  q_workaround -->|no| a_sev2
+  q_single -->|yes| a_sev3
+  q_single -->|no| a_sev2
+  q_security -->|yes| a_sev1
+  q_security -->|no| act_ticket
+  act_ticket --> act_comms
+  act_comms --> a_sev4
+  linkStyle 0 stroke:#CBD5E1,stroke-width:1px
+  linkStyle 1 stroke:#059669,stroke-width:2.5px
+  linkStyle 2 stroke:#EF4444,stroke-width:2.5px
+  linkStyle 3 stroke:#059669,stroke-width:2.5px
+  linkStyle 4 stroke:#EF4444,stroke-width:2.5px
+  linkStyle 5 stroke:#059669,stroke-width:2.5px
+  linkStyle 6 stroke:#EF4444,stroke-width:2.5px
+  linkStyle 7 stroke:#64748B,stroke-width:2.5px
+  linkStyle 8 stroke:#64748B,stroke-width:2.5px
+  linkStyle 9 stroke:#059669,stroke-width:2.5px
+  linkStyle 10 stroke:#EF4444,stroke-width:2.5px
+  linkStyle 11 stroke:#059669,stroke-width:2.5px
+  linkStyle 12 stroke:#EF4444,stroke-width:2.5px
+  linkStyle 13 stroke:#059669,stroke-width:2.5px
+  linkStyle 14 stroke:#EF4444,stroke-width:2.5px
+  linkStyle 15 stroke:#64748B,stroke-width:2.5px
+  linkStyle 16 stroke:#64748B,stroke-width:2.5px

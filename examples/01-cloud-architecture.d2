@@ -1,0 +1,819 @@
+vars: {
+  d2-config: {
+    layout-engine: elk
+    theme-id: 0
+    pad: 64
+  }
+  ink: "#111827"
+  muted: "#6B7280"
+  accent: "#1D4ED8"
+  canvas: "#FFFFFF"
+  card: "#FFFFFF"
+  border: "#E5E7EB"
+}
+
+# Canvas fill via a full-bleed background shape is handled in post-process.
+direction: right
+
+
+title: |md
+  # Multi-Region Commerce Platform
+  AWS + EKS · Active-active · Production
+| {
+  near: top-center
+  style: {
+    fill: "#F8FAFC"
+    stroke: "#E5E7EB"
+    border-radius: 10
+    font-color: "#111827"
+  }
+}
+
+
+board: " " {
+  grid-columns: 3
+  grid-gap: 72
+  style: {
+    fill: "transparent"
+    stroke: "transparent"
+    font-size: 8
+    font-color: "transparent"
+  }
+  edge: "Edge & DNS" {
+    grid-columns: 2
+    style: {
+      fill: "#F5F3FF"
+      stroke: "#7C3AED"
+      stroke-width: 2
+      border-radius: 12
+      font-size: 15
+      bold: true
+      font-color: "#111827"
+    }
+    cf: "CloudFront\nCDN + WAF" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/cloudflare.svg"
+      style: {
+        fill: "#F0F9FF"
+        stroke: "#0284C7"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    r53: "Route 53\nlatency routing" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/aws.svg"
+      style: {
+        fill: "#F0F9FF"
+        stroke: "#0284C7"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    ext_pay: "Stripe\npayments" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/cloudflare.svg"
+      style: {
+        fill: "#F9FAFB"
+        stroke: "#9CA3AF"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    ext_email: "SES\nemail" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/aws.svg"
+      style: {
+        fill: "#F9FAFB"
+        stroke: "#9CA3AF"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+  }
+
+  use1: "us-east-1 · Primary" {
+    
+    style: {
+      fill: "#F5F3FF"
+      stroke: "#7C3AED"
+      stroke-width: 2
+      border-radius: 12
+      font-size: 15
+      bold: true
+      font-color: "#111827"
+    }
+    pub_e: "Public / Ingress" {
+      grid-columns: 2
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#2563EB"
+        stroke-width: 2
+        border-radius: 12
+        font-size: 15
+        bold: true
+        font-color: "#111827"
+      }
+      alb_e: "ALB\nHTTPS :443" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/apigateway.svg"
+        style: {
+          fill: "#FFF7ED"
+          stroke: "#EA580C"
+          stroke-width: 2
+          border-radius: 8
+          shadow: true
+          font-size: 14
+          font-color: "#111827"
+        }
+      }
+      ing_e: "Ingress NGINX" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/nginx.svg"
+        style: {
+          fill: "#FFF7ED"
+          stroke: "#EA580C"
+          stroke-width: 2
+          border-radius: 8
+          shadow: true
+          font-size: 14
+          font-color: "#111827"
+        }
+      }
+      nat_e: "NAT Gateway" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/aws.svg"
+        style: {
+          fill: "#F0F9FF"
+          stroke: "#0284C7"
+          stroke-width: 2
+          border-radius: 8
+          shadow: true
+          font-size: 14
+          font-color: "#111827"
+        }
+      }
+    }
+    shop_e: "EKS · shopping + platform" {
+      grid-columns: 3
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#2563EB"
+        stroke-width: 2
+        border-radius: 12
+        font-size: 15
+        bold: true
+        font-color: "#111827"
+      }
+      gw_e: "API Gateway\nKong" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/apigateway.svg"
+        style: {
+          fill: "#FFF7ED"
+          stroke: "#EA580C"
+          stroke-width: 2
+          border-radius: 8
+          shadow: true
+          font-size: 14
+          font-color: "#111827"
+        }
+      }
+      mesh: "Istio Mesh" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/istio.svg"
+        style: {
+          fill: "#F0F9FF"
+          stroke: "#0284C7"
+          stroke-width: 2
+          border-radius: 8
+          shadow: true
+          font-size: 14
+          font-color: "#111827"
+        }
+      }
+      cart: "Cart\nGo · gRPC" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/go.svg"
+        style: {
+          fill: "#EFF6FF"
+          stroke: "#2563EB"
+          stroke-width: 2
+          border-radius: 8
+          shadow: true
+          font-size: 14
+          font-color: "#111827"
+        }
+      }
+      catalog: "Catalog\nGo · gRPC" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/go.svg"
+        style: {
+          fill: "#EFF6FF"
+          stroke: "#2563EB"
+          stroke-width: 2
+          border-radius: 8
+          shadow: true
+          font-size: 14
+          font-color: "#111827"
+        }
+      }
+      checkout: "Checkout\nTypeScript" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/typescript.svg"
+        style: {
+          fill: "#EFF6FF"
+          stroke: "#2563EB"
+          stroke-width: 2
+          border-radius: 8
+          shadow: true
+          font-size: 14
+          font-color: "#111827"
+        }
+      }
+      search: "Search\nPython" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/python.svg"
+        style: {
+          fill: "#EFF6FF"
+          stroke: "#2563EB"
+          stroke-width: 2
+          border-radius: 8
+          shadow: true
+          font-size: 14
+          font-color: "#111827"
+        }
+      }
+      rec: "Recommendations\nPython · ML" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/python.svg"
+        style: {
+          fill: "#EFF6FF"
+          stroke: "#2563EB"
+          stroke-width: 2
+          border-radius: 8
+          shadow: true
+          font-size: 14
+          font-color: "#111827"
+        }
+      }
+    }
+    data_e: "Data Tier" {
+      grid-columns: 3
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#2563EB"
+        stroke-width: 2
+        border-radius: 12
+        font-size: 15
+        bold: true
+        font-color: "#111827"
+      }
+      redis_e: "ElastiCache\nRedis" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/redis.svg"
+        style: {
+          fill: "#ECFDF5"
+          stroke: "#059669"
+          stroke-width: 2
+          border-radius: 8
+          shadow: true
+          font-size: 14
+          font-color: "#111827"
+        }
+      }
+      aurora_e: "Aurora PG\nMulti-AZ" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/postgresql.svg"
+        style: {
+          fill: "#ECFDF5"
+          stroke: "#059669"
+          stroke-width: 2
+          border-radius: 8
+          shadow: true
+          font-size: 14
+          font-color: "#111827"
+        }
+      }
+      os_e: "OpenSearch" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/elasticsearch.svg"
+        style: {
+          fill: "#ECFDF5"
+          stroke: "#059669"
+          stroke-width: 2
+          border-radius: 8
+          shadow: true
+          font-size: 14
+          font-color: "#111827"
+        }
+      }
+      s3_e: "S3 Assets" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/s3.svg"
+        style: {
+          fill: "#FFFBEB"
+          stroke: "#D97706"
+          stroke-width: 2
+          border-radius: 8
+          shadow: true
+          font-size: 14
+          font-color: "#111827"
+        }
+      }
+      msk_e: "MSK Kafka" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/kafka.svg"
+        style: {
+          fill: "#F5F3FF"
+          stroke: "#7C3AED"
+          stroke-width: 2
+          border-radius: 8
+          shadow: true
+          font-size: 14
+          font-color: "#111827"
+        }
+      }
+    }
+  }
+
+  usw2: "us-west-2 · Secondary" {
+    
+    style: {
+      fill: "#F5F3FF"
+      stroke: "#7C3AED"
+      stroke-width: 2
+      border-radius: 12
+      font-size: 15
+      bold: true
+      font-color: "#111827"
+    }
+    west_app: "EKS West" {
+      grid-columns: 2
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#2563EB"
+        stroke-width: 2
+        border-radius: 12
+        font-size: 15
+        bold: true
+        font-color: "#111827"
+      }
+      alb_w: "ALB West" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/apigateway.svg"
+        style: {
+          fill: "#FFF7ED"
+          stroke: "#EA580C"
+          stroke-width: 2
+          border-radius: 8
+          shadow: true
+          font-size: 14
+          font-color: "#111827"
+        }
+      }
+      cart_w: "Cart replica" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/kubernetes.svg"
+        style: {
+          fill: "#EFF6FF"
+          stroke: "#2563EB"
+          stroke-width: 2
+          border-radius: 8
+          shadow: true
+          font-size: 14
+          font-color: "#111827"
+        }
+      }
+      catalog_w: "Catalog replica" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/kubernetes.svg"
+        style: {
+          fill: "#EFF6FF"
+          stroke: "#2563EB"
+          stroke-width: 2
+          border-radius: 8
+          shadow: true
+          font-size: 14
+          font-color: "#111827"
+        }
+      }
+    }
+    west_data: "Data West" {
+      
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#2563EB"
+        stroke-width: 2
+        border-radius: 12
+        font-size: 15
+        bold: true
+        font-color: "#111827"
+      }
+      aurora_w: "Aurora replica" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/postgresql.svg"
+        style: {
+          fill: "#ECFDF5"
+          stroke: "#059669"
+          stroke-width: 2
+          border-radius: 8
+          shadow: true
+          font-size: 14
+          font-color: "#111827"
+        }
+      }
+    }
+  }
+
+  sec: "Security & Identity" {
+    grid-columns: 2
+    style: {
+      fill: "#F5F3FF"
+      stroke: "#7C3AED"
+      stroke-width: 2
+      border-radius: 12
+      font-size: 15
+      bold: true
+      font-color: "#111827"
+    }
+    cognito: "Cognito\nOIDC" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/openid.svg"
+      style: {
+        fill: "#FEF2F2"
+        stroke: "#DC2626"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    vault: "Vault\nsecrets" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/vault.svg"
+      style: {
+        fill: "#FEF2F2"
+        stroke: "#DC2626"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    waf: "AWS WAF" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/aws.svg"
+      style: {
+        fill: "#FEF2F2"
+        stroke: "#DC2626"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+  }
+
+  obs: "Observability" {
+    grid-columns: 2
+    style: {
+      fill: "#F5F3FF"
+      stroke: "#7C3AED"
+      stroke-width: 2
+      border-radius: 12
+      font-size: 15
+      bold: true
+      font-color: "#111827"
+    }
+    prom: "Prometheus" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/prometheus.svg"
+      style: {
+        fill: "#FDF2F8"
+        stroke: "#DB2777"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    graf: "Grafana" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/grafana.svg"
+      style: {
+        fill: "#FDF2F8"
+        stroke: "#DB2777"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    otel: "OTel Collector" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/opentelemetry.svg"
+      style: {
+        fill: "#FDF2F8"
+        stroke: "#DB2777"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    cw: "CloudWatch" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/cloudwatch.svg"
+      style: {
+        fill: "#FDF2F8"
+        stroke: "#DB2777"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+  }
+}
+
+users: "Clients\nWeb · Mobile" {
+  shape: person
+  style: {
+    fill: "#F9FAFB"
+    stroke: "#9CA3AF"
+    stroke-width: 2
+    border-radius: 8
+    shadow: true
+    font-size: 14
+    font-color: "#111827"
+  }
+}
+
+users -> cf: "HTTPS" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+cf -> r53 {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+waf -> cf: "rules" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+r53 -> alb_e: "primary" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+r53 -> alb_w: "failover" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+alb_e -> ing_e {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+ing_e -> gw_e {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+gw_e -> cart: "gRPC" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+gw_e -> catalog: "gRPC" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+gw_e -> checkout: "HTTP" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+gw_e -> search: "HTTP" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+checkout -> cart {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+checkout -> ext_pay: "charge" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+nat_e -> ext_pay {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+search -> os_e {
+  style: {
+    stroke: "#059669"
+    stroke-width: 3
+  }
+}
+catalog -> aurora_e {
+  style: {
+    stroke: "#059669"
+    stroke-width: 3
+  }
+}
+cart -> redis_e {
+  style: {
+    stroke: "#059669"
+    stroke-width: 3
+  }
+}
+checkout -> aurora_e {
+  style: {
+    stroke: "#059669"
+    stroke-width: 3
+  }
+}
+checkout -> msk_e: "OrderPlaced" {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+msk_e -> rec: "consume" {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+msk_e -> ext_email: "notify" {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+rec -> s3_e {
+  style: {
+    stroke: "#059669"
+    stroke-width: 3
+  }
+}
+cognito -> gw_e: "JWT" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+vault -> cart: "secrets" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+vault -> checkout: "secrets" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+mesh -> cart {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+mesh -> catalog {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+otel -> prom {
+  style: {
+    stroke: "#059669"
+    stroke-width: 3
+  }
+}
+prom -> graf {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+gw_e -> cw: "logs" {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+alb_w -> cart_w {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+alb_w -> catalog_w {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+aurora_e -> aurora_w: "async replica" {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+
+
+legend: Legend {
+  near: bottom-center
+  style: {
+    fill: "#F8FAFC"
+    stroke: "#E5E7EB"
+    border-radius: 10
+    font-color: "#6B7280"
+    font-size: 13
+  }
+  leg_0: "Sync / request" {
+  shape: rectangle
+  style: {
+    fill: "#FFFFFF"
+    stroke: "#1F2937"
+    stroke-width: 2
+    border-radius: 6
+    font-size: 12
+    font-color: "#111827"
+  }
+}
+  leg_1: "Async / event" {
+  shape: rectangle
+  style: {
+    fill: "#FFFFFF"
+    stroke: "#7C3AED"
+    stroke-width: 2
+    border-radius: 6
+    font-size: 12
+    font-color: "#111827"
+    stroke-dash: 3
+  }
+}
+  leg_2: "Data path" {
+  shape: rectangle
+  style: {
+    fill: "#FFFFFF"
+    stroke: "#059669"
+    stroke-width: 2
+    border-radius: 6
+    font-size: 12
+    font-color: "#111827"
+  }
+}
+}

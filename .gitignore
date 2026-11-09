@@ -1,0 +1,16 @@
+node_modules/
+dist/
+output/
+.task.md
+.task-*.md
+.agent.log
+.agent*.log
+*.log
+.DS_Store
+.env
+coverage/
+.vitest/
+tmp/
+.cache/
+examples/_preview/
+examples/examples/
