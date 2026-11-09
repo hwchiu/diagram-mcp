@@ -65,6 +65,8 @@ export async function renderD2(opts: D2RenderOptions): Promise<void> {
     "--theme=0",
     `--pad=${opts.pad ?? 48}`,
     "--sketch=false",
+    // Root board only — default target=* writes a directory of boards
+    "--target=",
     srcPath,
     opts.outSvg,
   ];

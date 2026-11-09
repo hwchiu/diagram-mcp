@@ -6,8 +6,8 @@
 
 | Tool | 說明 | 引擎 |
 |---|---|---|
-| `create_cloud_architecture` | 雲端 / K8s 架構（區域、VPC、叢集分組、圖示） | D2 + ELK |
-| `create_microservice_architecture` | 微服務（gateway / queue / DB、同步 vs 非同步邊） | D2 + ELK |
+| `create_cloud_architecture` | 雲端 / K8s 架構（虛線 tier、統一 icon card、`steps` 編號面板、稀疏邊） | D2 + TALA |
+| `create_microservice_architecture` | 微服務（gateway / queue / DB、同步 vs 非同步、`steps`、tier-to-tier 邊） | D2 + TALA |
 | `create_flowchart` | 流程圖（支援 swimlane） | Mermaid |
 | `create_decision_diagram` | 決策樹（yes/no 色碼） | Mermaid |
 | `create_dependency_graph` | 套件 / 模組依賴圖（大量節點仍可讀） | Graphviz |
@@ -98,12 +98,15 @@ npm run examples   # → examples/（基礎五種）
 
 | 檔案 | 內容 |
 |---|---|
-| `examples/showcase/01-ecommerce-microservices-e2e.png` | 電商微服務端到端（Clients→Edge→BFF→Services→Data→Kafka→Externals） |
+| `examples/showcase/01-ecommerce-microservices-e2e.png` | 電商 overview（稀疏 tier 邊 + 編號 steps，對齊 AWS reference） |
+| `examples/showcase/01b-ecommerce-data-kafka.png` | 分圖：per-service 資料擁有權 + Kafka topics |
 | `examples/showcase/02-place-order-sequence.png` | Place Order 編號序向圖（sync + Kafka fan-out） |
-| `examples/showcase/03-k8s-dual-region.png` | 雙區域 K8s 部署（Ingress / mesh / managed DB / observability） |
+| `examples/showcase/03-k8s-dual-region.png` | 雙區域 K8s（稀疏邊 + steps 面板） |
 | `examples/showcase/04-flowchart-swimlanes.png` | CI/CD swimlane 流程圖 |
 | `examples/showcase/05-decision-tree.png` | 事故分級決策樹 |
 | `examples/showcase/06-dependency-graph-80.png` | 80+ packages 依賴圖 |
+
+品質對標：`docs/reference-aws-webstore.png`。架構圖支援 `steps`、`edge.step`、`layout: tala|elk|dagre`，以及 **group id 當邊端點**（tier-to-tier）。
 
 ## 授權
 

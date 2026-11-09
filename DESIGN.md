@@ -1,6 +1,8 @@
 # Design System
 
-`diagram-mcp` aims for **vendor-poster / SaaS-docs** quality — not default Graphviz or Mermaid chrome.
+`diagram-mcp` aims for **AWS reference-architecture / SaaS-docs** quality — not default Graphviz or Mermaid chrome.
+
+Quality bar: `docs/reference-aws-webstore.png` and `docs/reference-aws-order-workflow.jpg`.
 
 ## Themes
 
@@ -30,26 +32,29 @@ Tokens live in `src/design/themes.ts`.
 ## Typography
 
 - Family: Inter / SF Pro / Helvetica Neue (IBM Plex Sans for blueprint)
-- Hierarchy: diagram title ≫ group header ≫ node label ≫ subtitle / edge label
-- Node cards: icon + title + optional subtitle
+- Hierarchy: diagram title (top-left) ≫ group header ≫ node label ≫ edge label
+- Node cards: **icon above label**, fixed ~140×110, label never overlaps icon
+- No multi-line subtitles on architecture cards (they collide with icons)
 
-## Layout rules
+## Layout rules (AWS reference style)
 
-1. **Cloud / microservice → D2 + ELK** with nested tinted containers and local `grid-columns` so sibling nodes pack horizontally.
-2. **Flowchart / decision → Mermaid** with native SVG labels (`htmlLabels: false`) so PNG text survives rasterization; yes/no edges are color-coded.
-3. **Dependency → Graphviz DOT** with clustered subgraphs packed into ~2 rows, `concentrate=true`, aiming near **16:9**.
-4. Nested depth stays shallow (≤3) for architecture posters; deeper trees get skyscraper-tall.
-5. Edges only connect **nodes**, never group containers.
-6. **D2 edges MUST use fully-qualified paths** (`board.domain.order -> board.events.kafka`). Bare ids create duplicate top-level ghosts. Compilers call `buildQualifiedPaths` + `assertValidEdges` / `assertD2EdgesAreQualified`.
-7. Prefer edge **color** over dense edge labels (labels become visual noise).
-8. Every render: SVG post-process (canvas fill, Inter import, soft shadow filter) + PNG at **2×**.
+1. **Cloud / microservice → D2 + TALA** (orthogonal routing). Fallback: ELK / dagre via `layout`.
+2. **Tiers = dashed tinted boundary boxes** (Clients, Edge, Web/BFF, App, Data, Async/Event). External / third-party bands use a solid grey chip row.
+3. **Uniform icon cards** inside a hidden `cells` grid wrapper (so step badges / near keys stay valid on the outer group).
+4. **Sparse edges** — prefer **tier-to-tier / container-to-container** edges for many-to-many (BFF → App Tier). Target **&lt; ~25 edges** on overviews. Put per-service DB ownership and Kafka topic fan-out on a **separate detail diagram**.
+5. **Numbered steps** are first-class: `steps: [{ n, label, description, anchor? }]` plus optional `edge.step`. Rendered as a right-side **Architecture steps** panel with circular badges; step numbers also appear on edges.
+6. **Aspect ~16:9**, generous whitespace, grid-aligned cards, no huge empty voids when avoidable.
+7. **D2 edges MUST use fully-qualified paths** (`domain.cells.order -> events.kafka`). Group ids are valid endpoints. Compilers call `buildQualifiedPaths` + `assertValidEdges` / `assertD2EdgesAreQualified`.
+8. Do **not** name a shape `steps` — reserved D2 keyword (boards). Use `guide` for the panel.
+9. Flowchart / decision → Mermaid; dependency → Graphviz DOT (~16:9 clusters).
+10. Every render: SVG post-process + PNG at **2×** (width capped at 3600).
 
 ## Engines
 
 | Kind | Engine | Why |
 |---|---|---|
-| Cloud architecture | D2 | Nested containers, icons, ELK |
-| Microservice | D2 | Sync/async edge styles + icons |
+| Cloud architecture | D2 + TALA | Nested dashed tiers, icons, orthogonal edges |
+| Microservice | D2 + TALA | Sync/async/data edges + steps panel |
 | Flowchart | Mermaid | Swimlanes / decisions |
 | Decision tree | Mermaid | Branch coloring |
 | Dependency graph | Graphviz | Scales to 80+ nodes |
@@ -58,3 +63,13 @@ Tokens live in `src/design/themes.ts`.
 ## Icons
 
 Local SVGs under `assets/icons/` (Simple Icons + aliases). Pass `node.icon` as a key such as `kubernetes`, `postgresql`, `kafka`, `aws`, `lambda`.
+
+## Schema notes
+
+```ts
+steps?: { n: number; label: string; description?: string; anchor?: string }[]
+edges?: { from: string; to: string; label?: string; kind?: "sync"|"async"|"data"; step?: number }[]
+layout?: "tala" | "elk" | "dagre"
+```
+
+`from` / `to` may be **node ids or group ids** (tier-to-tier edges).

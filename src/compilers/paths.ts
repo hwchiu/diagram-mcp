@@ -15,17 +15,45 @@ export function groupAncestorIds(groups: DiagramGroup[], groupId: string): strin
   return parts;
 }
 
+export interface PathBuildOptions {
+  boardId?: string;
+  /**
+   * Group ids that wrap children in a `cells` grid container
+   * (needed so circular step badges can `near` the outer group).
+   */
+  cellsGroups?: Set<string>;
+}
+
+function qualifyGroupPath(
+  groups: DiagramGroup[],
+  groupId: string,
+  opts?: PathBuildOptions,
+): string {
+  const parts: string[] = [];
+  if (opts?.boardId) parts.push(safeId(opts.boardId));
+  for (const gid of groupAncestorIds(groups, groupId)) {
+    parts.push(safeId(gid));
+  }
+  return parts.join(".");
+}
+
 /**
  * Map logical node.id → fully-qualified D2 path.
- * Nested nodes become e.g. `board.domain.order` so edges don't spawn duplicates.
+ * Nested nodes become e.g. `board.domain.cells.order` so edges don't spawn duplicates.
+ * Also maps group.id → container path (for tier-to-tier edges).
  */
 export function buildQualifiedPaths(
   nodes: DiagramNode[],
   groups: DiagramGroup[],
-  opts?: { boardId?: string },
+  opts?: PathBuildOptions,
 ): Map<string, string> {
   const groupIds = new Set(groups.map((g) => g.id));
+  const cells = opts?.cellsGroups ?? new Set<string>();
   const map = new Map<string, string>();
+
+  for (const g of groups) {
+    map.set(g.id, qualifyGroupPath(groups, g.id, opts));
+  }
 
   for (const n of nodes) {
     const parts: string[] = [];
@@ -37,6 +65,9 @@ export function buildQualifiedPaths(
       for (const gid of groupAncestorIds(groups, n.group!)) {
         parts.push(safeId(gid));
       }
+      if (cells.has(n.group!)) {
+        parts.push("cells");
+      }
     }
     parts.push(safeId(n.id));
     map.set(n.id, parts.join("."));
@@ -45,24 +76,26 @@ export function buildQualifiedPaths(
 }
 
 /**
- * Ensure every edge endpoint references a declared node id.
- * Throws with a clear message (used by compilers + unit tests).
+ * Ensure every edge endpoint references a declared node id OR group id
+ * (group ids enable sparse tier-to-tier / container-to-container edges).
  */
 export function assertValidEdges(
   edges: DiagramEdge[] | undefined,
   nodes: DiagramNode[],
   context = "diagram",
+  groups?: DiagramGroup[],
 ): DiagramEdge[] {
-  const nodeIds = new Set(nodes.map((n) => n.id));
+  const ids = new Set(nodes.map((n) => n.id));
+  for (const g of groups ?? []) ids.add(g.id);
   const list = edges ?? [];
   const missing: string[] = [];
   for (const e of list) {
-    if (!nodeIds.has(e.from)) missing.push(`from="${e.from}"`);
-    if (!nodeIds.has(e.to)) missing.push(`to="${e.to}"`);
+    if (!ids.has(e.from)) missing.push(`from="${e.from}"`);
+    if (!ids.has(e.to)) missing.push(`to="${e.to}"`);
   }
   if (missing.length) {
     throw new Error(
-      `${context}: edge endpoint(s) are not declared nodes: ${[...new Set(missing)].join(", ")}`,
+      `${context}: edge endpoint(s) are not declared nodes/groups: ${[...new Set(missing)].join(", ")}`,
     );
   }
   return list;

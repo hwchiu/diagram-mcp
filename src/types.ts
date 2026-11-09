@@ -42,12 +42,39 @@ export interface DiagramEdge {
   to: string;
   label?: string;
   kind?: EdgeKind;
+  /** Optional step number badge shown on this edge */
+  step?: number;
+}
+
+/** Numbered architecture walkthrough (AWS reference-style side panel). */
+export interface DiagramStep {
+  /** 1-based step number */
+  n: number;
+  /** Short bold title in the panel */
+  label: string;
+  /** Longer description */
+  description?: string;
+  /**
+   * Optional node or group id to place a circular badge near.
+   * Prefer group ids (tier containers) — badges cannot target D2 grid cells.
+   */
+  anchor?: string;
 }
 
 export interface StructuredDiagramInput extends DiagramMeta {
   nodes: DiagramNode[];
   groups?: DiagramGroup[];
   edges?: DiagramEdge[];
+  /**
+   * Numbered steps rendered as a right-side panel (+ optional on-diagram badges).
+   * First-class for cloud / microservice reference architectures.
+   */
+  steps?: DiagramStep[];
+  /**
+   * D2 layout engine. Prefer `tala` for orthogonal AWS-style posters;
+   * `elk` as fallback; `dagre` for simpler graphs.
+   */
+  layout?: "tala" | "elk" | "dagre";
   /** Optional legend entries */
   legend?: Array<{ label: string; role?: NodeRole; kind?: EdgeKind }>;
 }

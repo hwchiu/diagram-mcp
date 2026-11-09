@@ -41,6 +41,15 @@ const edgeSchema = z.object({
   to: z.string(),
   label: z.string().optional(),
   kind: z.enum(["sync", "async", "data", "default"]).optional(),
+  step: z.number().int().positive().optional(),
+});
+
+const stepSchema = z.object({
+  n: z.number().int().positive(),
+  label: z.string().min(1),
+  description: z.string().optional(),
+  /** Node or group id for on-diagram circular badge placement */
+  anchor: z.string().optional(),
 });
 
 const meta = {
@@ -50,6 +59,7 @@ const meta = {
   name: z.string().optional(),
   includePreview: z.boolean().optional(),
   outputDir: z.string().optional(),
+  layout: z.enum(["tala", "elk", "dagre"]).optional(),
 };
 
 export const cloudSchema = z.object({
@@ -58,6 +68,7 @@ export const cloudSchema = z.object({
   nodes: z.array(nodeSchema).min(1),
   groups: z.array(groupSchema).optional(),
   edges: z.array(edgeSchema).optional(),
+  steps: z.array(stepSchema).optional(),
   legend: z
     .array(
       z.object({
@@ -74,6 +85,7 @@ export const microserviceSchema = z.object({
   nodes: z.array(nodeSchema).min(1),
   groups: z.array(groupSchema).optional(),
   edges: z.array(edgeSchema).optional(),
+  steps: z.array(stepSchema).optional(),
   legend: cloudSchema.shape.legend,
 });
 

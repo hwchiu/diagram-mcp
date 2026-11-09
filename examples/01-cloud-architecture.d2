@@ -1,6 +1,6 @@
 vars: {
   d2-config: {
-    layout-engine: dagre
+    layout-engine: tala
     theme-id: 0
     pad: 64
   }
@@ -17,802 +17,983 @@ direction: right
 
 
 title: |md
-  # Multi-Region Commerce Platform
-  AWS + EKS · Active-active · Production
+  # Guidance for Multi-Region Commerce
+  AWS + EKS · Active-active · sparse main flows
 | {
-  near: top-center
+  near: top-left
   style: {
-    fill: "#F8FAFC"
-    stroke: "#E5E7EB"
-    border-radius: 10
+    fill: "transparent"
+    stroke: "transparent"
     font-color: "#111827"
   }
 }
 
 
-board: " " {
-  grid-columns: 3
-  grid-gap: 40
+clients: "Clients" {
   style: {
-    fill: "transparent"
-    stroke: "transparent"
-    font-size: 8
-    font-color: "transparent"
+    fill: "#F5F3FF"
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+    border-radius: 4
+    font-size: 14
+    bold: true
+    font-color: "#111827"
   }
-  edge: "Edge & DNS" {
-    grid-columns: 2
+  cells: " " {
+    grid-rows: 2
     style: {
-      fill: "#F5F3FF"
-      stroke: "#7C3AED"
+      fill: "transparent"
+      stroke: "transparent"
+      font-size: 8
+      font-color: "transparent"
+    }
+    users: "Users" {
+      shape: person
+      width: 140
+      height: 110
+      style: {
+        fill: "#FFFFFF"
+        stroke: "#E5E7EB"
+        stroke-width: 1
+        border-radius: 6
+        shadow: false
+        font-size: 13
+        font-color: "#111827"
+      }
+    }
+    web: "Web / Mobile" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/react.svg"
+      width: 140
+      height: 110
+      style: {
+        fill: "#FFFFFF"
+        stroke: "#E5E7EB"
+        stroke-width: 1
+        border-radius: 6
+        shadow: false
+        font-size: 13
+        font-color: "#111827"
+      }
+    }
+  }
+}
+
+edge: "Edge & DNS" {
+  style: {
+    fill: "#F5F3FF"
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+    border-radius: 4
+    font-size: 14
+    bold: true
+    font-color: "#111827"
+  }
+  cells: " " {
+    grid-rows: 3
+    style: {
+      fill: "transparent"
+      stroke: "transparent"
+      font-size: 8
+      font-color: "transparent"
+    }
+    cf: "CloudFront" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/cloudflare.svg"
+      width: 140
+      height: 110
+      style: {
+        fill: "#FFFFFF"
+        stroke: "#0284C7"
+        stroke-width: 1
+        border-radius: 6
+        shadow: false
+        font-size: 13
+        font-color: "#111827"
+      }
+    }
+    r53: "Route 53" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/aws.svg"
+      width: 140
+      height: 110
+      style: {
+        fill: "#FFFFFF"
+        stroke: "#0284C7"
+        stroke-width: 1
+        border-radius: 6
+        shadow: false
+        font-size: 13
+        font-color: "#111827"
+      }
+    }
+    waf: "WAF" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/aws.svg"
+      width: 140
+      height: 110
+      style: {
+        fill: "#FFFFFF"
+        stroke: "#DC2626"
+        stroke-width: 1
+        border-radius: 6
+        shadow: false
+        font-size: 13
+        font-color: "#111827"
+      }
+    }
+  }
+}
+
+use1: "us-east-1 · Primary" {
+  style: {
+    fill: "#F5F3FF"
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+    border-radius: 4
+    font-size: 14
+    bold: true
+    font-color: "#111827"
+  }
+  pub_e: "Ingress" {
+    style: {
+      fill: "#EFF6FF"
+      stroke: "#2563EB"
+      stroke-dash: 4
       stroke-width: 2
-      border-radius: 12
-      font-size: 20
+      border-radius: 4
+      font-size: 14
       bold: true
       font-color: "#111827"
     }
-    cf: "CloudFront\nCDN + WAF" {
-      shape: rectangle
-      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/cloudflare.svg"
+    cells: " " {
+      grid-columns: 2
       style: {
-        fill: "#F0F9FF"
-        stroke: "#0284C7"
-        stroke-width: 2
-        border-radius: 8
-        shadow: true
-        font-size: 22
-        font-color: "#111827"
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 8
+        font-color: "transparent"
       }
-    }
-    r53: "Route 53\nlatency routing" {
-      shape: rectangle
-      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/aws.svg"
-      style: {
-        fill: "#F0F9FF"
-        stroke: "#0284C7"
-        stroke-width: 2
-        border-radius: 8
-        shadow: true
-        font-size: 22
-        font-color: "#111827"
+      alb_e: "ALB" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/apigateway.svg"
+        width: 140
+        height: 110
+        style: {
+          fill: "#FFFFFF"
+          stroke: "#EA580C"
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
+          font-color: "#111827"
+        }
       }
-    }
-    ext_pay: "Stripe\npayments" {
-      shape: rectangle
-      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/cloudflare.svg"
-      style: {
-        fill: "#F9FAFB"
-        stroke: "#9CA3AF"
-        stroke-width: 2
-        border-radius: 8
-        shadow: true
-        font-size: 22
-        font-color: "#111827"
-      }
-    }
-    ext_email: "SES\nemail" {
-      shape: rectangle
-      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/aws.svg"
-      style: {
-        fill: "#F9FAFB"
-        stroke: "#9CA3AF"
-        stroke-width: 2
-        border-radius: 8
-        shadow: true
-        font-size: 22
-        font-color: "#111827"
+      ing_e: "Ingress" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/nginx.svg"
+        width: 140
+        height: 110
+        style: {
+          fill: "#FFFFFF"
+          stroke: "#EA580C"
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
+          font-color: "#111827"
+        }
       }
     }
   }
 
-  use1: "us-east-1 · Primary" {
-    
+  shop_e: "EKS App Tier" {
     style: {
-      fill: "#F5F3FF"
-      stroke: "#7C3AED"
+      fill: "#EFF6FF"
+      stroke: "#2563EB"
+      stroke-dash: 4
       stroke-width: 2
-      border-radius: 12
-      font-size: 20
+      border-radius: 4
+      font-size: 14
       bold: true
       font-color: "#111827"
     }
-    pub_e: "Public / Ingress" {
-      grid-columns: 2
+    cells: " " {
+      grid-columns: 4
       style: {
-        fill: "#EFF6FF"
-        stroke: "#2563EB"
-        stroke-width: 2
-        border-radius: 12
-        font-size: 20
-        bold: true
-        font-color: "#111827"
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 8
+        font-color: "transparent"
       }
-      alb_e: "ALB\nHTTPS :443" {
+      gw_e: "API Gateway" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/apigateway.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#FFF7ED"
+          fill: "#FFFFFF"
           stroke: "#EA580C"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
-      ing_e: "Ingress NGINX" {
-        shape: rectangle
-        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/nginx.svg"
-        style: {
-          fill: "#FFF7ED"
-          stroke: "#EA580C"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
-          font-color: "#111827"
-        }
-      }
-      nat_e: "NAT Gateway" {
-        shape: rectangle
-        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/aws.svg"
-        style: {
-          fill: "#F0F9FF"
-          stroke: "#0284C7"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
-          font-color: "#111827"
-        }
-      }
-    }
-    shop_e: "EKS · shopping + platform" {
-      grid-columns: 3
-      style: {
-        fill: "#EFF6FF"
-        stroke: "#2563EB"
-        stroke-width: 2
-        border-radius: 12
-        font-size: 20
-        bold: true
-        font-color: "#111827"
-      }
-      gw_e: "API Gateway\nKong" {
-        shape: rectangle
-        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/apigateway.svg"
-        style: {
-          fill: "#FFF7ED"
-          stroke: "#EA580C"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
-          font-color: "#111827"
-        }
-      }
-      mesh: "Istio Mesh" {
-        shape: rectangle
-        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/istio.svg"
-        style: {
-          fill: "#F0F9FF"
-          stroke: "#0284C7"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
-          font-color: "#111827"
-        }
-      }
-      cart: "Cart\nGo · gRPC" {
+      cart: "Cart" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/go.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#EFF6FF"
+          fill: "#FFFFFF"
           stroke: "#2563EB"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
-      catalog: "Catalog\nGo · gRPC" {
+      catalog: "Catalog" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/go.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#EFF6FF"
+          fill: "#FFFFFF"
           stroke: "#2563EB"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
-      checkout: "Checkout\nTypeScript" {
+      checkout: "Checkout" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/typescript.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#EFF6FF"
+          fill: "#FFFFFF"
           stroke: "#2563EB"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
-      search: "Search\nPython" {
+      search: "Search" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/python.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#EFF6FF"
+          fill: "#FFFFFF"
           stroke: "#2563EB"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
-          font-color: "#111827"
-        }
-      }
-      rec: "Recommendations\nPython · ML" {
-        shape: rectangle
-        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/python.svg"
-        style: {
-          fill: "#EFF6FF"
-          stroke: "#2563EB"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
     }
-    data_e: "Data Tier" {
-      grid-columns: 3
+  }
+
+  data_e: "Data Tier" {
+    style: {
+      fill: "#EFF6FF"
+      stroke: "#2563EB"
+      stroke-dash: 4
+      stroke-width: 2
+      border-radius: 4
+      font-size: 14
+      bold: true
+      font-color: "#111827"
+    }
+    cells: " " {
+      grid-columns: 4
       style: {
-        fill: "#EFF6FF"
-        stroke: "#2563EB"
-        stroke-width: 2
-        border-radius: 12
-        font-size: 20
-        bold: true
-        font-color: "#111827"
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 8
+        font-color: "transparent"
       }
-      redis_e: "ElastiCache\nRedis" {
+      redis_e: "ElastiCache" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/redis.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#ECFDF5"
+          fill: "#FFFFFF"
           stroke: "#059669"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
-      aurora_e: "Aurora PG\nMulti-AZ" {
+      aurora_e: "Aurora PG" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/postgresql.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#ECFDF5"
+          fill: "#FFFFFF"
           stroke: "#059669"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
-          font-color: "#111827"
-        }
-      }
-      os_e: "OpenSearch" {
-        shape: rectangle
-        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/elasticsearch.svg"
-        style: {
-          fill: "#ECFDF5"
-          stroke: "#059669"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
-          font-color: "#111827"
-        }
-      }
-      s3_e: "S3 Assets" {
-        shape: rectangle
-        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/s3.svg"
-        style: {
-          fill: "#FFFBEB"
-          stroke: "#D97706"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
       msk_e: "MSK Kafka" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/kafka.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#F5F3FF"
+          fill: "#FFFFFF"
           stroke: "#7C3AED"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
+          font-color: "#111827"
+        }
+      }
+      s3_e: "S3" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/s3.svg"
+        width: 140
+        height: 110
+        style: {
+          fill: "#FFFFFF"
+          stroke: "#D97706"
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
     }
   }
+}
 
-  usw2: "us-west-2 · Secondary" {
-    
+usw2: "us-west-2 · Secondary" {
+  style: {
+    fill: "#F5F3FF"
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+    border-radius: 4
+    font-size: 14
+    bold: true
+    font-color: "#111827"
+  }
+  west_app: "EKS West" {
     style: {
-      fill: "#F5F3FF"
-      stroke: "#7C3AED"
+      fill: "#EFF6FF"
+      stroke: "#2563EB"
+      stroke-dash: 4
       stroke-width: 2
-      border-radius: 12
-      font-size: 20
+      border-radius: 4
+      font-size: 14
       bold: true
       font-color: "#111827"
     }
-    west_app: "EKS West" {
-      grid-columns: 2
+    cells: " " {
+      grid-columns: 3
       style: {
-        fill: "#EFF6FF"
-        stroke: "#2563EB"
-        stroke-width: 2
-        border-radius: 12
-        font-size: 20
-        bold: true
-        font-color: "#111827"
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 8
+        font-color: "transparent"
       }
       alb_w: "ALB West" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/apigateway.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#FFF7ED"
+          fill: "#FFFFFF"
           stroke: "#EA580C"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
-      cart_w: "Cart replica" {
+      cart_w: "Cart" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/kubernetes.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#EFF6FF"
+          fill: "#FFFFFF"
           stroke: "#2563EB"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
-      catalog_w: "Catalog replica" {
+      catalog_w: "Catalog" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/kubernetes.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#EFF6FF"
+          fill: "#FFFFFF"
           stroke: "#2563EB"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
-          font-color: "#111827"
-        }
-      }
-    }
-    west_data: "Data West" {
-      
-      style: {
-        fill: "#EFF6FF"
-        stroke: "#2563EB"
-        stroke-width: 2
-        border-radius: 12
-        font-size: 20
-        bold: true
-        font-color: "#111827"
-      }
-      aurora_w: "Aurora replica" {
-        shape: rectangle
-        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/postgresql.svg"
-        style: {
-          fill: "#ECFDF5"
-          stroke: "#059669"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
     }
   }
 
-  sec: "Security & Identity" {
-    grid-columns: 2
+  west_data: "Data West" {
     style: {
-      fill: "#F5F3FF"
-      stroke: "#7C3AED"
+      fill: "#EFF6FF"
+      stroke: "#2563EB"
+      stroke-dash: 4
       stroke-width: 2
-      border-radius: 12
-      font-size: 20
+      border-radius: 4
+      font-size: 14
       bold: true
       font-color: "#111827"
     }
-    cognito: "Cognito\nOIDC" {
+    aurora_w: "Aurora replica" {
       shape: rectangle
-      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/openid.svg"
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/postgresql.svg"
+      width: 140
+      height: 110
       style: {
-        fill: "#FEF2F2"
-        stroke: "#DC2626"
-        stroke-width: 2
-        border-radius: 8
-        shadow: true
-        font-size: 22
-        font-color: "#111827"
-      }
-    }
-    vault: "Vault\nsecrets" {
-      shape: rectangle
-      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/vault.svg"
-      style: {
-        fill: "#FEF2F2"
-        stroke: "#DC2626"
-        stroke-width: 2
-        border-radius: 8
-        shadow: true
-        font-size: 22
-        font-color: "#111827"
-      }
-    }
-    waf: "AWS WAF" {
-      shape: rectangle
-      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/aws.svg"
-      style: {
-        fill: "#FEF2F2"
-        stroke: "#DC2626"
-        stroke-width: 2
-        border-radius: 8
-        shadow: true
-        font-size: 22
+        fill: "#FFFFFF"
+        stroke: "#059669"
+        stroke-width: 1
+        border-radius: 6
+        shadow: false
+        font-size: 13
         font-color: "#111827"
       }
     }
   }
+}
 
-  obs: "Observability" {
+ext: "Key Third-Party Services" {
+  style: {
+    fill: "#F1F5F9"
+    stroke: "#94A3B8"
+    
+    stroke-width: 2
+    border-radius: 4
+    font-size: 14
+    bold: true
+    font-color: "#111827"
+  }
+  cells: " " {
     grid-columns: 2
     style: {
-      fill: "#F5F3FF"
-      stroke: "#7C3AED"
-      stroke-width: 2
-      border-radius: 12
-      font-size: 20
-      bold: true
-      font-color: "#111827"
+      fill: "transparent"
+      stroke: "transparent"
+      font-size: 8
+      font-color: "transparent"
+    }
+    stripe: "Payment Provider" {
+      shape: rectangle
+      width: 160
+      height: 48
+      style: {
+        fill: "#FFFFFF"
+        stroke: "#E5E7EB"
+        stroke-width: 1
+        border-radius: 4
+        shadow: false
+        font-size: 11
+        font-color: "#111827"
+      }
+    }
+    ses: "Email / SMS" {
+      shape: rectangle
+      width: 160
+      height: 48
+      style: {
+        fill: "#FFFFFF"
+        stroke: "#E5E7EB"
+        stroke-width: 1
+        border-radius: 4
+        shadow: false
+        font-size: 11
+        font-color: "#111827"
+      }
+    }
+  }
+}
+
+obs: "Observability" {
+  style: {
+    fill: "#F5F3FF"
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+    border-radius: 4
+    font-size: 14
+    bold: true
+    font-color: "#111827"
+  }
+  cells: " " {
+    grid-columns: 3
+    style: {
+      fill: "transparent"
+      stroke: "transparent"
+      font-size: 8
+      font-color: "transparent"
     }
     prom: "Prometheus" {
       shape: rectangle
       icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/prometheus.svg"
+      width: 140
+      height: 110
       style: {
-        fill: "#FDF2F8"
+        fill: "#FFFFFF"
         stroke: "#DB2777"
-        stroke-width: 2
-        border-radius: 8
-        shadow: true
-        font-size: 22
+        stroke-width: 1
+        border-radius: 6
+        shadow: false
+        font-size: 13
         font-color: "#111827"
       }
     }
     graf: "Grafana" {
       shape: rectangle
       icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/grafana.svg"
+      width: 140
+      height: 110
       style: {
-        fill: "#FDF2F8"
+        fill: "#FFFFFF"
         stroke: "#DB2777"
-        stroke-width: 2
-        border-radius: 8
-        shadow: true
-        font-size: 22
+        stroke-width: 1
+        border-radius: 6
+        shadow: false
+        font-size: 13
         font-color: "#111827"
       }
     }
-    otel: "OTel Collector" {
+    otel: "OTel" {
       shape: rectangle
       icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/opentelemetry.svg"
+      width: 140
+      height: 110
       style: {
-        fill: "#FDF2F8"
+        fill: "#FFFFFF"
         stroke: "#DB2777"
-        stroke-width: 2
-        border-radius: 8
-        shadow: true
-        font-size: 22
-        font-color: "#111827"
-      }
-    }
-    cw: "CloudWatch" {
-      shape: rectangle
-      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/cloudwatch.svg"
-      style: {
-        fill: "#FDF2F8"
-        stroke: "#DB2777"
-        stroke-width: 2
-        border-radius: 8
-        shadow: true
-        font-size: 22
+        stroke-width: 1
+        border-radius: 6
+        shadow: false
+        font-size: 13
         font-color: "#111827"
       }
     }
   }
 }
 
-users: "Clients\nWeb · Mobile" {
-  shape: person
-  style: {
-    fill: "#F9FAFB"
-    stroke: "#9CA3AF"
-    stroke-width: 2
-    border-radius: 8
-    shadow: true
-    font-size: 22
-    font-color: "#111827"
-  }
-}
 
-users -> board.edge.cf: "HTTPS" {
+
+clients -> edge: "1" {
   style: {
     stroke: "#1F2937"
     stroke-width: 2
   }
 }
-board.edge.cf -> board.edge.r53 {
+edge -> use1: "2 · primary" {
   style: {
     stroke: "#1F2937"
     stroke-width: 2
   }
 }
-board.sec.waf -> board.edge.cf: "rules" {
+edge -> usw2: "failover" {
   style: {
     stroke: "#1F2937"
     stroke-width: 2
   }
 }
-board.edge.r53 -> board.use1.pub_e.alb_e: "primary" {
+use1.pub_e -> use1.shop_e: "3" {
   style: {
     stroke: "#1F2937"
     stroke-width: 2
   }
 }
-board.edge.r53 -> board.usw2.west_app.alb_w: "failover" {
+use1.shop_e.cells.checkout -> use1.shop_e.cells.cart {
   style: {
     stroke: "#1F2937"
     stroke-width: 2
   }
 }
-board.use1.pub_e.alb_e -> board.use1.pub_e.ing_e {
+use1.shop_e.cells.checkout -> ext.cells.stripe: "4" {
   style: {
     stroke: "#1F2937"
     stroke-width: 2
   }
 }
-board.use1.pub_e.ing_e -> board.use1.shop_e.gw_e {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.use1.shop_e.gw_e -> board.use1.shop_e.cart: "gRPC" {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.use1.shop_e.gw_e -> board.use1.shop_e.catalog: "gRPC" {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.use1.shop_e.gw_e -> board.use1.shop_e.checkout: "HTTP" {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.use1.shop_e.gw_e -> board.use1.shop_e.search: "HTTP" {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.use1.shop_e.checkout -> board.use1.shop_e.cart {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.use1.shop_e.checkout -> board.edge.ext_pay: "charge" {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.use1.pub_e.nat_e -> board.edge.ext_pay {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.use1.shop_e.search -> board.use1.data_e.os_e {
+use1.shop_e -> use1.data_e: "5" {
   style: {
     stroke: "#059669"
-    stroke-width: 3
+    stroke-width: 2
   }
 }
-board.use1.shop_e.catalog -> board.use1.data_e.aurora_e {
-  style: {
-    stroke: "#059669"
-    stroke-width: 3
-  }
-}
-board.use1.shop_e.cart -> board.use1.data_e.redis_e {
-  style: {
-    stroke: "#059669"
-    stroke-width: 3
-  }
-}
-board.use1.shop_e.checkout -> board.use1.data_e.aurora_e {
-  style: {
-    stroke: "#059669"
-    stroke-width: 3
-  }
-}
-board.use1.shop_e.checkout -> board.use1.data_e.msk_e: "OrderPlaced" {
+use1.shop_e.cells.checkout -> use1.data_e.cells.msk_e: "6" {
   style: {
     stroke: "#7C3AED"
     stroke-dash: 4
     stroke-width: 2
   }
 }
-board.use1.data_e.msk_e -> board.use1.shop_e.rec: "consume" {
+use1.data_e.cells.msk_e -> ext.cells.ses {
   style: {
     stroke: "#7C3AED"
     stroke-dash: 4
     stroke-width: 2
   }
 }
-board.use1.data_e.msk_e -> board.edge.ext_email: "notify" {
+use1.data_e.cells.aurora_e -> usw2.west_data.aurora_w: "7 · replica" {
   style: {
     stroke: "#7C3AED"
     stroke-dash: 4
     stroke-width: 2
   }
 }
-board.use1.shop_e.rec -> board.use1.data_e.s3_e {
+usw2.west_app -> usw2.west_data {
   style: {
     stroke: "#059669"
-    stroke-width: 3
-  }
-}
-board.sec.cognito -> board.use1.shop_e.gw_e: "JWT" {
-  style: {
-    stroke: "#1F2937"
     stroke-width: 2
   }
 }
-board.sec.vault -> board.use1.shop_e.cart: "secrets" {
+use1 -> obs {
   style: {
-    stroke: "#1F2937"
+    stroke: "#7C3AED"
+    stroke-dash: 4
     stroke-width: 2
   }
 }
-board.sec.vault -> board.use1.shop_e.checkout: "secrets" {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.use1.shop_e.mesh -> board.use1.shop_e.cart {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.use1.shop_e.mesh -> board.use1.shop_e.catalog {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.obs.otel -> board.obs.prom {
+obs.cells.otel -> obs.cells.prom {
   style: {
     stroke: "#059669"
-    stroke-width: 3
+    stroke-width: 2
   }
 }
-board.obs.prom -> board.obs.graf {
+obs.cells.prom -> obs.cells.graf {
   style: {
     stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.use1.shop_e.gw_e -> board.obs.cw: "logs" {
-  style: {
-    stroke: "#7C3AED"
-    stroke-dash: 4
-    stroke-width: 2
-  }
-}
-board.usw2.west_app.alb_w -> board.usw2.west_app.cart_w {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.usw2.west_app.alb_w -> board.usw2.west_app.catalog_w {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.use1.data_e.aurora_e -> board.usw2.west_data.aurora_w: "async replica" {
-  style: {
-    stroke: "#7C3AED"
-    stroke-dash: 4
     stroke-width: 2
   }
 }
 
 
-legend: Legend {
-  near: bottom-center
+
+
+guide: "Architecture steps" {
+  near: center-right
+  grid-rows: 7
+  grid-gap: 10
   style: {
     fill: "#F8FAFC"
     stroke: "#E5E7EB"
-    border-radius: 10
+    border-radius: 8
+    font-size: 14
+    bold: true
+    font-color: "#111827"
+  }
+  row_1: " " {
+    grid-columns: 2
+    grid-gap: 10
+    style: {
+      fill: "transparent"
+      stroke: "transparent"
+      font-size: 8
+      font-color: "transparent"
+    }
+    n1: "1" {
+      shape: circle
+      width: 28
+      height: 28
+      style: {
+        fill: "#111827"
+        stroke: "#111827"
+        font-color: "#FFFFFF"
+        font-size: 12
+        bold: true
+      }
+    }
+    t1: "Clients → Edge\nUsers hit CDN / WAF / DNS" {
+      width: 260
+      height: 52
+      style: {
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 12
+        font-color: "#111827"
+      }
+    }
+  }
+  row_2: " " {
+    grid-columns: 2
+    grid-gap: 10
+    style: {
+      fill: "transparent"
+      stroke: "transparent"
+      font-size: 8
+      font-color: "transparent"
+    }
+    n2: "2" {
+      shape: circle
+      width: 28
+      height: 28
+      style: {
+        fill: "#111827"
+        stroke: "#111827"
+        font-color: "#FFFFFF"
+        font-size: 12
+        bold: true
+      }
+    }
+    t2: "Route to primary\nRoute 53 sends traffic to us-east-1" {
+      width: 260
+      height: 52
+      style: {
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 12
+        font-color: "#111827"
+      }
+    }
+  }
+  row_3: " " {
+    grid-columns: 2
+    grid-gap: 10
+    style: {
+      fill: "transparent"
+      stroke: "transparent"
+      font-size: 8
+      font-color: "transparent"
+    }
+    n3: "3" {
+      shape: circle
+      width: 28
+      height: 28
+      style: {
+        fill: "#111827"
+        stroke: "#111827"
+        font-color: "#FFFFFF"
+        font-size: 12
+        bold: true
+      }
+    }
+    t3: "Ingress to App Tier\nALB / Ingress reaches EKS services" {
+      width: 260
+      height: 52
+      style: {
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 12
+        font-color: "#111827"
+      }
+    }
+  }
+  row_4: " " {
+    grid-columns: 2
+    grid-gap: 10
+    style: {
+      fill: "transparent"
+      stroke: "transparent"
+      font-size: 8
+      font-color: "transparent"
+    }
+    n4: "4" {
+      shape: circle
+      width: 28
+      height: 28
+      style: {
+        fill: "#111827"
+        stroke: "#111827"
+        font-color: "#FFFFFF"
+        font-size: 12
+        bold: true
+      }
+    }
+    t4: "External payment\nCheckout calls payment provider" {
+      width: 260
+      height: 52
+      style: {
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 12
+        font-color: "#111827"
+      }
+    }
+  }
+  row_5: " " {
+    grid-columns: 2
+    grid-gap: 10
+    style: {
+      fill: "transparent"
+      stroke: "transparent"
+      font-size: 8
+      font-color: "transparent"
+    }
+    n5: "5" {
+      shape: circle
+      width: 28
+      height: 28
+      style: {
+        fill: "#111827"
+        stroke: "#111827"
+        font-color: "#FFFFFF"
+        font-size: 12
+        bold: true
+      }
+    }
+    t5: "Persist data\nApp Tier uses Aurora / Redis / S3" {
+      width: 260
+      height: 52
+      style: {
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 12
+        font-color: "#111827"
+      }
+    }
+  }
+  row_6: " " {
+    grid-columns: 2
+    grid-gap: 10
+    style: {
+      fill: "transparent"
+      stroke: "transparent"
+      font-size: 8
+      font-color: "transparent"
+    }
+    n6: "6" {
+      shape: circle
+      width: 28
+      height: 28
+      style: {
+        fill: "#111827"
+        stroke: "#111827"
+        font-color: "#FFFFFF"
+        font-size: 12
+        bold: true
+      }
+    }
+    t6: "Async events\nCheckout publishes to MSK Kafka" {
+      width: 260
+      height: 52
+      style: {
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 12
+        font-color: "#111827"
+      }
+    }
+  }
+  row_7: " " {
+    grid-columns: 2
+    grid-gap: 10
+    style: {
+      fill: "transparent"
+      stroke: "transparent"
+      font-size: 8
+      font-color: "transparent"
+    }
+    n7: "7" {
+      shape: circle
+      width: 28
+      height: 28
+      style: {
+        fill: "#111827"
+        stroke: "#111827"
+        font-color: "#FFFFFF"
+        font-size: 12
+        bold: true
+      }
+    }
+    t7: "Cross-region replica\nAurora replicates to us-west-2" {
+      width: 260
+      height: 52
+      style: {
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 12
+        font-color: "#111827"
+      }
+    }
+  }
+}
+
+
+
+legend: Legend {
+  near: bottom-left
+  style: {
+    fill: "#F8FAFC"
+    stroke: "#E5E7EB"
+    border-radius: 6
     font-color: "#6B7280"
-    font-size: 16
+    font-size: 12
   }
   leg_0: "Sync / request" {
   shape: rectangle
+  width: 120
+  height: 36
   style: {
     fill: "#FFFFFF"
     stroke: "#1F2937"
     stroke-width: 2
-    border-radius: 6
-    font-size: 16
+    border-radius: 4
+    font-size: 12
     font-color: "#111827"
   }
 }
-  leg_1: "Async / event" {
+  leg_1: "Async / replica" {
   shape: rectangle
+  width: 120
+  height: 36
   style: {
     fill: "#FFFFFF"
     stroke: "#7C3AED"
     stroke-width: 2
-    border-radius: 6
-    font-size: 16
+    border-radius: 4
+    font-size: 12
     font-color: "#111827"
     stroke-dash: 3
   }
 }
   leg_2: "Data path" {
   shape: rectangle
+  width: 120
+  height: 36
   style: {
     fill: "#FFFFFF"
     stroke: "#059669"
     stroke-width: 2
-    border-radius: 6
-    font-size: 16
+    border-radius: 4
+    font-size: 12
     font-color: "#111827"
   }
 }

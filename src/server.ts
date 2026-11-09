@@ -44,13 +44,18 @@ function formatResult(result: RenderResult) {
 }
 
 async function runCompiled(
-  compiled: { engine: "d2" | "mermaid" | "dot"; source: string },
+  compiled: {
+    engine: "d2" | "mermaid" | "dot";
+    source: string;
+    layout?: "tala" | "elk" | "dagre";
+  },
   meta: {
     theme?: string;
     name?: string;
     includePreview?: boolean;
     outputDir?: string;
     title?: string;
+    layout?: "tala" | "elk" | "dagre";
   },
 ) {
   const result = await renderPipeline({
@@ -60,6 +65,7 @@ async function runCompiled(
     name: meta.name ?? meta.title,
     includePreview: meta.includePreview,
     outputDir: meta.outputDir,
+    layout: meta.layout ?? compiled.layout,
   });
   return formatResult(result);
 }

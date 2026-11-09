@@ -1,6 +1,6 @@
 vars: {
   d2-config: {
-    layout-engine: dagre
+    layout-engine: tala
     theme-id: 0
     pad: 64
   }
@@ -17,943 +17,1103 @@ direction: right
 
 
 title: |md
-  # E-Commerce on Kubernetes — Dual Region
-  Ingress · namespaces · Istio mesh · managed DBs · observability
+  # Guidance for Dual-Region Kubernetes
+  Global edge · us-east-1 primary · us-west-2 standby · observability
 | {
-  near: top-center
+  near: top-left
   style: {
-    fill: "#F8FAFC"
-    stroke: "#E5E7EB"
-    border-radius: 10
+    fill: "transparent"
+    stroke: "transparent"
     font-color: "#111827"
   }
 }
 
 
-board: " " {
-  grid-columns: 2
-  grid-gap: 40
+clients: "Clients" {
   style: {
-    fill: "transparent"
-    stroke: "transparent"
-    font-size: 8
-    font-color: "transparent"
+    fill: "#F5F3FF"
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+    border-radius: 4
+    font-size: 14
+    bold: true
+    font-color: "#111827"
   }
-  global: "Global Edge" {
-    
+  cells: " " {
+    grid-rows: 2
     style: {
-      fill: "#F5F3FF"
-      stroke: "#7C3AED"
-      stroke-width: 2
-      border-radius: 12
-      font-size: 20
-      bold: true
-      font-color: "#111827"
+      fill: "transparent"
+      stroke: "transparent"
+      font-size: 8
+      font-color: "transparent"
     }
-    cf: "CloudFront + WAF" {
+    users: "Users" {
+      shape: person
+      width: 140
+      height: 110
+      style: {
+        fill: "#FFFFFF"
+        stroke: "#E5E7EB"
+        stroke-width: 1
+        border-radius: 6
+        shadow: false
+        font-size: 13
+        font-color: "#111827"
+      }
+    }
+    web: "Web / Mobile" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/react.svg"
+      width: 140
+      height: 110
+      style: {
+        fill: "#FFFFFF"
+        stroke: "#E5E7EB"
+        stroke-width: 1
+        border-radius: 6
+        shadow: false
+        font-size: 13
+        font-color: "#111827"
+      }
+    }
+  }
+}
+
+global: "Global Edge" {
+  style: {
+    fill: "#F5F3FF"
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+    border-radius: 4
+    font-size: 14
+    bold: true
+    font-color: "#111827"
+  }
+  cells: " " {
+    grid-rows: 3
+    style: {
+      fill: "transparent"
+      stroke: "transparent"
+      font-size: 8
+      font-color: "transparent"
+    }
+    cf: "CloudFront" {
       shape: rectangle
       icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/cloudflare.svg"
+      width: 140
+      height: 110
       style: {
-        fill: "#F0F9FF"
+        fill: "#FFFFFF"
         stroke: "#0284C7"
-        stroke-width: 2
-        border-radius: 8
-        shadow: true
-        font-size: 22
+        stroke-width: 1
+        border-radius: 6
+        shadow: false
+        font-size: 13
         font-color: "#111827"
       }
     }
-    r53: "Route 53\nlatency / failover" {
+    r53: "Route 53" {
       shape: rectangle
       icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/aws.svg"
+      width: 140
+      height: 110
       style: {
-        fill: "#F0F9FF"
+        fill: "#FFFFFF"
         stroke: "#0284C7"
-        stroke-width: 2
-        border-radius: 8
-        shadow: true
-        font-size: 22
+        stroke-width: 1
+        border-radius: 6
+        shadow: false
+        font-size: 13
+        font-color: "#111827"
+      }
+    }
+    waf: "WAF" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/aws.svg"
+      width: 140
+      height: 110
+      style: {
+        fill: "#FFFFFF"
+        stroke: "#DC2626"
+        stroke-width: 1
+        border-radius: 6
+        shadow: false
+        font-size: 13
         font-color: "#111827"
       }
     }
   }
+}
 
-  east: "Region us-east-1" {
-    
+east: "Region us-east-1 (Primary)" {
+  style: {
+    fill: "#F5F3FF"
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+    border-radius: 4
+    font-size: 14
+    bold: true
+    font-color: "#111827"
+  }
+  east_ing: "Ingress" {
     style: {
-      fill: "#F5F3FF"
-      stroke: "#7C3AED"
+      fill: "#EFF6FF"
+      stroke: "#2563EB"
+      stroke-dash: 4
       stroke-width: 2
-      border-radius: 12
-      font-size: 20
+      border-radius: 4
+      font-size: 14
       bold: true
       font-color: "#111827"
     }
-    east_ing: "Ingress" {
-      grid-columns: 2
+    cells: " " {
+      grid-columns: 3
       style: {
-        fill: "#EFF6FF"
-        stroke: "#2563EB"
-        stroke-width: 2
-        border-radius: 12
-        font-size: 20
-        bold: true
-        font-color: "#111827"
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 8
+        font-color: "transparent"
       }
       alb_e: "ALB" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/apigateway.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#FFF7ED"
+          fill: "#FFFFFF"
           stroke: "#EA580C"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
-      ing_e: "Ingress NGINX" {
+      ing_e: "Ingress" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/nginx.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#FFF7ED"
+          fill: "#FFFFFF"
           stroke: "#EA580C"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
-      istio_e: "Istio IngressGW" {
+      istio_e: "Istio GW" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/istio.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#F0F9FF"
+          fill: "#FFFFFF"
           stroke: "#0284C7"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
     }
-    east_shop: "ns: shopping" {
+  }
+
+  east_shop: "ns: shopping" {
+    style: {
+      fill: "#EFF6FF"
+      stroke: "#2563EB"
+      stroke-dash: 4
+      stroke-width: 2
+      border-radius: 4
+      font-size: 14
+      bold: true
+      font-color: "#111827"
+    }
+    cells: " " {
       grid-columns: 4
       style: {
-        fill: "#EFF6FF"
-        stroke: "#2563EB"
-        stroke-width: 2
-        border-radius: 12
-        font-size: 20
-        bold: true
-        font-color: "#111827"
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 8
+        font-color: "transparent"
       }
       gw_e: "API Gateway" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/apigateway.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#FFF7ED"
+          fill: "#FFFFFF"
           stroke: "#EA580C"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
       order_e: "order" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/go.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#EFF6FF"
+          fill: "#FFFFFF"
           stroke: "#2563EB"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
       cart_e: "cart" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/go.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#EFF6FF"
+          fill: "#FFFFFF"
           stroke: "#2563EB"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
       catalog_e: "catalog" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/go.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#EFF6FF"
+          fill: "#FFFFFF"
           stroke: "#2563EB"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
       pay_e: "payment" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/typescript.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#EFF6FF"
+          fill: "#FFFFFF"
           stroke: "#2563EB"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
       inv_e: "inventory" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/go.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#EFF6FF"
+          fill: "#FFFFFF"
           stroke: "#2563EB"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
-          font-color: "#111827"
-        }
-      }
-      ship_e: "shipping" {
-        shape: rectangle
-        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/python.svg"
-        style: {
-          fill: "#EFF6FF"
-          stroke: "#2563EB"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
-          font-color: "#111827"
-        }
-      }
-      ntf_e: "notification" {
-        shape: rectangle
-        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/nodejs.svg"
-        style: {
-          fill: "#EFF6FF"
-          stroke: "#2563EB"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
-          font-color: "#111827"
-        }
-      }
-      search_e: "search" {
-        shape: rectangle
-        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/python.svg"
-        style: {
-          fill: "#EFF6FF"
-          stroke: "#2563EB"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
-          font-color: "#111827"
-        }
-      }
-      rec_e: "recommendation" {
-        shape: rectangle
-        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/python.svg"
-        style: {
-          fill: "#EFF6FF"
-          stroke: "#2563EB"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
     }
-    east_plat: "ns: platform" {
-      grid-columns: 2
+  }
+
+  east_plat: "ns: platform" {
+    style: {
+      fill: "#EFF6FF"
+      stroke: "#2563EB"
+      stroke-dash: 4
+      stroke-width: 2
+      border-radius: 4
+      font-size: 14
+      bold: true
+      font-color: "#111827"
+    }
+    cells: " " {
+      grid-columns: 3
       style: {
-        fill: "#EFF6FF"
-        stroke: "#2563EB"
-        stroke-width: 2
-        border-radius: 12
-        font-size: 20
-        bold: true
-        font-color: "#111827"
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 8
+        font-color: "transparent"
       }
       auth_e: "auth" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/auth0.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#FEF2F2"
+          fill: "#FFFFFF"
           stroke: "#DC2626"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
-      mesh_e: "Istio Mesh\nmTLS · retries" {
+      mesh_e: "Istio Mesh" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/istio.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#F0F9FF"
+          fill: "#FFFFFF"
           stroke: "#0284C7"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
       kafka_e: "MSK Kafka" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/kafka.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#F5F3FF"
+          fill: "#FFFFFF"
           stroke: "#7C3AED"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
     }
-    east_data: "Managed Data (east)" {
+  }
+
+  east_data: "Managed Data" {
+    style: {
+      fill: "#EFF6FF"
+      stroke: "#2563EB"
+      stroke-dash: 4
+      stroke-width: 2
+      border-radius: 4
+      font-size: 14
+      bold: true
+      font-color: "#111827"
+    }
+    cells: " " {
       grid-columns: 3
       style: {
-        fill: "#EFF6FF"
-        stroke: "#2563EB"
-        stroke-width: 2
-        border-radius: 12
-        font-size: 20
-        bold: true
-        font-color: "#111827"
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 8
+        font-color: "transparent"
       }
-      aurora_e: "Aurora PG\norders · users" {
+      aurora_e: "Aurora PG" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/postgresql.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#ECFDF5"
+          fill: "#FFFFFF"
           stroke: "#059669"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
-          font-color: "#111827"
-        }
-      }
-      mysql_e: "RDS MySQL\ninventory" {
-        shape: rectangle
-        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/mysql.svg"
-        style: {
-          fill: "#ECFDF5"
-          stroke: "#059669"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
       redis_e: "ElastiCache" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/redis.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#ECFDF5"
+          fill: "#FFFFFF"
           stroke: "#059669"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
-          font-color: "#111827"
-        }
-      }
-      es_e: "OpenSearch" {
-        shape: rectangle
-        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/elasticsearch.svg"
-        style: {
-          fill: "#ECFDF5"
-          stroke: "#059669"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
       s3_e: "S3" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/s3.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#FFFBEB"
+          fill: "#FFFFFF"
           stroke: "#D97706"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
+          font-color: "#111827"
+        }
+      }
+    }
+  }
+}
+
+west: "Region us-west-2 (Standby)" {
+  style: {
+    fill: "#F5F3FF"
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+    border-radius: 4
+    font-size: 14
+    bold: true
+    font-color: "#111827"
+  }
+  west_ing: "Ingress" {
+    style: {
+      fill: "#EFF6FF"
+      stroke: "#2563EB"
+      stroke-dash: 4
+      stroke-width: 2
+      border-radius: 4
+      font-size: 14
+      bold: true
+      font-color: "#111827"
+    }
+    cells: " " {
+      grid-columns: 2
+      style: {
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 8
+        font-color: "transparent"
+      }
+      alb_w: "ALB" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/apigateway.svg"
+        width: 140
+        height: 110
+        style: {
+          fill: "#FFFFFF"
+          stroke: "#EA580C"
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
+          font-color: "#111827"
+        }
+      }
+      ing_w: "Ingress" {
+        shape: rectangle
+        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/nginx.svg"
+        width: 140
+        height: 110
+        style: {
+          fill: "#FFFFFF"
+          stroke: "#EA580C"
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
     }
   }
 
-  west: "Region us-west-2" {
-    
+  west_shop: "ns: shopping" {
     style: {
-      fill: "#F5F3FF"
-      stroke: "#7C3AED"
+      fill: "#EFF6FF"
+      stroke: "#2563EB"
+      stroke-dash: 4
       stroke-width: 2
-      border-radius: 12
-      font-size: 20
+      border-radius: 4
+      font-size: 14
       bold: true
       font-color: "#111827"
     }
-    west_ing: "Ingress" {
-      
+    cells: " " {
+      grid-columns: 3
       style: {
-        fill: "#EFF6FF"
-        stroke: "#2563EB"
-        stroke-width: 2
-        border-radius: 12
-        font-size: 20
-        bold: true
-        font-color: "#111827"
-      }
-      alb_w: "ALB" {
-        shape: rectangle
-        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/apigateway.svg"
-        style: {
-          fill: "#FFF7ED"
-          stroke: "#EA580C"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
-          font-color: "#111827"
-        }
-      }
-      ing_w: "Ingress NGINX" {
-        shape: rectangle
-        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/nginx.svg"
-        style: {
-          fill: "#FFF7ED"
-          stroke: "#EA580C"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
-          font-color: "#111827"
-        }
-      }
-    }
-    west_shop: "ns: shopping" {
-      grid-columns: 2
-      style: {
-        fill: "#EFF6FF"
-        stroke: "#2563EB"
-        stroke-width: 2
-        border-radius: 12
-        font-size: 20
-        bold: true
-        font-color: "#111827"
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 8
+        font-color: "transparent"
       }
       order_w: "order" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/kubernetes.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#EFF6FF"
+          fill: "#FFFFFF"
           stroke: "#2563EB"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
       cart_w: "cart" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/kubernetes.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#EFF6FF"
+          fill: "#FFFFFF"
           stroke: "#2563EB"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
       catalog_w: "catalog" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/kubernetes.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#EFF6FF"
+          fill: "#FFFFFF"
           stroke: "#2563EB"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
-          font-color: "#111827"
-        }
-      }
-      pay_w: "payment" {
-        shape: rectangle
-        icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/kubernetes.svg"
-        style: {
-          fill: "#EFF6FF"
-          stroke: "#2563EB"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
     }
-    west_data: "Managed Data (west)" {
-      
+  }
+
+  west_data: "Managed Data" {
+    style: {
+      fill: "#EFF6FF"
+      stroke: "#2563EB"
+      stroke-dash: 4
+      stroke-width: 2
+      border-radius: 4
+      font-size: 14
+      bold: true
+      font-color: "#111827"
+    }
+    cells: " " {
+      grid-columns: 2
       style: {
-        fill: "#EFF6FF"
-        stroke: "#2563EB"
-        stroke-width: 2
-        border-radius: 12
-        font-size: 20
-        bold: true
-        font-color: "#111827"
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 8
+        font-color: "transparent"
       }
       aurora_w: "Aurora replica" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/postgresql.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#ECFDF5"
+          fill: "#FFFFFF"
           stroke: "#059669"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
       redis_w: "Redis replica" {
         shape: rectangle
         icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/redis.svg"
+        width: 140
+        height: 110
         style: {
-          fill: "#ECFDF5"
+          fill: "#FFFFFF"
           stroke: "#059669"
-          stroke-width: 2
-          border-radius: 8
-          shadow: true
-          font-size: 22
+          stroke-width: 1
+          border-radius: 6
+          shadow: false
+          font-size: 13
           font-color: "#111827"
         }
       }
     }
   }
+}
 
-  obs: "Observability Stack" {
+obs: "Observability" {
+  style: {
+    fill: "#F5F3FF"
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+    border-radius: 4
+    font-size: 14
+    bold: true
+    font-color: "#111827"
+  }
+  cells: " " {
     grid-columns: 3
     style: {
-      fill: "#F5F3FF"
-      stroke: "#7C3AED"
-      stroke-width: 2
-      border-radius: 12
-      font-size: 20
-      bold: true
-      font-color: "#111827"
+      fill: "transparent"
+      stroke: "transparent"
+      font-size: 8
+      font-color: "transparent"
+    }
+    otel: "OTel" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/opentelemetry.svg"
+      width: 140
+      height: 110
+      style: {
+        fill: "#FFFFFF"
+        stroke: "#DB2777"
+        stroke-width: 1
+        border-radius: 6
+        shadow: false
+        font-size: 13
+        font-color: "#111827"
+      }
     }
     prom: "Prometheus" {
       shape: rectangle
       icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/prometheus.svg"
+      width: 140
+      height: 110
       style: {
-        fill: "#FDF2F8"
+        fill: "#FFFFFF"
         stroke: "#DB2777"
-        stroke-width: 2
-        border-radius: 8
-        shadow: true
-        font-size: 22
+        stroke-width: 1
+        border-radius: 6
+        shadow: false
+        font-size: 13
         font-color: "#111827"
       }
     }
     graf: "Grafana" {
       shape: rectangle
       icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/grafana.svg"
+      width: 140
+      height: 110
       style: {
-        fill: "#FDF2F8"
+        fill: "#FFFFFF"
         stroke: "#DB2777"
-        stroke-width: 2
-        border-radius: 8
-        shadow: true
-        font-size: 22
-        font-color: "#111827"
-      }
-    }
-    loki: "Loki\nlogs" {
-      shape: rectangle
-      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/grafana.svg"
-      style: {
-        fill: "#FDF2F8"
-        stroke: "#DB2777"
-        stroke-width: 2
-        border-radius: 8
-        shadow: true
-        font-size: 22
-        font-color: "#111827"
-      }
-    }
-    tempo: "Tempo\ntraces" {
-      shape: rectangle
-      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/jaeger.svg"
-      style: {
-        fill: "#FDF2F8"
-        stroke: "#DB2777"
-        stroke-width: 2
-        border-radius: 8
-        shadow: true
-        font-size: 22
-        font-color: "#111827"
-      }
-    }
-    otel: "OTel Collector" {
-      shape: rectangle
-      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/opentelemetry.svg"
-      style: {
-        fill: "#FDF2F8"
-        stroke: "#DB2777"
-        stroke-width: 2
-        border-radius: 8
-        shadow: true
-        font-size: 22
+        stroke-width: 1
+        border-radius: 6
+        shadow: false
+        font-size: 13
         font-color: "#111827"
       }
     }
   }
 }
 
-users: "Clients\nWeb · Mobile · Admin" {
-  shape: person
-  style: {
-    fill: "#F9FAFB"
-    stroke: "#9CA3AF"
-    stroke-width: 2
-    border-radius: 8
-    shadow: true
-    font-size: 22
-    font-color: "#111827"
-  }
-}
 
-users -> board.global.cf: "HTTPS" {
+
+clients -> global: "1" {
   style: {
     stroke: "#1F2937"
     stroke-width: 2
   }
 }
-board.global.cf -> board.global.r53 {
+global.cells.cf -> global.cells.waf {
   style: {
     stroke: "#1F2937"
     stroke-width: 2
   }
 }
-board.global.r53 -> board.east.east_ing.alb_e: "primary" {
+global -> east: "2 · primary" {
   style: {
     stroke: "#1F2937"
     stroke-width: 2
   }
 }
-board.global.r53 -> board.west.west_ing.alb_w: "failover" {
+global -> west: "failover" {
   style: {
     stroke: "#1F2937"
     stroke-width: 2
   }
 }
-board.east.east_ing.alb_e -> board.east.east_ing.ing_e {
+east.east_ing -> east.east_shop: "3" {
   style: {
     stroke: "#1F2937"
     stroke-width: 2
   }
 }
-board.east.east_ing.ing_e -> board.east.east_ing.istio_e {
+east.east_plat.cells.auth_e -> east.east_shop.cells.gw_e: "JWT" {
   style: {
     stroke: "#1F2937"
     stroke-width: 2
   }
 }
-board.east.east_ing.istio_e -> board.east.east_shop.gw_e {
+east.east_shop.cells.order_e -> east.east_shop.cells.pay_e {
   style: {
     stroke: "#1F2937"
     stroke-width: 2
   }
 }
-board.east.east_shop.gw_e -> board.east.east_shop.order_e {
+east.east_shop.cells.order_e -> east.east_shop.cells.inv_e {
   style: {
     stroke: "#1F2937"
     stroke-width: 2
   }
 }
-board.east.east_shop.gw_e -> board.east.east_shop.cart_e {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.east.east_shop.gw_e -> board.east.east_shop.catalog_e {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.east.east_shop.gw_e -> board.east.east_shop.search_e {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.east.east_shop.order_e -> board.east.east_shop.inv_e {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.east.east_shop.order_e -> board.east.east_shop.pay_e {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.east.east_plat.mesh_e -> board.east.east_shop.order_e: "mTLS" {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.east.east_plat.auth_e -> board.east.east_shop.gw_e: "JWT" {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.east.east_shop.order_e -> board.east.east_data.aurora_e {
+east.east_shop -> east.east_data: "4" {
   style: {
     stroke: "#059669"
-    stroke-width: 3
+    stroke-width: 2
   }
 }
-board.east.east_shop.cart_e -> board.east.east_data.redis_e {
-  style: {
-    stroke: "#059669"
-    stroke-width: 3
-  }
-}
-board.east.east_shop.catalog_e -> board.east.east_data.s3_e {
-  style: {
-    stroke: "#059669"
-    stroke-width: 3
-  }
-}
-board.east.east_shop.inv_e -> board.east.east_data.mysql_e {
-  style: {
-    stroke: "#059669"
-    stroke-width: 3
-  }
-}
-board.east.east_shop.search_e -> board.east.east_data.es_e {
-  style: {
-    stroke: "#059669"
-    stroke-width: 3
-  }
-}
-board.east.east_shop.order_e -> board.east.east_plat.kafka_e: "OrderPlaced" {
+east.east_shop -> east.east_plat.cells.kafka_e: "5" {
   style: {
     stroke: "#7C3AED"
     stroke-dash: 4
     stroke-width: 2
   }
 }
-board.east.east_plat.kafka_e -> board.east.east_shop.ship_e {
+west.west_ing -> west.west_shop {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+east.east_data.cells.aurora_e -> west.west_data.cells.aurora_w: "6 · replica" {
   style: {
     stroke: "#7C3AED"
     stroke-dash: 4
     stroke-width: 2
   }
 }
-board.east.east_plat.kafka_e -> board.east.east_shop.ntf_e {
+east.east_data.cells.redis_e -> west.west_data.cells.redis_w {
   style: {
     stroke: "#7C3AED"
     stroke-dash: 4
     stroke-width: 2
   }
 }
-board.east.east_plat.kafka_e -> board.east.east_shop.rec_e {
+east -> obs: "7" {
   style: {
     stroke: "#7C3AED"
     stroke-dash: 4
     stroke-width: 2
   }
 }
-board.west.west_ing.alb_w -> board.west.west_ing.ing_w {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.west.west_ing.ing_w -> board.west.west_shop.order_w {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.west.west_ing.ing_w -> board.west.west_shop.cart_w {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.west.west_ing.ing_w -> board.west.west_shop.catalog_w {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.west.west_ing.ing_w -> board.west.west_shop.pay_w {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.east.east_data.aurora_e -> board.west.west_data.aurora_w: "async replica" {
-  style: {
-    stroke: "#7C3AED"
-    stroke-dash: 4
-    stroke-width: 2
-  }
-}
-board.east.east_data.redis_e -> board.west.west_data.redis_w {
-  style: {
-    stroke: "#7C3AED"
-    stroke-dash: 4
-    stroke-width: 2
-  }
-}
-board.obs.otel -> board.obs.prom {
+obs.cells.otel -> obs.cells.prom {
   style: {
     stroke: "#059669"
-    stroke-width: 3
-  }
-}
-board.obs.otel -> board.obs.tempo {
-  style: {
-    stroke: "#059669"
-    stroke-width: 3
-  }
-}
-board.obs.otel -> board.obs.loki {
-  style: {
-    stroke: "#059669"
-    stroke-width: 3
-  }
-}
-board.obs.prom -> board.obs.graf {
-  style: {
-    stroke: "#1F2937"
     stroke-width: 2
   }
 }
-board.obs.loki -> board.obs.graf {
+obs.cells.prom -> obs.cells.graf {
   style: {
     stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.obs.tempo -> board.obs.graf {
-  style: {
-    stroke: "#1F2937"
-    stroke-width: 2
-  }
-}
-board.east.east_shop.order_e -> board.obs.otel: "traces" {
-  style: {
-    stroke: "#7C3AED"
-    stroke-dash: 4
     stroke-width: 2
   }
 }
 
 
-legend: Legend {
-  near: bottom-center
+
+
+guide: "Architecture steps" {
+  near: center-right
+  grid-rows: 7
+  grid-gap: 10
   style: {
     fill: "#F8FAFC"
     stroke: "#E5E7EB"
-    border-radius: 10
+    border-radius: 8
+    font-size: 14
+    bold: true
+    font-color: "#111827"
+  }
+  row_1: " " {
+    grid-columns: 2
+    grid-gap: 10
+    style: {
+      fill: "transparent"
+      stroke: "transparent"
+      font-size: 8
+      font-color: "transparent"
+    }
+    n1: "1" {
+      shape: circle
+      width: 28
+      height: 28
+      style: {
+        fill: "#111827"
+        stroke: "#111827"
+        font-color: "#FFFFFF"
+        font-size: 12
+        bold: true
+      }
+    }
+    t1: "Clients → global edge\nUsers hit CloudFront / WAF / Route 53" {
+      width: 260
+      height: 52
+      style: {
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 12
+        font-color: "#111827"
+      }
+    }
+  }
+  row_2: " " {
+    grid-columns: 2
+    grid-gap: 10
+    style: {
+      fill: "transparent"
+      stroke: "transparent"
+      font-size: 8
+      font-color: "transparent"
+    }
+    n2: "2" {
+      shape: circle
+      width: 28
+      height: 28
+      style: {
+        fill: "#111827"
+        stroke: "#111827"
+        font-color: "#FFFFFF"
+        font-size: 12
+        bold: true
+      }
+    }
+    t2: "DNS to primary region\nRoute 53 latency-routes to us-east-1 (failover west)" {
+      width: 260
+      height: 52
+      style: {
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 12
+        font-color: "#111827"
+      }
+    }
+  }
+  row_3: " " {
+    grid-columns: 2
+    grid-gap: 10
+    style: {
+      fill: "transparent"
+      stroke: "transparent"
+      font-size: 8
+      font-color: "transparent"
+    }
+    n3: "3" {
+      shape: circle
+      width: 28
+      height: 28
+      style: {
+        fill: "#111827"
+        stroke: "#111827"
+        font-color: "#FFFFFF"
+        font-size: 12
+        bold: true
+      }
+    }
+    t3: "Ingress to workloads\nALB → Ingress → Istio → shopping namespace" {
+      width: 260
+      height: 52
+      style: {
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 12
+        font-color: "#111827"
+      }
+    }
+  }
+  row_4: " " {
+    grid-columns: 2
+    grid-gap: 10
+    style: {
+      fill: "transparent"
+      stroke: "transparent"
+      font-size: 8
+      font-color: "transparent"
+    }
+    n4: "4" {
+      shape: circle
+      width: 28
+      height: 28
+      style: {
+        fill: "#111827"
+        stroke: "#111827"
+        font-color: "#FFFFFF"
+        font-size: 12
+        bold: true
+      }
+    }
+    t4: "Managed data\nServices persist to Aurora / Redis / S3" {
+      width: 260
+      height: 52
+      style: {
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 12
+        font-color: "#111827"
+      }
+    }
+  }
+  row_5: " " {
+    grid-columns: 2
+    grid-gap: 10
+    style: {
+      fill: "transparent"
+      stroke: "transparent"
+      font-size: 8
+      font-color: "transparent"
+    }
+    n5: "5" {
+      shape: circle
+      width: 28
+      height: 28
+      style: {
+        fill: "#111827"
+        stroke: "#111827"
+        font-color: "#FFFFFF"
+        font-size: 12
+        bold: true
+      }
+    }
+    t5: "Async platform\nOrder events publish to MSK Kafka" {
+      width: 260
+      height: 52
+      style: {
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 12
+        font-color: "#111827"
+      }
+    }
+  }
+  row_6: " " {
+    grid-columns: 2
+    grid-gap: 10
+    style: {
+      fill: "transparent"
+      stroke: "transparent"
+      font-size: 8
+      font-color: "transparent"
+    }
+    n6: "6" {
+      shape: circle
+      width: 28
+      height: 28
+      style: {
+        fill: "#111827"
+        stroke: "#111827"
+        font-color: "#FFFFFF"
+        font-size: 12
+        bold: true
+      }
+    }
+    t6: "Cross-region replica\nAurora / Redis async replicate to us-west-2" {
+      width: 260
+      height: 52
+      style: {
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 12
+        font-color: "#111827"
+      }
+    }
+  }
+  row_7: " " {
+    grid-columns: 2
+    grid-gap: 10
+    style: {
+      fill: "transparent"
+      stroke: "transparent"
+      font-size: 8
+      font-color: "transparent"
+    }
+    n7: "7" {
+      shape: circle
+      width: 28
+      height: 28
+      style: {
+        fill: "#111827"
+        stroke: "#111827"
+        font-color: "#FFFFFF"
+        font-size: 12
+        bold: true
+      }
+    }
+    t7: "Observability\nOTel → Prometheus → Grafana" {
+      width: 260
+      height: 52
+      style: {
+        fill: "transparent"
+        stroke: "transparent"
+        font-size: 12
+        font-color: "#111827"
+      }
+    }
+  }
+}
+
+
+
+legend: Legend {
+  near: bottom-left
+  style: {
+    fill: "#F8FAFC"
+    stroke: "#E5E7EB"
+    border-radius: 6
     font-color: "#6B7280"
-    font-size: 16
+    font-size: 12
   }
   leg_0: "Sync traffic" {
   shape: rectangle
+  width: 120
+  height: 36
   style: {
     fill: "#FFFFFF"
     stroke: "#1F2937"
     stroke-width: 2
-    border-radius: 6
-    font-size: 16
+    border-radius: 4
+    font-size: 12
     font-color: "#111827"
   }
 }
-  leg_1: "Async / replica / events" {
+  leg_1: "Async / replica" {
   shape: rectangle
+  width: 120
+  height: 36
   style: {
     fill: "#FFFFFF"
     stroke: "#7C3AED"
     stroke-width: 2
-    border-radius: 6
-    font-size: 16
+    border-radius: 4
+    font-size: 12
     font-color: "#111827"
     stroke-dash: 3
   }
 }
   leg_2: "Data path" {
   shape: rectangle
+  width: 120
+  height: 36
   style: {
     fill: "#FFFFFF"
     stroke: "#059669"
     stroke-width: 2
-    border-radius: 6
-    font-size: 16
-    font-color: "#111827"
-  }
-}
-  leg_3: "Workload" {
-  shape: rectangle
-  style: {
-    fill: "#EFF6FF"
-    stroke: "#2563EB"
-    border-radius: 6
-    font-size: 16
-    font-color: "#111827"
-  }
-}
-  leg_4: "Observability" {
-  shape: rectangle
-  style: {
-    fill: "#FDF2F8"
-    stroke: "#DB2777"
-    border-radius: 6
-    font-size: 16
+    border-radius: 4
+    font-size: 12
     font-color: "#111827"
   }
 }

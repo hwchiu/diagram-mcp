@@ -111,7 +111,8 @@ export async function renderPipeline(input: PipelineInput): Promise<RenderResult
       source: input.source,
       outSvg: svgPath,
       theme,
-      layout: input.layout ?? "dagre",
+      // Prefer TALA for orthogonal AWS-style architecture posters
+      layout: input.layout ?? "tala",
     });
     await postprocessSvg(svgPath, theme);
     dims = await svgToPng(svgPath, pngPath, 2);
