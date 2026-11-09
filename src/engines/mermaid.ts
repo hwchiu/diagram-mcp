@@ -60,17 +60,21 @@ export async function renderMermaid(
   outSvg: string,
   theme: ThemePalette,
   outPng?: string,
+  scale = 2,
 ): Promise<string> {
   await fs.mkdir(path.dirname(outSvg), { recursive: true });
   const srcPath = outSvg.replace(/\.svg$/i, ".mmd");
   const cfgPath = outSvg.replace(/\.svg$/i, ".mermaid.json");
+  // Sequence diagrams benefit from larger scale for poster crispness
+  const isSequence = /^\s*sequenceDiagram/m.test(source) || source.includes("sequenceDiagram");
+  const pngScale = isSequence ? Math.max(scale, 3) : scale;
   await fs.writeFile(srcPath, source, "utf8");
   await fs.writeFile(cfgPath, JSON.stringify(mermaidThemeConfig(theme), null, 2), "utf8");
 
   // SVG (for editing / archival)
   await run(MMDC, ["-i", srcPath, "-o", outSvg, "-c", cfgPath, "-b", theme.canvas, "--quiet"]);
 
-  // PNG via Puppeteer so labels render correctly (scale 2 for retina)
+  // PNG via Puppeteer so labels render correctly (scale 2+ for retina)
   if (outPng) {
     await run(MMDC, [
       "-i",
@@ -82,7 +86,7 @@ export async function renderMermaid(
       "-b",
       theme.canvas,
       "-s",
-      "2",
+      String(pngScale),
       "--quiet",
     ]);
   }

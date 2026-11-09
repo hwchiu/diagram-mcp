@@ -1,0 +1,958 @@
+vars: {
+  d2-config: {
+    layout-engine: elk
+    theme-id: 0
+    pad: 64
+  }
+  ink: "#111827"
+  muted: "#6B7280"
+  accent: "#1D4ED8"
+  canvas: "#FFFFFF"
+  card: "#FFFFFF"
+  border: "#E5E7EB"
+}
+
+# Canvas fill via a full-bleed background shape is handled in post-process.
+direction: right
+
+
+title: |md
+  # E-Commerce Platform — End-to-End Architecture
+  Clients · Edge · BFFs · Domain services · Data · Kafka · Externals
+| {
+  near: top-center
+  style: {
+    fill: "#F8FAFC"
+    stroke: "#E5E7EB"
+    border-radius: 10
+    font-color: "#111827"
+  }
+}
+
+
+board: " " {
+  grid-columns: 3
+  grid-gap: 56
+  style: {
+    fill: "transparent"
+    stroke: "transparent"
+    font-size: 8
+    font-color: "transparent"
+  }
+  clients: "Clients" {
+    grid-columns: 3
+    style: {
+      fill: "#F5F3FF"
+      stroke: "#7C3AED"
+      stroke-width: 2
+      border-radius: 12
+      font-size: 15
+      bold: true
+      font-color: "#111827"
+    }
+    web: "Web SPA\nReact · Next.js" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/react.svg"
+      style: {
+        fill: "#F9FAFB"
+        stroke: "#9CA3AF"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    mobile: "Mobile App\niOS / Android" {
+      shape: person
+      style: {
+        fill: "#F9FAFB"
+        stroke: "#9CA3AF"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    admin: "Admin Portal\nInternal ops" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/nextjs.svg"
+      style: {
+        fill: "#F9FAFB"
+        stroke: "#9CA3AF"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+  }
+
+  edge: "Edge" {
+    
+    style: {
+      fill: "#F5F3FF"
+      stroke: "#7C3AED"
+      stroke-width: 2
+      border-radius: 12
+      font-size: 15
+      bold: true
+      font-color: "#111827"
+    }
+    cdn: "CDN\nCloudflare" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/cloudflare.svg"
+      style: {
+        fill: "#F0F9FF"
+        stroke: "#0284C7"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    waf: "WAF\nedge rules" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/aws.svg"
+      style: {
+        fill: "#FEF2F2"
+        stroke: "#DC2626"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+  }
+
+  bff: "API Gateway & BFFs" {
+    grid-columns: 4
+    style: {
+      fill: "#F5F3FF"
+      stroke: "#7C3AED"
+      stroke-width: 2
+      border-radius: 12
+      font-size: 15
+      bold: true
+      font-color: "#111827"
+    }
+    apigw: "API Gateway\nKong · JWT · rate limit" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/apigateway.svg"
+      style: {
+        fill: "#FFF7ED"
+        stroke: "#EA580C"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    bff_web: "Web BFF\nGraphQL federation" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/graphql.svg"
+      style: {
+        fill: "#FFF7ED"
+        stroke: "#EA580C"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    bff_mobile: "Mobile BFF\nREST / BFF" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/nginx.svg"
+      style: {
+        fill: "#FFF7ED"
+        stroke: "#EA580C"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    bff_admin: "Admin BFF\nREST" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/nginx.svg"
+      style: {
+        fill: "#FFF7ED"
+        stroke: "#EA580C"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+  }
+
+  domain: "Domain Services" {
+    grid-columns: 4
+    style: {
+      fill: "#F5F3FF"
+      stroke: "#7C3AED"
+      stroke-width: 2
+      border-radius: 12
+      font-size: 15
+      bold: true
+      font-color: "#111827"
+    }
+    auth: "Auth Service\nOIDC · sessions" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/auth0.svg"
+      style: {
+        fill: "#FEF2F2"
+        stroke: "#DC2626"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    user: "User Service\nprofiles · prefs" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/nodejs.svg"
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#2563EB"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    catalog: "Catalog Service\nproducts · SKUs" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/go.svg"
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#2563EB"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    search: "Search Service\nquery · facets" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/python.svg"
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#2563EB"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    cart: "Cart Service\nsession cart" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/go.svg"
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#2563EB"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    order: "Order Service\nwrite model" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/go.svg"
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#2563EB"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    payment: "Payment Service\ncapture · refund" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/typescript.svg"
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#2563EB"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    inventory: "Inventory Service\nstock · reserve" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/go.svg"
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#2563EB"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    shipping: "Shipping Service\nlabels · tracking" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/python.svg"
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#2563EB"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    notify: "Notification Service\nemail · SMS · push" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/nodejs.svg"
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#2563EB"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    rec: "Recommendation\nML ranking" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/python.svg"
+      style: {
+        fill: "#EFF6FF"
+        stroke: "#2563EB"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+  }
+
+  data: "Data Stores (per service)" {
+    grid-columns: 4
+    style: {
+      fill: "#F5F3FF"
+      stroke: "#7C3AED"
+      stroke-width: 2
+      border-radius: 12
+      font-size: 15
+      bold: true
+      font-color: "#111827"
+    }
+    pg_user: "User DB\nPostgreSQL" {
+      shape: cylinder
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/postgresql.svg"
+      style: {
+        fill: "#ECFDF5"
+        stroke: "#059669"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    pg_order: "Orders DB\nPostgreSQL" {
+      shape: cylinder
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/postgresql.svg"
+      style: {
+        fill: "#ECFDF5"
+        stroke: "#059669"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    mysql_inv: "Inventory DB\nMySQL" {
+      shape: cylinder
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/mysql.svg"
+      style: {
+        fill: "#ECFDF5"
+        stroke: "#059669"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    mongo_cat: "Catalog DB\nMongoDB" {
+      shape: cylinder
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/mongodb.svg"
+      style: {
+        fill: "#ECFDF5"
+        stroke: "#059669"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    redis: "Redis Cache\ncart · sessions" {
+      shape: cylinder
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/redis.svg"
+      style: {
+        fill: "#ECFDF5"
+        stroke: "#059669"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    es: "Elasticsearch\nproduct index" {
+      shape: cylinder
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/elasticsearch.svg"
+      style: {
+        fill: "#ECFDF5"
+        stroke: "#059669"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    s3: "Object Storage\nS3 assets · invoices" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/s3.svg"
+      style: {
+        fill: "#FFFBEB"
+        stroke: "#D97706"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+  }
+
+  events: "Event Bus" {
+    grid-columns: 4
+    style: {
+      fill: "#F5F3FF"
+      stroke: "#7C3AED"
+      stroke-width: 2
+      border-radius: 12
+      font-size: 15
+      bold: true
+      font-color: "#111827"
+    }
+    kafka: "Kafka Cluster\norders · inventory · payments · notify" {
+      shape: queue
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/kafka.svg"
+      style: {
+        fill: "#F5F3FF"
+        stroke: "#7C3AED"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    t_order: "topic: order.events" {
+      shape: queue
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/kafka.svg"
+      style: {
+        fill: "#F5F3FF"
+        stroke: "#7C3AED"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    t_pay: "topic: payment.events" {
+      shape: queue
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/kafka.svg"
+      style: {
+        fill: "#F5F3FF"
+        stroke: "#7C3AED"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    t_inv: "topic: inventory.events" {
+      shape: queue
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/kafka.svg"
+      style: {
+        fill: "#F5F3FF"
+        stroke: "#7C3AED"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    t_ship: "topic: shipping.events" {
+      shape: queue
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/kafka.svg"
+      style: {
+        fill: "#F5F3FF"
+        stroke: "#7C3AED"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+  }
+
+  ext: "External Systems" {
+    
+    style: {
+      fill: "#F5F3FF"
+      stroke: "#7C3AED"
+      stroke-width: 2
+      border-radius: 12
+      font-size: 15
+      bold: true
+      font-color: "#111827"
+    }
+    stripe: "Stripe\ncard network" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/cloudflare.svg"
+      style: {
+        fill: "#F9FAFB"
+        stroke: "#9CA3AF"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+    twilio: "Twilio / SES\nSMS · email" {
+      shape: rectangle
+      icon: "/Users/hwchiu/hwchiu/diagram-mcp/assets/icons/aws.svg"
+      style: {
+        fill: "#F9FAFB"
+        stroke: "#9CA3AF"
+        stroke-width: 2
+        border-radius: 8
+        shadow: true
+        font-size: 14
+        font-color: "#111827"
+      }
+    }
+  }
+}
+
+
+
+web -> cdn: "HTTPS" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+mobile -> apigw: "HTTPS" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+admin -> apigw: "HTTPS" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+cdn -> waf {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+waf -> apigw {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+apigw -> bff_web: "route" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+apigw -> bff_mobile: "route" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+apigw -> bff_admin: "route" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+apigw -> auth: "validate JWT" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+bff_web -> catalog: "gRPC" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+bff_web -> search: "REST" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+bff_web -> cart: "gRPC" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+bff_web -> order: "gRPC" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+bff_web -> user: "gRPC" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+bff_web -> rec: "REST" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+bff_mobile -> catalog {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+bff_mobile -> cart {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+bff_mobile -> order {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+bff_admin -> inventory {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+bff_admin -> shipping {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+bff_admin -> user {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+order -> inventory: "reserve gRPC" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+order -> payment: "authorize gRPC" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+order -> cart: "read cart" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+payment -> stripe: "charge" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+search -> catalog: "hydrate" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+auth -> pg_user: "R/W" {
+  style: {
+    stroke: "#059669"
+    stroke-width: 3
+  }
+}
+user -> pg_user: "R/W" {
+  style: {
+    stroke: "#059669"
+    stroke-width: 3
+  }
+}
+order -> pg_order: "R/W" {
+  style: {
+    stroke: "#059669"
+    stroke-width: 3
+  }
+}
+inventory -> mysql_inv: "R/W" {
+  style: {
+    stroke: "#059669"
+    stroke-width: 3
+  }
+}
+catalog -> mongo_cat: "R/W" {
+  style: {
+    stroke: "#059669"
+    stroke-width: 3
+  }
+}
+cart -> redis: "R/W" {
+  style: {
+    stroke: "#059669"
+    stroke-width: 3
+  }
+}
+search -> es: "query" {
+  style: {
+    stroke: "#059669"
+    stroke-width: 3
+  }
+}
+catalog -> s3: "images" {
+  style: {
+    stroke: "#059669"
+    stroke-width: 3
+  }
+}
+payment -> s3: "invoices" {
+  style: {
+    stroke: "#059669"
+    stroke-width: 3
+  }
+}
+rec -> redis: "features" {
+  style: {
+    stroke: "#059669"
+    stroke-width: 3
+  }
+}
+order -> t_order: "OrderPlaced" {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+payment -> t_pay: "PaymentCaptured" {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+inventory -> t_inv: "StockReserved" {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+shipping -> t_ship: "Shipped" {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+t_order -> kafka {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+t_pay -> kafka {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+t_inv -> kafka {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+t_ship -> kafka {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+kafka -> shipping: "consume order" {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+kafka -> notify: "consume *" {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+kafka -> rec: "consume order" {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+kafka -> search: "reindex" {
+  style: {
+    stroke: "#7C3AED"
+    stroke-dash: 4
+    stroke-width: 2
+  }
+}
+notify -> twilio: "send" {
+  style: {
+    stroke: "#1F2937"
+    stroke-width: 2
+  }
+}
+
+
+legend: Legend {
+  near: bottom-center
+  style: {
+    fill: "#F8FAFC"
+    stroke: "#E5E7EB"
+    border-radius: 10
+    font-color: "#6B7280"
+    font-size: 13
+  }
+  leg_0: "Sync REST / gRPC" {
+  shape: rectangle
+  style: {
+    fill: "#FFFFFF"
+    stroke: "#1F2937"
+    stroke-width: 2
+    border-radius: 6
+    font-size: 12
+    font-color: "#111827"
+  }
+}
+  leg_1: "Async Kafka event" {
+  shape: rectangle
+  style: {
+    fill: "#FFFFFF"
+    stroke: "#7C3AED"
+    stroke-width: 2
+    border-radius: 6
+    font-size: 12
+    font-color: "#111827"
+    stroke-dash: 3
+  }
+}
+  leg_2: "DB read / write" {
+  shape: rectangle
+  style: {
+    fill: "#FFFFFF"
+    stroke: "#059669"
+    stroke-width: 2
+    border-radius: 6
+    font-size: 12
+    font-color: "#111827"
+  }
+}
+  leg_3: "Service" {
+  shape: rectangle
+  style: {
+    fill: "#EFF6FF"
+    stroke: "#2563EB"
+    border-radius: 6
+    font-size: 12
+    font-color: "#111827"
+  }
+}
+  leg_4: "Gateway / BFF" {
+  shape: rectangle
+  style: {
+    fill: "#FFF7ED"
+    stroke: "#EA580C"
+    border-radius: 6
+    font-size: 12
+    font-color: "#111827"
+  }
+}
+  leg_5: "Data store" {
+  shape: rectangle
+  style: {
+    fill: "#ECFDF5"
+    stroke: "#059669"
+    border-radius: 6
+    font-size: 12
+    font-color: "#111827"
+  }
+}
+}

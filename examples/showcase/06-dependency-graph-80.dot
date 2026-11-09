@@ -1,0 +1,321 @@
+digraph G {
+  graph [
+    rankdir=TB,
+    bgcolor="#FFFFFF",
+    fontname="Helvetica Neue",
+    fontsize=16,
+    pad="0.75",
+    nodesep="0.25",
+    ranksep="0.55",
+    splines=spline,
+    overlap=false,
+    concentrate=true,
+    outputorder=edgesfirst,
+    compound=true,
+    newrank=true,
+    labeljust=l,
+    labelloc=t
+  ];
+  node [
+    shape=box,
+    style="rounded,filled",
+    fontname="Helvetica Neue",
+    fontsize=9,
+    fontcolor="#111827",
+    fillcolor="#FFFFFF",
+    color="#E5E7EB",
+    penwidth=1.6,
+    margin="0.12,0.08",
+    height=0.35
+  ];
+  edge [
+    fontname="Helvetica Neue",
+    fontsize=8,
+    fontcolor="#6B7280",
+    color="#6B7280",
+    penwidth=1.05,
+    arrowsize=0.55
+  ];
+  label=<<FONT POINT-SIZE="22"><B>Monorepo Dependency Graph</B></FONT><BR/><FONT POINT-SIZE="12" COLOR="#6B7280">81 packages · 80+ nodes · internal edges</FONT>>;
+  subgraph cluster_0 {
+    label=<<B>Apps</B>>;
+    fontsize=13; fontcolor="#111827";
+    style="rounded,filled"; fillcolor="#F5F3FF"; color="#7C3AED"; penwidth=2;
+    margin=18;
+    web [label="web", fillcolor="#EFF6FF", color="#2563EB", fontcolor="#111827"];
+    admin [label="admin", fillcolor="#EFF6FF", color="#2563EB", fontcolor="#111827"];
+    mobile_bff [label="mobile-bff", fillcolor="#EFF6FF", color="#2563EB", fontcolor="#111827"];
+    worker [label="worker", fillcolor="#EFF6FF", color="#2563EB", fontcolor="#111827"];
+    scheduler [label="scheduler", fillcolor="#EFF6FF", color="#2563EB", fontcolor="#111827"];
+    cli [label="cli", fillcolor="#EFF6FF", color="#2563EB", fontcolor="#111827"];
+    storybook [label="storybook", fillcolor="#EFF6FF", color="#2563EB", fontcolor="#111827"];
+    docs_site [label="docs-site", fillcolor="#EFF6FF", color="#2563EB", fontcolor="#111827"];
+    partner_portal [label="partner-portal", fillcolor="#EFF6FF", color="#2563EB", fontcolor="#111827"];
+  }
+  subgraph cluster_1 {
+    label=<<B>Services</B>>;
+    fontsize=13; fontcolor="#111827";
+    style="rounded,filled"; fillcolor="#EFF6FF"; color="#2563EB"; penwidth=2;
+    margin=18;
+    orders_svc [label="orders-svc", fillcolor="#F0F9FF", color="#0284C7", fontcolor="#111827"];
+    inventory_svc [label="inventory-svc", fillcolor="#F0F9FF", color="#0284C7", fontcolor="#111827"];
+    catalog_svc [label="catalog-svc", fillcolor="#F0F9FF", color="#0284C7", fontcolor="#111827"];
+    pricing_svc [label="pricing-svc", fillcolor="#F0F9FF", color="#0284C7", fontcolor="#111827"];
+    payments_svc [label="payments-svc", fillcolor="#F0F9FF", color="#0284C7", fontcolor="#111827"];
+    shipping_svc [label="shipping-svc", fillcolor="#F0F9FF", color="#0284C7", fontcolor="#111827"];
+    notify_svc [label="notify-svc", fillcolor="#F0F9FF", color="#0284C7", fontcolor="#111827"];
+    search_svc [label="search-svc", fillcolor="#F0F9FF", color="#0284C7", fontcolor="#111827"];
+    auth_svc [label="auth-svc", fillcolor="#F0F9FF", color="#0284C7", fontcolor="#111827"];
+    media_svc [label="media-svc", fillcolor="#F0F9FF", color="#0284C7", fontcolor="#111827"];
+    analytics_svc [label="analytics-svc", fillcolor="#F0F9FF", color="#0284C7", fontcolor="#111827"];
+    billing_svc [label="billing-svc", fillcolor="#F0F9FF", color="#0284C7", fontcolor="#111827"];
+    recommendation_svc [label="recommendation-svc", fillcolor="#F0F9FF", color="#0284C7", fontcolor="#111827"];
+    user_svc [label="user-svc", fillcolor="#F0F9FF", color="#0284C7", fontcolor="#111827"];
+    fraud_svc [label="fraud-svc", fillcolor="#F0F9FF", color="#0284C7", fontcolor="#111827"];
+  }
+  subgraph cluster_2 {
+    label=<<B>Packages</B>>;
+    fontsize=13; fontcolor="#111827";
+    style="rounded,filled"; fillcolor="#ECFDF5"; color="#059669"; penwidth=2;
+    margin=18;
+    ui_kit [label="ui-kit", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+    design_tokens [label="design-tokens", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+    eslint_config [label="eslint-config", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+    tsconfig [label="tsconfig", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+    logger [label="logger", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+    metrics [label="metrics", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+    tracing [label="tracing", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+    config [label="config", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+    errors [label="errors", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+    http_client [label="http-client", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+    grpc_client [label="grpc-client", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+    kafka_client [label="kafka-client", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+    db_kit [label="db-kit", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+    cache_kit [label="cache-kit", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+    auth_sdk [label="auth-sdk", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+    feature_flags [label="feature-flags", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+    validation [label="validation", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+    types_orders [label="types-orders", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+    types_catalog [label="types-catalog", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+    types_common [label="types-common", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+    test_utils [label="test-utils", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+    storybook_config [label="storybook-config", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+    i18n [label="i18n", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+    form_kit [label="form-kit", fillcolor="#FFFFFF", color="#9CA3AF", fontcolor="#111827"];
+  }
+  subgraph cluster_3 {
+    label=<<B>Infra</B>>;
+    fontsize=13; fontcolor="#111827";
+    style="rounded,filled"; fillcolor="#FFF7ED"; color="#EA580C"; penwidth=2;
+    margin=18;
+    terraform_modules [label="terraform-modules", fillcolor="#FFFBEB", color="#D97706", fontcolor="#111827"];
+    helm_charts [label="helm-charts", fillcolor="#FFFBEB", color="#D97706", fontcolor="#111827"];
+    pulumi_aws [label="pulumi-aws", fillcolor="#FFFBEB", color="#D97706", fontcolor="#111827"];
+    ci_templates [label="ci-templates", fillcolor="#FFFBEB", color="#D97706", fontcolor="#111827"];
+    docker_base [label="docker-base", fillcolor="#FFFBEB", color="#D97706", fontcolor="#111827"];
+    k8s_manifests [label="k8s-manifests", fillcolor="#FFFBEB", color="#D97706", fontcolor="#111827"];
+    observability_stack [label="observability-stack", fillcolor="#FFFBEB", color="#D97706", fontcolor="#111827"];
+    secrets_policy [label="secrets-policy", fillcolor="#FFFBEB", color="#D97706", fontcolor="#111827"];
+    network_policies [label="network-policies", fillcolor="#FFFBEB", color="#D97706", fontcolor="#111827"];
+    cert_manager_config [label="cert-manager-config", fillcolor="#FFFBEB", color="#D97706", fontcolor="#111827"];
+  }
+  subgraph cluster_4 {
+    label=<<B>Domain</B>>;
+    fontsize=13; fontcolor="#111827";
+    style="rounded,filled"; fillcolor="#FDF2F8"; color="#DB2777"; penwidth=2;
+    margin=18;
+    domain_orders [label="domain-orders", fillcolor="#FEF2F2", color="#DC2626", fontcolor="#111827"];
+    domain_inventory [label="domain-inventory", fillcolor="#FEF2F2", color="#DC2626", fontcolor="#111827"];
+    domain_catalog [label="domain-catalog", fillcolor="#FEF2F2", color="#DC2626", fontcolor="#111827"];
+    domain_payments [label="domain-payments", fillcolor="#FEF2F2", color="#DC2626", fontcolor="#111827"];
+    domain_shipping [label="domain-shipping", fillcolor="#FEF2F2", color="#DC2626", fontcolor="#111827"];
+    domain_pricing [label="domain-pricing", fillcolor="#FEF2F2", color="#DC2626", fontcolor="#111827"];
+    domain_customers [label="domain-customers", fillcolor="#FEF2F2", color="#DC2626", fontcolor="#111827"];
+    policy_engine [label="policy-engine", fillcolor="#FEF2F2", color="#DC2626", fontcolor="#111827"];
+    id_generator [label="id-generator", fillcolor="#FEF2F2", color="#DC2626", fontcolor="#111827"];
+    money [label="money", fillcolor="#FEF2F2", color="#DC2626", fontcolor="#111827"];
+    address [label="address", fillcolor="#FEF2F2", color="#DC2626", fontcolor="#111827"];
+    tax_engine [label="tax-engine", fillcolor="#FEF2F2", color="#DC2626", fontcolor="#111827"];
+    discount_engine [label="discount-engine", fillcolor="#FEF2F2", color="#DC2626", fontcolor="#111827"];
+  }
+  subgraph cluster_5 {
+    label=<<B>Data</B>>;
+    fontsize=13; fontcolor="#111827";
+    style="rounded,filled"; fillcolor="#F5F3FF"; color="#7C3AED"; penwidth=2;
+    margin=18;
+    schema_registry [label="schema-registry", fillcolor="#ECFDF5", color="#059669", fontcolor="#111827"];
+    migrations_orders [label="migrations-orders", fillcolor="#ECFDF5", color="#059669", fontcolor="#111827"];
+    migrations_inventory [label="migrations-inventory", fillcolor="#ECFDF5", color="#059669", fontcolor="#111827"];
+    seed_scripts [label="seed-scripts", fillcolor="#ECFDF5", color="#059669", fontcolor="#111827"];
+    etl_jobs [label="etl-jobs", fillcolor="#ECFDF5", color="#059669", fontcolor="#111827"];
+    warehouse_models [label="warehouse-models", fillcolor="#ECFDF5", color="#059669", fontcolor="#111827"];
+    event_schemas [label="event-schemas", fillcolor="#ECFDF5", color="#059669", fontcolor="#111827"];
+    protobuf_defs [label="protobuf-defs", fillcolor="#ECFDF5", color="#059669", fontcolor="#111827"];
+    openapi_specs [label="openapi-specs", fillcolor="#ECFDF5", color="#059669", fontcolor="#111827"];
+    dbt_models [label="dbt-models", fillcolor="#ECFDF5", color="#059669", fontcolor="#111827"];
+  }
+  web -> ui_kit [color="#1F293799", penwidth=0.85];
+  web -> auth_sdk [color="#1F293799", penwidth=0.85];
+  web -> http_client [color="#1F293799", penwidth=0.85];
+  web -> types_common [color="#1F293799", penwidth=0.85];
+  admin -> ui_kit [color="#1F293799", penwidth=0.85];
+  admin -> auth_sdk [color="#1F293799", penwidth=0.85];
+  admin -> http_client [color="#1F293799", penwidth=0.85];
+  admin -> types_common [color="#1F293799", penwidth=0.85];
+  mobile_bff -> ui_kit [color="#1F293799", penwidth=0.85];
+  mobile_bff -> auth_sdk [color="#1F293799", penwidth=0.85];
+  mobile_bff -> http_client [color="#1F293799", penwidth=0.85];
+  mobile_bff -> types_common [color="#1F293799", penwidth=0.85];
+  docs_site -> ui_kit [color="#1F293799", penwidth=0.85];
+  docs_site -> auth_sdk [color="#1F293799", penwidth=0.85];
+  docs_site -> http_client [color="#1F293799", penwidth=0.85];
+  docs_site -> types_common [color="#1F293799", penwidth=0.85];
+  web -> design_tokens [color="#1F293799", penwidth=0.85];
+  web -> i18n [color="#1F293799", penwidth=0.85];
+  web -> form_kit [color="#1F293799", penwidth=0.85];
+  admin -> design_tokens [color="#1F293799", penwidth=0.85];
+  storybook -> storybook_config [color="#1F293799", penwidth=0.85];
+  worker -> kafka_client [color="#1F293799", penwidth=0.85];
+  worker -> logger [color="#1F293799", penwidth=0.85];
+  worker -> metrics [color="#1F293799", penwidth=0.85];
+  scheduler -> config [color="#1F293799", penwidth=0.85];
+  cli -> config [color="#1F293799", penwidth=0.85];
+  orders_svc -> logger [color="#1F293799", penwidth=0.85];
+  orders_svc -> metrics [color="#1F293799", penwidth=0.85];
+  orders_svc -> tracing [color="#1F293799", penwidth=0.85];
+  orders_svc -> config [color="#1F293799", penwidth=0.85];
+  orders_svc -> errors [color="#1F293799", penwidth=0.85];
+  orders_svc -> db_kit [color="#1F293799", penwidth=0.85];
+  inventory_svc -> logger [color="#1F293799", penwidth=0.85];
+  inventory_svc -> metrics [color="#1F293799", penwidth=0.85];
+  inventory_svc -> tracing [color="#1F293799", penwidth=0.85];
+  inventory_svc -> config [color="#1F293799", penwidth=0.85];
+  inventory_svc -> errors [color="#1F293799", penwidth=0.85];
+  inventory_svc -> db_kit [color="#1F293799", penwidth=0.85];
+  catalog_svc -> logger [color="#1F293799", penwidth=0.85];
+  catalog_svc -> metrics [color="#1F293799", penwidth=0.85];
+  catalog_svc -> tracing [color="#1F293799", penwidth=0.85];
+  catalog_svc -> config [color="#1F293799", penwidth=0.85];
+  catalog_svc -> errors [color="#1F293799", penwidth=0.85];
+  catalog_svc -> db_kit [color="#1F293799", penwidth=0.85];
+  pricing_svc -> logger [color="#1F293799", penwidth=0.85];
+  pricing_svc -> metrics [color="#1F293799", penwidth=0.85];
+  pricing_svc -> tracing [color="#1F293799", penwidth=0.85];
+  pricing_svc -> config [color="#1F293799", penwidth=0.85];
+  pricing_svc -> errors [color="#1F293799", penwidth=0.85];
+  pricing_svc -> db_kit [color="#1F293799", penwidth=0.85];
+  payments_svc -> logger [color="#1F293799", penwidth=0.85];
+  payments_svc -> metrics [color="#1F293799", penwidth=0.85];
+  payments_svc -> tracing [color="#1F293799", penwidth=0.85];
+  payments_svc -> config [color="#1F293799", penwidth=0.85];
+  payments_svc -> errors [color="#1F293799", penwidth=0.85];
+  payments_svc -> db_kit [color="#1F293799", penwidth=0.85];
+  shipping_svc -> logger [color="#1F293799", penwidth=0.85];
+  shipping_svc -> metrics [color="#1F293799", penwidth=0.85];
+  shipping_svc -> tracing [color="#1F293799", penwidth=0.85];
+  shipping_svc -> config [color="#1F293799", penwidth=0.85];
+  shipping_svc -> errors [color="#1F293799", penwidth=0.85];
+  shipping_svc -> db_kit [color="#1F293799", penwidth=0.85];
+  notify_svc -> logger [color="#1F293799", penwidth=0.85];
+  notify_svc -> metrics [color="#1F293799", penwidth=0.85];
+  notify_svc -> tracing [color="#1F293799", penwidth=0.85];
+  notify_svc -> config [color="#1F293799", penwidth=0.85];
+  notify_svc -> errors [color="#1F293799", penwidth=0.85];
+  notify_svc -> db_kit [color="#1F293799", penwidth=0.85];
+  search_svc -> logger [color="#1F293799", penwidth=0.85];
+  search_svc -> metrics [color="#1F293799", penwidth=0.85];
+  search_svc -> tracing [color="#1F293799", penwidth=0.85];
+  search_svc -> config [color="#1F293799", penwidth=0.85];
+  search_svc -> errors [color="#1F293799", penwidth=0.85];
+  search_svc -> db_kit [color="#1F293799", penwidth=0.85];
+  billing_svc -> logger [color="#1F293799", penwidth=0.85];
+  billing_svc -> metrics [color="#1F293799", penwidth=0.85];
+  billing_svc -> tracing [color="#1F293799", penwidth=0.85];
+  billing_svc -> config [color="#1F293799", penwidth=0.85];
+  billing_svc -> errors [color="#1F293799", penwidth=0.85];
+  billing_svc -> db_kit [color="#1F293799", penwidth=0.85];
+  recommendation_svc -> logger [color="#1F293799", penwidth=0.85];
+  recommendation_svc -> metrics [color="#1F293799", penwidth=0.85];
+  recommendation_svc -> tracing [color="#1F293799", penwidth=0.85];
+  recommendation_svc -> config [color="#1F293799", penwidth=0.85];
+  recommendation_svc -> errors [color="#1F293799", penwidth=0.85];
+  recommendation_svc -> db_kit [color="#1F293799", penwidth=0.85];
+  user_svc -> logger [color="#1F293799", penwidth=0.85];
+  user_svc -> metrics [color="#1F293799", penwidth=0.85];
+  user_svc -> tracing [color="#1F293799", penwidth=0.85];
+  user_svc -> config [color="#1F293799", penwidth=0.85];
+  user_svc -> errors [color="#1F293799", penwidth=0.85];
+  user_svc -> db_kit [color="#1F293799", penwidth=0.85];
+  orders_svc -> domain_orders [color="#1F293799", penwidth=0.85];
+  orders_svc -> types_orders [color="#1F293799", penwidth=0.85];
+  orders_svc -> kafka_client [color="#1F293799", penwidth=0.85];
+  orders_svc -> money [color="#1F293799", penwidth=0.85];
+  inventory_svc -> domain_inventory [color="#1F293799", penwidth=0.85];
+  catalog_svc -> domain_catalog [color="#1F293799", penwidth=0.85];
+  catalog_svc -> types_catalog [color="#1F293799", penwidth=0.85];
+  catalog_svc -> cache_kit [color="#1F293799", penwidth=0.85];
+  pricing_svc -> domain_pricing [color="#1F293799", penwidth=0.85];
+  pricing_svc -> money [color="#1F293799", penwidth=0.85];
+  pricing_svc -> tax_engine [color="#1F293799", penwidth=0.85];
+  pricing_svc -> discount_engine [color="#1F293799", penwidth=0.85];
+  payments_svc -> domain_payments [color="#1F293799", penwidth=0.85];
+  payments_svc -> money [color="#1F293799", penwidth=0.85];
+  shipping_svc -> domain_shipping [color="#1F293799", penwidth=0.85];
+  shipping_svc -> address [color="#1F293799", penwidth=0.85];
+  auth_svc -> auth_sdk [color="#1F293799", penwidth=0.85];
+  auth_svc -> feature_flags [color="#1F293799", penwidth=0.85];
+  media_svc -> http_client [color="#1F293799", penwidth=0.85];
+  analytics_svc -> kafka_client [color="#1F293799", penwidth=0.85];
+  billing_svc -> domain_payments [color="#1F293799", penwidth=0.85];
+  notify_svc -> kafka_client [color="#1F293799", penwidth=0.85];
+  search_svc -> types_catalog [color="#1F293799", penwidth=0.85];
+  recommendation_svc -> kafka_client [color="#1F293799", penwidth=0.85];
+  recommendation_svc -> cache_kit [color="#1F293799", penwidth=0.85];
+  user_svc -> domain_customers [color="#1F293799", penwidth=0.85];
+  domain_orders -> types_orders [color="#1F293799", penwidth=0.85];
+  domain_orders -> money [color="#1F293799", penwidth=0.85];
+  domain_orders -> id_generator [color="#1F293799", penwidth=0.85];
+  domain_catalog -> types_catalog [color="#1F293799", penwidth=0.85];
+  domain_payments -> money [color="#1F293799", penwidth=0.85];
+  domain_shipping -> address [color="#1F293799", penwidth=0.85];
+  domain_pricing -> money [color="#1F293799", penwidth=0.85];
+  domain_pricing -> tax_engine [color="#1F293799", penwidth=0.85];
+  discount_engine -> money [color="#1F293799", penwidth=0.85];
+  policy_engine -> feature_flags [color="#1F293799", penwidth=0.85];
+  tax_engine -> money [color="#1F293799", penwidth=0.85];
+  ui_kit -> design_tokens [color="#1F293799", penwidth=0.85];
+  form_kit -> ui_kit [color="#1F293799", penwidth=0.85];
+  form_kit -> validation [color="#1F293799", penwidth=0.85];
+  http_client -> errors [color="#1F293799", penwidth=0.85];
+  http_client -> logger [color="#1F293799", penwidth=0.85];
+  grpc_client -> errors [color="#1F293799", penwidth=0.85];
+  kafka_client -> logger [color="#1F293799", penwidth=0.85];
+  kafka_client -> event_schemas [color="#1F293799", penwidth=0.85];
+  db_kit -> logger [color="#1F293799", penwidth=0.85];
+  cache_kit -> logger [color="#1F293799", penwidth=0.85];
+  auth_sdk -> validation [color="#1F293799", penwidth=0.85];
+  types_orders -> types_common [color="#1F293799", penwidth=0.85];
+  types_catalog -> types_common [color="#1F293799", penwidth=0.85];
+  metrics -> tracing [color="#1F293799", penwidth=0.85];
+  test_utils -> logger [color="#1F293799", penwidth=0.85];
+  storybook_config -> ui_kit [color="#1F293799", penwidth=0.85];
+  eslint_config -> tsconfig [color="#1F293799", penwidth=0.85];
+  i18n -> types_common [color="#1F293799", penwidth=0.85];
+  migrations_orders -> schema_registry [color="#1F293799", penwidth=0.85];
+  migrations_inventory -> schema_registry [color="#1F293799", penwidth=0.85];
+  etl_jobs -> warehouse_models [color="#1F293799", penwidth=0.85];
+  etl_jobs -> event_schemas [color="#1F293799", penwidth=0.85];
+  dbt_models -> warehouse_models [color="#1F293799", penwidth=0.85];
+  event_schemas -> protobuf_defs [color="#1F293799", penwidth=0.85];
+  openapi_specs -> types_common [color="#1F293799", penwidth=0.85];
+  helm_charts -> k8s_manifests [color="#1F293799", penwidth=0.85];
+  pulumi_aws -> terraform_modules [color="#1F293799", penwidth=0.85];
+  ci_templates -> docker_base [color="#1F293799", penwidth=0.85];
+  observability_stack -> helm_charts [color="#1F293799", penwidth=0.85];
+  network_policies -> k8s_manifests [color="#1F293799", penwidth=0.85];
+  cert_manager_config -> helm_charts [color="#1F293799", penwidth=0.85];
+  orders_svc -> migrations_orders [color="#1F293799", penwidth=0.85];
+  inventory_svc -> migrations_inventory [color="#1F293799", penwidth=0.85];
+  web -> openapi_specs [color="#1F293799", penwidth=0.85];
+  mobile_bff -> grpc_client [color="#1F293799", penwidth=0.85];
+}

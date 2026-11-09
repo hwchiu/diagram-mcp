@@ -1,0 +1,78 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "fontFamily": "Inter, Helvetica Neue, Arial, sans-serif",
+    "fontSize": "15px",
+    "primaryColor": "#EFF6FF",
+    "primaryTextColor": "#111827",
+    "primaryBorderColor": "#2563EB",
+    "secondaryColor": "#FFF7ED",
+    "tertiaryColor": "#F5F3FF",
+    "lineColor": "#1F2937",
+    "signalColor": "#1F2937",
+    "signalTextColor": "#111827",
+    "labelBoxBkgColor": "#FFFFFF",
+    "labelBoxBorderColor": "#E5E7EB",
+    "labelTextColor": "#111827",
+    "actorBkg": "#FFF7ED",
+    "actorBorder": "#EA580C",
+    "actorTextColor": "#111827",
+    "actorLineColor": "#E5E7EB",
+    "noteBkgColor": "#EDE9FE",
+    "noteBorderColor": "#7C3AED",
+    "noteTextColor": "#111827",
+    "activationBkgColor": "#DBEAFE",
+    "activationBorderColor": "#2563EB",
+    "sequenceNumberColor": "#1D4ED8"
+  },
+  "sequence": {
+    "actorMargin": 36,
+    "messageMargin": 48,
+    "mirrorActors": false,
+    "bottomMarginAdj": 20,
+    "rightAngles": true,
+    "showSequenceNumbers": true,
+    "width": 240
+  }
+}}%%
+sequenceDiagram
+  autonumber
+  actor User as Web SPA
+  participant GW as API Gateway
+  participant BFF as Web BFF
+  participant Ord as Order Service
+  participant Cart as Cart Service
+  participant Inv as Inventory Service
+  participant Pay as Payment Service
+  participant Stripe as Stripe
+  participant K as Kafka
+  participant Ship as Shipping Service
+  participant Ntf as Notification Service
+
+  Note over User,Ntf: Place Order — sync request path, then async Kafka fan-out
+
+  User->>GW: POST /orders (HTTPS)
+  GW->>GW: WAF + JWT validate
+  GW->>BFF: route to Web BFF
+  BFF->>Cart: gRPC GetCart(userId)
+  Cart-->>BFF: cart lines
+  BFF->>Ord: gRPC CreateOrder(cart)
+  activate Ord
+  Ord->>Inv: gRPC ReserveStock(sku, qty)
+  Inv-->>Ord: reservationId
+  Ord->>Pay: gRPC AuthorizePayment(orderId)
+  Pay->>Stripe: charge (HTTPS)
+  Stripe-->>Pay: payment_intent ok
+  Pay-->>Ord: PaymentAuthorized
+  Ord-->>BFF: OrderCreated
+  deactivate Ord
+  BFF-->>GW: 201 + orderId
+  GW-->>User: order confirmation
+
+  Ord-)K: publish OrderPlaced
+  Pay-)K: publish PaymentCaptured
+  Inv-)K: publish StockReserved
+  K-)Ship: consume OrderPlaced
+  Ship-)K: publish ShipmentCreated
+  K-)Ntf: consume OrderPlaced + PaymentCaptured
+  Ntf->>User: email / push receipt

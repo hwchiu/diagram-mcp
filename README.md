@@ -91,15 +91,19 @@ npm start
 
 ## Showcase
 
-`npm run examples` 會在 `examples/` 產生五種圖：
+```bash
+npm run showcase   # → examples/showcase/（複雜示範）
+npm run examples   # → examples/（基礎五種）
+```
 
-| 檔案 | 類型 |
+| 檔案 | 內容 |
 |---|---|
-| `examples/01-cloud-architecture.png` | 多區域 AWS/EKS |
-| `examples/02-microservice-architecture.png` | 事件驅動微服務 |
-| `examples/03-flowchart.png` | CI/CD swimlane |
-| `examples/04-decision-tree.png` | 事故分級決策樹 |
-| `examples/05-dependency-graph.png` | 69 packages 依賴圖 |
+| `examples/showcase/01-ecommerce-microservices-e2e.png` | 電商微服務端到端（Clients→Edge→BFF→Services→Data→Kafka→Externals） |
+| `examples/showcase/02-place-order-sequence.png` | Place Order 編號序向圖（sync + Kafka fan-out） |
+| `examples/showcase/03-k8s-dual-region.png` | 雙區域 K8s 部署（Ingress / mesh / managed DB / observability） |
+| `examples/showcase/04-flowchart-swimlanes.png` | CI/CD swimlane 流程圖 |
+| `examples/showcase/05-decision-tree.png` | 事故分級決策樹 |
+| `examples/showcase/06-dependency-graph-80.png` | 80+ packages 依賴圖 |
 
 ## 授權
 

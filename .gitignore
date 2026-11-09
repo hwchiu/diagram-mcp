@@ -13,4 +13,5 @@ coverage/
 tmp/
 .cache/
 examples/_preview/
+examples/**/_preview/
 examples/examples/
