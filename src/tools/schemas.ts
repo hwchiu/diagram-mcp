@@ -59,7 +59,7 @@ const meta = {
   name: z.string().optional(),
   includePreview: z.boolean().optional(),
   outputDir: z.string().optional(),
-  layout: z.enum(["tala", "elk", "dagre"]).optional(),
+  layout: z.enum(["tala", "elk", "dagre", "grid"]).optional(),
 };
 
 export const cloudSchema = z.object({
@@ -69,6 +69,8 @@ export const cloudSchema = z.object({
   groups: z.array(groupSchema).optional(),
   edges: z.array(edgeSchema).optional(),
   steps: z.array(stepSchema).optional(),
+  /** Column stacks of tier ids for the SVG grid engine */
+  columns: z.array(z.array(z.string())).optional(),
   legend: z
     .array(
       z.object({
@@ -86,6 +88,7 @@ export const microserviceSchema = z.object({
   groups: z.array(groupSchema).optional(),
   edges: z.array(edgeSchema).optional(),
   steps: z.array(stepSchema).optional(),
+  columns: z.array(z.array(z.string())).optional(),
   legend: cloudSchema.shape.legend,
 });
 

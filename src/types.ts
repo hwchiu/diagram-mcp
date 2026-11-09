@@ -71,10 +71,15 @@ export interface StructuredDiagramInput extends DiagramMeta {
    */
   steps?: DiagramStep[];
   /**
-   * D2 layout engine. Prefer `tala` for orthogonal AWS-style posters;
-   * `elk` as fallback; `dagre` for simpler graphs.
+   * @deprecated Architecture diagrams use the built-in SVG grid engine.
+   * Kept for API compatibility; ignored by cloud/microservice compilers.
    */
-  layout?: "tala" | "elk" | "dagre";
+  layout?: "tala" | "elk" | "dagre" | "grid";
+  /**
+   * Column stacks of tier/group ids for the deterministic grid engine.
+   * Example: [["clients"],["edge"],["bff","app"],["data","events"]]
+   */
+  columns?: string[][];
   /** Optional legend entries */
   legend?: Array<{ label: string; role?: NodeRole; kind?: EdgeKind }>;
 }
@@ -108,7 +113,7 @@ export interface DependencyGraphInput extends DiagramMeta {
   groups?: DiagramGroup[];
 }
 
-export type EngineKind = "d2" | "mermaid" | "dot";
+export type EngineKind = "d2" | "mermaid" | "dot" | "svg";
 
 export interface RenderDiagramInput extends DiagramMeta {
   engine: EngineKind;

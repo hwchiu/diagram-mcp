@@ -1,19 +1,25 @@
 import type { MicroserviceDiagramInput } from "../types.js";
-import { compileArchitecture } from "./architecture.js";
+import { layoutArchitecture } from "../layout/grid.js";
+import { renderArchitectureSvg } from "../layout/svg.js";
+import { assertValidEdges } from "./paths.js";
 
 export function compileMicroservice(input: MicroserviceDiagramInput): {
-  engine: "d2";
+  engine: "svg";
   source: string;
-  layout: "tala" | "elk" | "dagre";
+  theme?: string;
 } {
-  return compileArchitecture(input, "create_microservice_architecture", {
-    defaultLegend: [
-      { label: "Service", role: "compute" },
-      { label: "Gateway", role: "gateway" },
-      { label: "Queue / bus", role: "queue" },
-      { label: "Database", role: "data" },
-      { label: "Sync call", kind: "sync" },
-      { label: "Async event", kind: "async" },
-    ],
+  assertValidEdges(input.edges, input.nodes, "create_microservice_architecture", input.groups);
+  const layout = layoutArchitecture({
+    title: input.title,
+    subtitle: input.subtitle,
+    theme: input.theme,
+    nodes: input.nodes,
+    groups: input.groups,
+    edges: input.edges,
+    steps: input.steps,
+    legend: input.legend,
+    columns: input.columns,
   });
+  const source = renderArchitectureSvg(layout, input.theme ?? "dark");
+  return { engine: "svg", source, theme: input.theme ?? "dark" };
 }

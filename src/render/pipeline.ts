@@ -88,7 +88,7 @@ export interface PipelineInput {
   name?: string;
   outputDir?: string;
   includePreview?: boolean;
-  layout?: "elk" | "dagre" | "tala";
+  layout?: "elk" | "dagre" | "tala" | "grid";
   /** Graphviz layout engine */
   graphvizLayout?: "dot" | "sfdp" | "neato" | "fdp";
 }
@@ -105,14 +105,18 @@ export async function renderPipeline(input: PipelineInput): Promise<RenderResult
   let sourcePath = "";
   let dims = { width: 0, height: 0 };
 
-  if (input.engine === "d2") {
+  if (input.engine === "svg") {
+    // Deterministic architecture SVG (already themed) — write + rasterize at 2×
+    sourcePath = svgPath;
+    await fs.writeFile(svgPath, input.source, "utf8");
+    dims = await svgToPng(svgPath, pngPath, 2);
+  } else if (input.engine === "d2") {
     sourcePath = svgPath.replace(/\.svg$/i, ".d2");
     await renderD2({
       source: input.source,
       outSvg: svgPath,
       theme,
-      // Prefer TALA for orthogonal AWS-style architecture posters
-      layout: input.layout ?? "tala",
+      layout: input.layout === "grid" ? "tala" : (input.layout ?? "tala"),
     });
     await postprocessSvg(svgPath, theme);
     dims = await svgToPng(svgPath, pngPath, 2);

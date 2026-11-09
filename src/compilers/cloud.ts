@@ -1,16 +1,25 @@
 import type { CloudDiagramInput } from "../types.js";
-import { compileArchitecture } from "./architecture.js";
+import { layoutArchitecture } from "../layout/grid.js";
+import { renderArchitectureSvg } from "../layout/svg.js";
+import { assertValidEdges } from "./paths.js";
 
 export function compileCloud(input: CloudDiagramInput): {
-  engine: "d2";
+  engine: "svg";
   source: string;
-  layout: "tala" | "elk" | "dagre";
+  theme?: string;
 } {
-  return compileArchitecture(input, "create_cloud_architecture", {
-    defaultLegend: [
-      { label: "Sync / request", kind: "sync" },
-      { label: "Async / event", kind: "async" },
-      { label: "Data path", kind: "data" },
-    ],
+  assertValidEdges(input.edges, input.nodes, "create_cloud_architecture", input.groups);
+  const layout = layoutArchitecture({
+    title: input.title,
+    subtitle: input.subtitle,
+    theme: input.theme,
+    nodes: input.nodes,
+    groups: input.groups,
+    edges: input.edges,
+    steps: input.steps,
+    legend: input.legend,
+    columns: input.columns,
   });
+  const source = renderArchitectureSvg(layout, input.theme ?? "dark");
+  return { engine: "svg", source, theme: input.theme ?? "dark" };
 }

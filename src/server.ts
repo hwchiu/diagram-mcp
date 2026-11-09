@@ -6,6 +6,7 @@ import { compileFlowchart } from "./compilers/flowchart.js";
 import { compileDecision } from "./compilers/decision.js";
 import { compileDependency } from "./compilers/dependency.js";
 import { listIcons } from "./design/icons.js";
+import { MONO_PATHS } from "./layout/icons.js";
 import {
   cloudSchema,
   microserviceSchema,
@@ -14,7 +15,7 @@ import {
   dependencySchema,
   renderSchema,
 } from "./tools/schemas.js";
-import type { RenderResult } from "./types.js";
+import type { EngineKind, RenderResult } from "./types.js";
 import type { z } from "zod";
 
 function formatResult(result: RenderResult) {
@@ -45,9 +46,10 @@ function formatResult(result: RenderResult) {
 
 async function runCompiled(
   compiled: {
-    engine: "d2" | "mermaid" | "dot";
+    engine: EngineKind;
     source: string;
-    layout?: "tala" | "elk" | "dagre";
+    theme?: string;
+    layout?: "tala" | "elk" | "dagre" | "grid";
   },
   meta: {
     theme?: string;
@@ -55,17 +57,16 @@ async function runCompiled(
     includePreview?: boolean;
     outputDir?: string;
     title?: string;
-    layout?: "tala" | "elk" | "dagre";
   },
 ) {
   const result = await renderPipeline({
     engine: compiled.engine,
     source: compiled.source,
-    themeId: meta.theme,
+    themeId: meta.theme ?? compiled.theme,
     name: meta.name ?? meta.title,
     includePreview: meta.includePreview,
     outputDir: meta.outputDir,
-    layout: meta.layout ?? compiled.layout,
+    layout: compiled.layout,
   });
   return formatResult(result);
 }
@@ -81,7 +82,7 @@ export function createServer(): McpServer {
     {
       title: "Create cloud architecture diagram",
       description:
-        "Generate a polished cloud / Kubernetes architecture diagram (AWS/GCP/Azure/K8s) with nested groups (region→VPC→subnet→cluster), provider icons, and semantic node roles. Returns SVG+PNG paths and a compact PNG preview.",
+        "Generate a polished cloud / Kubernetes architecture diagram with deterministic grid layout, monoline icons, orthogonal edges, and numbered steps. Returns SVG+PNG paths and a compact PNG preview.",
       inputSchema: cloudSchema.shape,
     },
     async (args: z.infer<typeof cloudSchema>) => {
@@ -95,7 +96,7 @@ export function createServer(): McpServer {
     {
       title: "Create microservice architecture diagram",
       description:
-        "Generate a polished microservice architecture diagram with services, gateways, queues, databases, and sync vs async edges. Returns SVG+PNG paths and a compact PNG preview.",
+        "Generate a polished microservice architecture diagram with deterministic grid layout, sync/async/data edges, and numbered steps panel. Returns SVG+PNG paths and a compact PNG preview.",
       inputSchema: microserviceSchema.shape,
     },
     async (args: z.infer<typeof microserviceSchema>) => {
@@ -171,13 +172,17 @@ export function createServer(): McpServer {
     "list_diagram_icons",
     {
       title: "List diagram icons",
-      description: "List available local icon keys for cloud/service nodes (pass as node.icon).",
+      description:
+        "List monoline architecture icon keys (preferred) and legacy brand icon keys.",
     },
     async () => ({
       content: [
         {
           type: "text" as const,
-          text: `Available icons (${listIcons().length}):\n${listIcons().join(", ")}`,
+          text: [
+            `Monoline icons (architecture): ${Object.keys(MONO_PATHS).join(", ")}`,
+            `Legacy brand icons (avoid for architecture): ${listIcons().join(", ")}`,
+          ].join("\n"),
         },
       ],
     }),

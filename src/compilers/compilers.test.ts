@@ -6,17 +6,17 @@ import { compileDecision } from "./decision.js";
 import { compileDependency } from "./dependency.js";
 
 describe("compilers", () => {
-  it("compiles cloud to d2", () => {
+  it("compiles cloud to svg", () => {
     const r = compileCloud({
-      title: "Test",
-      nodes: [{ id: "a", label: "API", role: "gateway", icon: "apigateway" }],
+      title: "Test Cloud",
+      nodes: [{ id: "a", label: "API", role: "gateway", icon: "gateway" }],
       edges: [],
     });
-    expect(r.engine).toBe("d2");
+    expect(r.engine).toBe("svg");
     expect(r.source).toContain("API");
   });
 
-  it("compiles microservice to d2", () => {
+  it("compiles microservice to svg", () => {
     const r = compileMicroservice({
       nodes: [
         { id: "s", label: "Svc", role: "compute" },
@@ -24,8 +24,8 @@ describe("compilers", () => {
       ],
       edges: [{ from: "s", to: "q", kind: "async" }],
     });
-    expect(r.engine).toBe("d2");
-    expect(r.source).toContain("stroke-dash");
+    expect(r.engine).toBe("svg");
+    expect(r.source).toContain("stroke-dasharray");
   });
 
   it("compiles flowchart to mermaid", () => {

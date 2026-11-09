@@ -6,22 +6,22 @@
 
 | Tool | 說明 | 引擎 |
 |---|---|---|
-| `create_cloud_architecture` | 雲端 / K8s 架構（虛線 tier、統一 icon card、`steps` 編號面板、稀疏邊） | D2 + TALA |
-| `create_microservice_architecture` | 微服務（gateway / queue / DB、同步 vs 非同步、`steps`、tier-to-tier 邊） | D2 + TALA |
+| `create_cloud_architecture` | 雲端 / K8s 架構（決定性 grid、monoline icon、正交邊、`steps` 面板） | **SVG grid** |
+| `create_microservice_architecture` | 微服務（同上；sync / async / data） | **SVG grid** |
 | `create_flowchart` | 流程圖（支援 swimlane） | Mermaid |
 | `create_decision_diagram` | 決策樹（yes/no 色碼） | Mermaid |
-| `create_dependency_graph` | 套件 / 模組依賴圖（大量節點仍可讀） | Graphviz |
+| `create_dependency_graph` | 套件 / 模組依賴圖 | Graphviz |
 | `render_diagram` | 直接渲染原始 D2 / Mermaid / DOT | 依 `engine` |
-| `list_diagram_icons` | 列出可用圖示 key | — |
+| `list_diagram_icons` | 列出 monoline（架構用）與舊版 brand icon | — |
 
-主題：`light` · `dark` · `presentation` · `blueprint`  
+架構圖預設 **dark tech** 主題（深海軍藍、HUD tier、霓虹邊線）。亦支援 `light` / `presentation` / `blueprint`。  
 設計規範見 [DESIGN.md](./DESIGN.md)。
 
 ## 環境需求
 
 - macOS（已在 Apple Silicon 驗證）
-- Node.js ≥ 20（建議 nvm 的 Node 24）
-- Homebrew 套件：`d2`、`graphviz`、`librsvg`
+- Node.js ≥ 20
+- Homebrew：`d2`、`graphviz`、`librsvg`（flowchart / dependency / raw D2 仍需要）
 
 ```bash
 brew install d2 graphviz librsvg
@@ -39,20 +39,19 @@ npm run build
 
 ```bash
 npm test
-npm run examples   # 產出 examples/*.svg + *.png
+npm run examples   # → examples/
+npm run showcase   # → examples/showcase/
 ```
 
 ## 啟動（stdio）
 
 ```bash
 node dist/index.js
-# 或
-npm start
 ```
 
 ## 註冊到 Cursor
 
-編輯 `~/.cursor/mcp.json`（**請自行加入**，本專案不會改你的設定）：
+編輯 `~/.cursor/mcp.json`：
 
 ```json
 {
@@ -65,48 +64,33 @@ npm start
 }
 ```
 
-若已有其他 server，把 `diagram-mcp` 區塊合併進去即可。
+## 架構圖重點 API
 
-## 註冊到 Claude Desktop
-
-編輯 Claude Desktop 設定檔（macOS 通常為  
-`~/Library/Application Support/Claude/claude_desktop_config.json`）：
-
-```json
+```ts
 {
-  "mcpServers": {
-    "diagram-mcp": {
-      "command": "node",
-      "args": ["/Users/hwchiu/hwchiu/diagram-mcp/dist/index.js"]
-    }
-  }
+  title: "E-Commerce Microservices Architecture",
+  theme: "dark",
+  columns: [["clients", "edge"], ["bff", "app"], ["data", "ext"]],
+  groups: [{ id: "clients", label: "Clients" }, …],
+  nodes: [{ id: "web", label: "Web SPA", role: "external", icon: "browser", group: "clients" }],
+  edges: [{ from: "clients", to: "edge", step: 1, kind: "sync" }],
+  steps: [{ n: 1, label: "Clients → Edge", description: "…" }]
 }
 ```
 
-## 輸出
-
-- 預設目錄：`./output/`（可用參數 `outputDir` 覆寫）
-- 每個圖：`.svg`、`.png`（2×）、以及引擎原始檔（`.d2` / `.mmd` / `.dot`）
-- MCP 回傳：絕對路徑 + 精簡 PNG preview（`includePreview` 預設開啟）
+- `columns`：決定性欄位堆疊（每欄由上到下）
+- `edges.from/to`：可為 **node id 或 group id**（tier-to-tier）
+- `icon`：請用 monoline key（`server`、`database`、`globe`…），勿用 React/Go 等品牌 logo
 
 ## Showcase
 
-```bash
-npm run showcase   # → examples/showcase/（複雜示範）
-npm run examples   # → examples/（基礎五種）
-```
-
 | 檔案 | 內容 |
 |---|---|
-| `examples/showcase/01-ecommerce-microservices-e2e.png` | 電商 overview（稀疏 tier 邊 + 編號 steps，對齊 AWS reference） |
-| `examples/showcase/01b-ecommerce-data-kafka.png` | 分圖：per-service 資料擁有權 + Kafka topics |
-| `examples/showcase/02-place-order-sequence.png` | Place Order 編號序向圖（sync + Kafka fan-out） |
-| `examples/showcase/03-k8s-dual-region.png` | 雙區域 K8s（稀疏邊 + steps 面板） |
-| `examples/showcase/04-flowchart-swimlanes.png` | CI/CD swimlane 流程圖 |
-| `examples/showcase/05-decision-tree.png` | 事故分級決策樹 |
-| `examples/showcase/06-dependency-graph-80.png` | 80+ packages 依賴圖 |
-
-品質對標：`docs/reference-aws-webstore.png`。架構圖支援 `steps`、`edge.step`、`layout: tala|elk|dagre`，以及 **group id 當邊端點**（tier-to-tier）。
+| `examples/showcase/01-ecommerce-microservices-e2e.png` | 電商 overview（dark tech grid） |
+| `examples/showcase/01b-ecommerce-data-kafka.png` | 資料擁有權 + Kafka fan-out |
+| `examples/showcase/02-place-order-sequence.png` | Place Order 序向圖（Mermaid） |
+| `examples/showcase/03-k8s-dual-region.png` | 雙區域 K8s |
+| `examples/showcase/04`–`06` | flowchart / decision / dependency |
 
 ## 授權
 

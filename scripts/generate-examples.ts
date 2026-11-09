@@ -17,20 +17,21 @@ const OUT = path.join(ROOT, "examples");
 async function render(
   name: string,
   compiled: {
-    engine: "d2" | "mermaid" | "dot";
+    engine: "d2" | "mermaid" | "dot" | "svg";
     source: string;
-    layout?: "tala" | "elk" | "dagre";
+    theme?: string;
+    layout?: "tala" | "elk" | "dagre" | "grid";
   },
   theme: string,
 ) {
   const result = await renderPipeline({
     engine: compiled.engine,
     source: compiled.source,
-    themeId: theme,
+    themeId: compiled.theme ?? theme,
     name,
     outputDir: OUT,
     includePreview: false,
-    layout: compiled.layout ?? (compiled.engine === "d2" ? "tala" : undefined),
+    layout: compiled.layout,
   });
   console.log(`✓ ${name} → ${result.pngPath} (${result.width}×${result.height})`);
   return result;
@@ -38,134 +39,110 @@ async function render(
 
 function cloudExample() {
   return compileCloud({
-    title: "Guidance for Multi-Region Commerce",
+    title: "Multi-Region Commerce Platform",
     subtitle: "AWS + EKS · Active-active · sparse main flows",
-    theme: "presentation",
+    theme: "dark",
     name: "01-cloud-architecture",
     provider: "aws",
-    layout: "tala",
+    columns: [["clients", "edge"], ["use1"], ["usw2"], ["ext", "obs"]],
     groups: [
       { id: "clients", label: "Clients" },
-      { id: "edge", label: "Edge & DNS", kind: "other" },
-      { id: "use1", label: "us-east-1 · Primary", kind: "region" },
-      { id: "pub_e", label: "Ingress", parent: "use1", kind: "subnet" },
-      { id: "shop_e", label: "EKS App Tier", parent: "use1", kind: "cluster" },
-      { id: "data_e", label: "Data Tier", parent: "use1", kind: "other" },
-      { id: "usw2", label: "us-west-2 · Secondary", kind: "region" },
-      { id: "west_app", label: "EKS West", parent: "usw2", kind: "cluster" },
-      { id: "west_data", label: "Data West", parent: "usw2", kind: "other" },
-      { id: "ext", label: "Key Third-Party Services" },
-      { id: "obs", label: "Observability", kind: "other" },
+      { id: "edge", label: "Edge & DNS" },
+      { id: "use1", label: "us-east-1 Primary" },
+      { id: "usw2", label: "us-west-2 Secondary" },
+      { id: "ext", label: "Third-Party" },
+      { id: "obs", label: "Observability" },
     ],
     nodes: [
-      { id: "users", label: "Users", role: "external", shape: "person", group: "clients" },
-      { id: "web", label: "Web / Mobile", role: "external", icon: "react", group: "clients" },
-
-      { id: "cf", label: "CloudFront", role: "network", icon: "cloudflare", group: "edge" },
-      { id: "r53", label: "Route 53", role: "network", icon: "aws", group: "edge" },
-      { id: "waf", label: "WAF", role: "security", icon: "aws", group: "edge" },
-
-      { id: "alb_e", label: "ALB", role: "gateway", icon: "apigateway", group: "pub_e" },
-      { id: "ing_e", label: "Ingress", role: "gateway", icon: "nginx", group: "pub_e" },
-
-      { id: "gw_e", label: "API Gateway", role: "gateway", icon: "apigateway", group: "shop_e" },
-      { id: "cart", label: "Cart", role: "compute", icon: "go", group: "shop_e" },
-      { id: "catalog", label: "Catalog", role: "compute", icon: "go", group: "shop_e" },
-      { id: "checkout", label: "Checkout", role: "compute", icon: "typescript", group: "shop_e" },
-      { id: "search", label: "Search", role: "compute", icon: "python", group: "shop_e" },
-
-      { id: "redis_e", label: "ElastiCache", role: "data", icon: "redis", group: "data_e" },
-      { id: "aurora_e", label: "Aurora PG", role: "data", icon: "postgresql", group: "data_e" },
-      { id: "msk_e", label: "MSK Kafka", role: "queue", icon: "kafka", group: "data_e" },
-      { id: "s3_e", label: "S3", role: "storage", icon: "s3", group: "data_e" },
-
-      { id: "alb_w", label: "ALB West", role: "gateway", icon: "apigateway", group: "west_app" },
-      { id: "cart_w", label: "Cart", role: "compute", icon: "kubernetes", group: "west_app" },
-      { id: "catalog_w", label: "Catalog", role: "compute", icon: "kubernetes", group: "west_app" },
-      { id: "aurora_w", label: "Aurora replica", role: "data", icon: "postgresql", group: "west_data" },
-
+      { id: "users", label: "Users", role: "external", icon: "user", group: "clients" },
+      { id: "web", label: "Web / Mobile", role: "external", icon: "browser", group: "clients" },
+      { id: "cf", label: "CDN", role: "network", icon: "globe", group: "edge" },
+      { id: "r53", label: "DNS", subtitle: "latency", role: "network", icon: "globe", group: "edge" },
+      { id: "waf", label: "WAF", role: "security", icon: "shield", group: "edge" },
+      { id: "alb_e", label: "ALB", role: "gateway", icon: "gateway", group: "use1" },
+      { id: "gw_e", label: "API Gateway", role: "gateway", icon: "gateway", group: "use1" },
+      { id: "cart", label: "Cart", role: "compute", icon: "server", group: "use1" },
+      { id: "catalog", label: "Catalog", role: "compute", icon: "server", group: "use1" },
+      { id: "checkout", label: "Checkout", role: "compute", icon: "server", group: "use1" },
+      { id: "search", label: "Search", role: "compute", icon: "search", group: "use1" },
+      { id: "redis_e", label: "Redis", role: "data", icon: "cache", group: "use1" },
+      { id: "aurora_e", label: "Aurora", role: "data", icon: "database", group: "use1" },
+      { id: "msk_e", label: "MSK", role: "queue", icon: "queue", group: "use1" },
+      { id: "alb_w", label: "ALB", role: "gateway", icon: "gateway", group: "usw2" },
+      { id: "cart_w", label: "Cart", role: "compute", icon: "cluster", group: "usw2" },
+      { id: "catalog_w", label: "Catalog", role: "compute", icon: "cluster", group: "usw2" },
+      { id: "aurora_w", label: "Aurora replica", role: "data", icon: "database", group: "usw2" },
       { id: "stripe", label: "Payment Provider", role: "external", group: "ext" },
       { id: "ses", label: "Email / SMS", role: "external", group: "ext" },
-
-      { id: "prom", label: "Prometheus", role: "observability", icon: "prometheus", group: "obs" },
-      { id: "graf", label: "Grafana", role: "observability", icon: "grafana", group: "obs" },
-      { id: "otel", label: "OTel", role: "observability", icon: "opentelemetry", group: "obs" },
+      { id: "otel", label: "OTel", role: "observability", icon: "chart", group: "obs" },
+      { id: "prom", label: "Prometheus", role: "observability", icon: "chart", group: "obs" },
+      { id: "graf", label: "Grafana", role: "observability", icon: "chart", group: "obs" },
     ],
     edges: [
       { from: "clients", to: "edge", step: 1, kind: "sync" },
       { from: "edge", to: "use1", step: 2, label: "primary", kind: "sync" },
       { from: "edge", to: "usw2", label: "failover", kind: "sync" },
-      { from: "pub_e", to: "shop_e", step: 3, kind: "sync" },
+      { from: "alb_e", to: "gw_e", step: 3, kind: "sync" },
+      { from: "gw_e", to: "checkout", kind: "sync" },
       { from: "checkout", to: "cart", kind: "sync" },
       { from: "checkout", to: "stripe", step: 4, kind: "sync" },
-      { from: "shop_e", to: "data_e", step: 5, kind: "data" },
+      { from: "checkout", to: "aurora_e", step: 5, kind: "data" },
+      { from: "cart", to: "redis_e", kind: "data" },
       { from: "checkout", to: "msk_e", step: 6, kind: "async" },
       { from: "msk_e", to: "ses", kind: "async" },
       { from: "aurora_e", to: "aurora_w", step: 7, label: "replica", kind: "async" },
-      { from: "west_app", to: "west_data", kind: "data" },
       { from: "use1", to: "obs", kind: "async" },
       { from: "otel", to: "prom", kind: "data" },
       { from: "prom", to: "graf", kind: "sync" },
     ],
     steps: [
-      { n: 1, label: "Clients → Edge", description: "Users hit CDN / WAF / DNS", anchor: "clients" },
-      { n: 2, label: "Route to primary", description: "Route 53 sends traffic to us-east-1", anchor: "edge" },
-      { n: 3, label: "Ingress to App Tier", description: "ALB / Ingress reaches EKS services", anchor: "pub_e" },
-      { n: 4, label: "External payment", description: "Checkout calls payment provider", anchor: "ext" },
-      { n: 5, label: "Persist data", description: "App Tier uses Aurora / Redis / S3", anchor: "data_e" },
-      { n: 6, label: "Async events", description: "Checkout publishes to MSK Kafka", anchor: "data_e" },
-      { n: 7, label: "Cross-region replica", description: "Aurora replicates to us-west-2", anchor: "usw2" },
-    ],
-    legend: [
-      { label: "Sync / request", kind: "sync" },
-      { label: "Async / replica", kind: "async" },
-      { label: "Data path", kind: "data" },
+      { n: 1, label: "Clients → Edge", description: "CDN / DNS / WAF" },
+      { n: 2, label: "Route primary", description: "Traffic to us-east-1" },
+      { n: 3, label: "Ingress", description: "ALB → Gateway → services" },
+      { n: 4, label: "Payment", description: "Checkout → provider" },
+      { n: 5, label: "Persist", description: "Aurora / Redis" },
+      { n: 6, label: "Events", description: "MSK fan-out" },
+      { n: 7, label: "Replicate", description: "Async to west" },
     ],
   });
 }
 
 function microserviceExample() {
   return compileMicroservice({
-    title: "Guidance for Event-Driven Orders",
-    subtitle: "Edge · BFF · Core · Ops · Data · sparse main flows",
-    theme: "presentation",
+    title: "Event-Driven Order Platform",
+    subtitle: "Edge · BFF · App · Ops · Data",
+    theme: "dark",
     name: "02-microservice-architecture",
-    layout: "tala",
+    columns: [["clients", "edge"], ["bff", "core"], ["ops", "data"], ["ext"]],
     groups: [
       { id: "clients", label: "Clients" },
       { id: "edge", label: "Edge" },
-      { id: "bff", label: "Web / BFF Tier" },
+      { id: "bff", label: "Web / BFF" },
       { id: "core", label: "App Tier" },
-      { id: "ops", label: "Ops & Fulfillment" },
+      { id: "ops", label: "Ops" },
       { id: "data", label: "Data & Messaging" },
-      { id: "ext", label: "Key Third-Party Services" },
+      { id: "ext", label: "Third-Party" },
     ],
     nodes: [
-      { id: "web", label: "Web App", role: "external", icon: "nextjs", group: "clients" },
-      { id: "mobile", label: "Mobile", role: "external", shape: "person", group: "clients" },
-
-      { id: "cdn", label: "CDN", role: "network", icon: "cloudflare", group: "edge" },
-      { id: "waf", label: "WAF", role: "security", icon: "aws", group: "edge" },
-
-      { id: "apigw", label: "API Gateway", role: "gateway", icon: "apigateway", group: "bff" },
-      { id: "bff_web", label: "Web BFF", role: "gateway", icon: "graphql", group: "bff" },
-      { id: "auth", label: "Auth", role: "security", icon: "auth0", group: "bff" },
-
-      { id: "orders", label: "Orders", role: "compute", icon: "go", group: "core" },
-      { id: "inventory", label: "Inventory", role: "compute", icon: "go", group: "core" },
-      { id: "catalog", label: "Catalog", role: "compute", icon: "typescript", group: "core" },
-      { id: "payments", label: "Payments", role: "compute", icon: "go", group: "core" },
-      { id: "customers", label: "Customers", role: "compute", icon: "nodejs", group: "core" },
-
-      { id: "shipping", label: "Shipping", role: "compute", icon: "python", group: "ops" },
-      { id: "notify", label: "Notify", role: "compute", icon: "nodejs", group: "ops" },
-      { id: "analytics", label: "Analytics", role: "compute", icon: "python", group: "ops" },
-
-      { id: "kafka", label: "Kafka", role: "queue", icon: "kafka", group: "data" },
-      { id: "pg_orders", label: "Orders DB", role: "data", icon: "postgresql", group: "data" },
-      { id: "redis", label: "Redis", role: "data", icon: "redis", group: "data" },
-      { id: "mongo_cat", label: "Catalog DB", role: "data", icon: "mongodb", group: "data" },
-
+      { id: "web", label: "Web App", role: "external", icon: "browser", group: "clients" },
+      { id: "mobile", label: "Mobile", role: "external", icon: "mobile", group: "clients" },
+      { id: "cdn", label: "CDN", role: "network", icon: "globe", group: "edge" },
+      { id: "waf", label: "WAF", role: "security", icon: "shield", group: "edge" },
+      { id: "apigw", label: "API Gateway", role: "gateway", icon: "gateway", group: "bff" },
+      { id: "bff_web", label: "Web BFF", role: "gateway", icon: "gateway", group: "bff" },
+      { id: "auth", label: "Auth", role: "security", icon: "lock", group: "bff" },
+      { id: "orders", label: "Orders", role: "compute", icon: "server", group: "core" },
+      { id: "inventory", label: "Inventory", role: "compute", icon: "server", group: "core" },
+      { id: "catalog", label: "Catalog", role: "compute", icon: "server", group: "core" },
+      { id: "payments", label: "Payments", role: "compute", icon: "server", group: "core" },
+      { id: "customers", label: "Customers", role: "compute", icon: "server", group: "core" },
+      { id: "shipping", label: "Shipping", role: "compute", icon: "server", group: "ops" },
+      { id: "notify", label: "Notify", role: "compute", icon: "mail", group: "ops" },
+      { id: "analytics", label: "Analytics", role: "compute", icon: "chart", group: "ops" },
+      { id: "kafka", label: "Kafka", role: "queue", icon: "queue", group: "data" },
+      { id: "pg_orders", label: "Orders DB", role: "data", icon: "database", group: "data" },
+      { id: "redis", label: "Redis", role: "data", icon: "cache", group: "data" },
+      { id: "mongo_cat", label: "Catalog DB", role: "data", icon: "database", group: "data" },
       { id: "stripe", label: "Payment Provider", role: "external", group: "ext" },
       { id: "ses", label: "Email / SMS", role: "external", group: "ext" },
     ],
@@ -183,18 +160,13 @@ function microserviceExample() {
       { from: "notify", to: "ses", kind: "sync" },
     ],
     steps: [
-      { n: 1, label: "Clients → Edge", description: "Web and mobile hit CDN / WAF", anchor: "clients" },
-      { n: 2, label: "Authenticate & route", description: "API Gateway + Auth + BFFs", anchor: "bff" },
-      { n: 3, label: "BFF → App Tier", description: "BFFs call core domain services", anchor: "core" },
-      { n: 4, label: "Order coordinates", description: "Orders reserves stock and authorizes payment", anchor: "core" },
-      { n: 5, label: "External payment", description: "Payments calls the card network", anchor: "ext" },
-      { n: 6, label: "Persist state", description: "Services write owned databases", anchor: "data" },
-      { n: 7, label: "Async fulfillment", description: "Kafka fans out to Shipping / Notify / Analytics", anchor: "ops" },
-    ],
-    legend: [
-      { label: "Sync call", kind: "sync" },
-      { label: "Async event", kind: "async" },
-      { label: "Data path", kind: "data" },
+      { n: 1, label: "Clients → Edge", description: "CDN / WAF" },
+      { n: 2, label: "Authenticate", description: "Gateway + Auth + BFF" },
+      { n: 3, label: "BFF → App", description: "Domain service calls" },
+      { n: 4, label: "Coordinate", description: "Orders → Inventory / Payments" },
+      { n: 5, label: "External pay", description: "Card network" },
+      { n: 6, label: "Persist", description: "Owned data stores" },
+      { n: 7, label: "Async ops", description: "Kafka → Shipping / Notify" },
     ],
   });
 }
@@ -532,8 +504,8 @@ function dependencyExample() {
 
 async function main() {
   console.log("Generating showcase examples into", OUT);
-  await render("01-cloud-architecture", cloudExample(), "presentation");
-  await render("02-microservice-architecture", microserviceExample(), "light");
+  await render("01-cloud-architecture", cloudExample(), "dark");
+  await render("02-microservice-architecture", microserviceExample(), "dark");
   await render("03-flowchart", flowchartExample(), "presentation");
   await render("04-decision-tree", decisionExample(), "light");
   await render("05-dependency-graph", dependencyExample(), "presentation");
