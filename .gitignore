@@ -15,3 +15,6 @@ tmp/
 examples/_preview/
 examples/**/_preview/
 examples/examples/
+
+# third-party reference images (not redistributable)
+docs/reference-aws-*
