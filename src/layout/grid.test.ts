@@ -1,8 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { edgeHitsCards, layoutArchitecture, rectsOverlap } from "./grid.js";
+import { XMLParser, XMLValidator } from "fast-xml-parser";
+import { layoutArchitecture, rectsOverlap } from "./grid.js";
 import { renderArchitectureSvg } from "./svg.js";
+import { renderArchitectureDrawio } from "./drawio.js";
+import { runArchitectureQa } from "./qa.js";
+import type { LayoutResult, Point, Rect } from "./types.js";
 import { compileMicroservice } from "../compilers/microservice.js";
 import { compileCloud } from "../compilers/cloud.js";
+import { ARCHITECTURE_SPECS } from "../showcase/architecture.js";
+import { measureText } from "./text.js";
 
 const sample = {
   title: "Sample Architecture",
@@ -40,74 +46,158 @@ const sample = {
   ],
 };
 
+const clone = (l: LayoutResult): LayoutResult => JSON.parse(JSON.stringify(l));
+const interiorHit = (a: Point, b: Point, r: Rect) => {
+  const x0 = Math.min(a.x, b.x), x1 = Math.max(a.x, b.x), y0 = Math.min(a.y, b.y), y1 = Math.max(a.y, b.y);
+  return x1 > r.x + 1 && x0 < r.x + r.w - 1 && y1 > r.y + 1 && y0 < r.y + r.h - 1;
+};
+
+describe("text measurement", () => {
+  it("measures mono at 0.6em and CJK at 1em", () => {
+    expect(measureText("abcd", { font: "mono", size: 10 })).toBeCloseTo(24, 0);
+    expect(measureText("中文", { font: "mono", size: 10 })).toBeCloseTo(20, 0);
+    expect(measureText("WWW", { font: "sans", size: 12, weight: 600 })).toBeGreaterThan(measureText("iii", { font: "sans", size: 12, weight: 600 }));
+  });
+});
+
 describe("layoutArchitecture", () => {
   it("is deterministic", () => {
-    const a = layoutArchitecture(sample);
-    const b = layoutArchitecture(sample);
-    expect(a).toEqual(b);
+    expect(layoutArchitecture(sample)).toEqual(layoutArchitecture(sample));
   });
 
   it("places non-overlapping cards with gutters", () => {
     const layout = layoutArchitecture(sample);
-    for (let i = 0; i < layout.nodes.length; i++) {
-      for (let j = i + 1; j < layout.nodes.length; j++) {
+    for (let i = 0; i < layout.nodes.length; i++)
+      for (let j = i + 1; j < layout.nodes.length; j++)
         expect(rectsOverlap(layout.nodes[i].rect, layout.nodes[j].rect, 8)).toBe(false);
+  });
+
+  it("routes orthogonal edges that never pass through cards", () => {
+    for (const [name, make] of Object.entries(ARCHITECTURE_SPECS)) {
+      const layout = layoutArchitecture(make());
+      for (const e of layout.edges) {
+        expect(e.points.length, `${name} ${e.id}`).toBeGreaterThanOrEqual(2);
+        for (let i = 1; i < e.points.length; i++) {
+          const a = e.points[i - 1], b = e.points[i];
+          expect(a.x === b.x || a.y === b.y, `${name} ${e.id} diagonal`).toBe(true);
+          for (const n of layout.nodes) expect(interiorHit(a, b, n.rect), `${name} ${e.id} through ${n.id}`).toBe(false);
+        }
       }
     }
   });
 
-  it("routes edges that largely avoid card interiors", () => {
-    const layout = layoutArchitecture(sample);
-    const cards = layout.nodes.map((n) => n.rect);
-    let hits = 0;
-    for (const e of layout.edges) {
-      if (edgeHitsCards(e, cards, 4)) hits++;
-    }
-    // Allow a small number of near-port grazes; most should clear
-    expect(hits).toBeLessThanOrEqual(2);
-  });
-
-  it("includes title, sidebar, and step badges metadata", () => {
-    const layout = layoutArchitecture(sample);
-    expect(layout.title).toBe("Sample Architecture");
-    expect(layout.sidebar.w).toBeGreaterThan(200);
-    expect(layout.edges.some((e) => e.step === 1)).toBe(true);
-    expect(layout.steps).toHaveLength(4);
-  });
-
-  it("renders SVG with white badge numerals and Steps panel", () => {
-    const layout = layoutArchitecture(sample);
-    const svg = renderArchitectureSvg(layout, "dark");
+  it("renders the Cocoon dark language", () => {
+    const svg = renderArchitectureSvg(layoutArchitecture(sample), "dark");
     expect(svg).toContain("<svg");
     expect(svg).toContain("Sample Architecture");
-    expect(svg).toContain(">Steps<");
-    expect(svg).toContain('fill="#FFFFFF"');
-    expect(svg).toContain("font-weight=\"700\">1<");
-    expect(svg).toContain("dotGrid");
-    expect(svg).not.toContain("Guidance for");
+    expect(svg).toContain("#020617");
+    expect(svg).toContain("JetBrains Mono");
+    expect(svg).not.toMatch(/xlink:href="http|href="http/);
   });
 });
 
+describe("structural QA", () => {
+  it("reports zero errors and zero warnings on every shipped architecture spec", () => {
+    for (const [name, make] of Object.entries(ARCHITECTURE_SPECS)) {
+      const issues = runArchitectureQa(layoutArchitecture(make())).filter((i) => i.severity !== "info");
+      expect(issues.map((i) => `${i.severity} ${i.code}: ${i.message}`), name).toEqual([]);
+    }
+  });
+
+  const base = layoutArchitecture(sample);
+  const codes = (l: LayoutResult) => runArchitectureQa(l).map((i) => i.code);
+
+  it("detects overlapping cards", () => {
+    const l = clone(base);
+    l.nodes[1].rect = { ...l.nodes[0].rect, x: l.nodes[0].rect.x + 10 };
+    expect(codes(l)).toContain("card-overlap");
+  });
+
+  it("detects text overflow", () => {
+    const l = clone(base);
+    l.nodes[0].label = { text: "An extremely long service name that cannot fit", truncated: false, width: 999 };
+    expect(codes(l)).toContain("text-overflow");
+  });
+
+  it("detects an edge through a card", () => {
+    const l = clone(base);
+    const a = l.nodes.find((n) => n.id === "web")!.rect;
+    const b = l.nodes.find((n) => n.id === "kafka")!.rect;
+    const y = a.y + a.h / 2;
+    l.edges[0].points = [{ x: a.x + a.w, y }, { x: b.x, y }];
+    expect(codes(l)).toContain("edge-through-card");
+  });
+
+  it("detects edges that stop on a tier frame", () => {
+    const l = clone(base);
+    const e = l.edges.find((x) => x.from === "order" && x.to === "pg")!;
+    const last = e.points[e.points.length - 1];
+    e.points[e.points.length - 1] = { x: last.x - 30, y: last.y };
+    expect(codes(l)).toContain("edge-dangling");
+  });
+
+  it("detects labels on top of cards", () => {
+    const l = clone(base);
+    const e = l.edges.find((x) => x.step)!;
+    const r = l.nodes[0].rect;
+    e.badgeAt = { x: r.x + 20, y: r.y + 20 };
+    expect(codes(l)).toContain("label-collision");
+  });
+});
+
+describe("draw.io backend", () => {
+  for (const [name, make] of Object.entries(ARCHITECTURE_SPECS)) {
+    it(`emits well-formed mxGraph XML matching the SVG layout (${name})`, () => {
+      const spec = make();
+      const layout = layoutArchitecture(spec);
+      const xml = renderArchitectureDrawio(layout, spec.theme ?? "dark");
+      expect(XMLValidator.validate(xml)).toBe(true);
+      const doc = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "" }).parse(xml);
+      const cells: any[] = [].concat(doc.mxfile.diagram.mxGraphModel.root.mxCell);
+      const byId = new Map(cells.map((c) => [c.id, c]));
+      // absolute position of a cell (containers nest children with relative geometry)
+      const abs = (c: any): { x: number; y: number } => {
+        const g = c.mxGeometry ?? {};
+        const p = c.parent && byId.get(c.parent);
+        const o = p && p.mxGeometry && p.vertex === "1" ? abs(p) : { x: 0, y: 0 };
+        return { x: o.x + Number(g.x ?? 0), y: o.y + Number(g.y ?? 0) };
+      };
+      for (const n of layout.nodes) {
+        const c = byId.get(`node-${n.id}`);
+        expect(c, n.id).toBeTruthy();
+        const p = abs(c);
+        expect(Math.abs(p.x - n.rect.x)).toBeLessThan(1.01);
+        expect(Math.abs(p.y - n.rect.y)).toBeLessThan(1.01);
+        expect(Number(c.mxGeometry.width)).toBeCloseTo(n.rect.w, 0);
+      }
+      for (const t of layout.tiers.filter((t) => !t.hidden)) expect(byId.has(`tier-${t.id}`), t.id).toBe(true);
+      const edges = cells.filter((c) => c.edge === "1");
+      expect(edges.length).toBe(layout.edges.length);
+      for (const e of edges) expect(e.style).toContain("edgeStyle=orthogonalEdgeStyle");
+    });
+  }
+});
+
 describe("compilers → svg engine", () => {
-  it("compileMicroservice returns svg source", () => {
+  it("compileMicroservice returns svg source and QA", () => {
     const r = compileMicroservice(sample);
     expect(r.engine).toBe("svg");
     expect(r.source).toContain("<svg");
     expect(r.source).toContain("Order");
+    expect(Array.isArray(r.qa)).toBe(true);
+    expect(r.drawio).toBeUndefined();
   });
 
-  it("compileCloud returns svg source", () => {
-    const r = compileCloud({ ...sample, provider: "aws" });
+  it("compileCloud returns drawio when requested", () => {
+    const r = compileCloud({ ...sample, provider: "aws", outputs: ["svg", "png", "drawio"] });
     expect(r.engine).toBe("svg");
     expect(r.source).toContain("CDN");
+    expect(r.drawio).toContain("<mxfile");
   });
 
   it("rejects unknown edge endpoints", () => {
     expect(() =>
-      compileMicroservice({
-        nodes: [{ id: "a", label: "A" }],
-        edges: [{ from: "a", to: "ghost" }],
-      }),
+      compileMicroservice({ nodes: [{ id: "a", label: "A" }], edges: [{ from: "a", to: "ghost" }] }),
     ).toThrow(/not declared/);
   });
 });

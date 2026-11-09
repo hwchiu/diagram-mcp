@@ -1,510 +1,270 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="2066" height="838" viewBox="0 0 2066 838">
-  
+<svg xmlns="http://www.w3.org/2000/svg" width="1681" height="1080" viewBox="0 0 1681 1080" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace">
   <defs>
-    
-  <marker id="arrow-sync" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-    <path d="M0,0 L6,3 L0,6 Z" fill="#22D3EE"/>
-  </marker>
-  <marker id="arrow-async" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-    <path d="M0,0 L6,3 L0,6 Z" fill="#A78BFA"/>
-  </marker>
-  <marker id="arrow-data" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-    <path d="M0,0 L6,3 L0,6 Z" fill="#34D399"/>
-  </marker>
-    <pattern id="dotGrid" width="20" height="20" patternUnits="userSpaceOnUse">
-      <circle cx="1" cy="1" r="0.8" fill="rgba(148,163,184,0.12)"/>
-    </pattern>
-    <radialGradient id="tierGlow" cx="50%" cy="40%" r="60%">
-      <stop offset="0%" stop-color="rgba(34,211,238,0.15)"/>
-      <stop offset="100%" stop-color="transparent"/>
-    </radialGradient>
-    <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0F172A" flood-opacity="0.12"/>
-    </filter>
-    <filter id="nodeGlow" x="-40%" y="-40%" width="180%" height="180%">
-      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#22D3EE" flood-opacity="0.35"/>
-    </filter>
-    <filter id="edgeGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#22D3EE" flood-opacity="0.4"/>
-    </filter>
-    <filter id="badgeGlow" x="-50%" y="-50%" width="200%" height="200%">
-      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#22D3EE" flood-opacity="0.7"/>
-    </filter>
-    <style type="text/css"><![CDATA[
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
-      text { font-family: Inter, Geist, SF Pro Text, system-ui, sans-serif; }
-    ]]></style>
+    <marker id="arrow-sync" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto"><path d="M 0 0.5 L 10 5 L 0 9.5 z" fill="#22d3ee"/></marker>
+    <marker id="arrow-async" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto"><path d="M 0 0.5 L 10 5 L 0 9.5 z" fill="#c084fc"/></marker>
+    <marker id="arrow-data" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto"><path d="M 0 0.5 L 10 5 L 0 9.5 z" fill="#34d399"/></marker>
+    <marker id="arrow-auth" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto"><path d="M 0 0.5 L 10 5 L 0 9.5 z" fill="#fb7185"/></marker>
+    <marker id="arrow-default" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto"><path d="M 0 0.5 L 10 5 L 0 9.5 z" fill="#64748b"/></marker>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/></pattern>
+    <radialGradient id="vignette" cx="50%" cy="35%" r="75%"><stop offset="0%" stop-color="#0f2a44" stop-opacity="0.35"/><stop offset="100%" stop-color="#020617" stop-opacity="0"/></radialGradient>
+    <filter id="glow" x="-20%" y="-30%" width="140%" height="160%"><feGaussianBlur in="SourceAlpha" stdDeviation="0"/><feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#38bdf8" flood-opacity="0.10"/></filter>
+    <filter id="shadow" x="-10%" y="-20%" width="120%" height="150%"><feDropShadow dx="0" dy="1.5" stdDeviation="2.5" flood-color="#0f172a" flood-opacity="0.10"/></filter>
   </defs>
-  <rect width="100%" height="100%" fill="#0B1020"/>
-  <rect width="100%" height="100%" fill="url(#dotGrid)"/>
-  <rect x="26" y="102" width="1690" height="710"
-    fill="url(#tierGlow)" rx="16"/>
-  <text x="36" y="64" fill="#E8EEF9"
-        font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="30" font-weight="700">Multi-Region Commerce Platform</text>
-  <text x="36" y="88" fill="#8B9BB8"
-        font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="14">AWS + EKS · Active-active · sparse main flows</text>
-  
-  <g class="tier" data-id="clients">
-    <rect x="36" y="112" width="346" height="176" rx="10" ry="10"
-      fill="rgba(56,189,248,0.04)" stroke="rgba(56,189,248,0.45)" stroke-width="1" stroke-dasharray="5 4"/>
-    
-    <path d="M 44 130 L 44 120 L 54 120" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 374 130 L 374 120 L 364 120" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 44 270 L 44 280 L 54 280" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 374 270 L 374 280 L 364 280" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <text x="52" y="134" fill="#8B9BB8" font-family="ui-monospace, JetBrains Mono, SF Mono, Menlo, monospace" font-size="12"
-      letter-spacing="0.12em" font-weight="500">01 / CLIENTS</text>
-  </g>
+  <g id="background"><rect width="1681" height="1080" fill="#020617"/><rect width="1681" height="1080" fill="url(#grid)"/><rect width="1681" height="1080" fill="url(#vignette)"/></g>
+  <g class="title">
+  <circle cx="55" cy="67" r="9" fill="rgba(52,211,153,0.18)"/>
+  <circle cx="55" cy="67" r="4.5" fill="#34d399"/>
+  <text x="74" y="76" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="26" font-weight="700">Serverless Web Store on AWS</text>
+  <text x="74" y="102" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="13">CloudFront · API Gateway · Lambda · DynamoDB · EventBridge-driven order pipeline</text>
+  <text x="1633" y="74" text-anchor="end" fill="#64748b" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11" letter-spacing="0.12em">18 COMPONENTS · 11 FLOWS</text>
+</g>
+  <g id="containers"><rect x="48" y="132" width="1585" height="572" rx="16" fill="rgba(15,23,42,0.55)" stroke="rgba(148,163,184,0.16)"/>
+  <g class="tier" id="tier-edge" data-depth="0">
+  <rect x="384" y="168" width="242" height="322" rx="12" fill="rgba(15,23,42,0.45)" stroke="rgba(251,113,133,0.55)" stroke-width="1.1" stroke-dasharray="5 5"/>
+  <path d="M 384 180 V 172 Q 384 168 388 168 H 396" fill="none" stroke="#fb7185" stroke-width="2" stroke-linecap="round"/><path d="M 614 168 H 622 Q 626 168 626 172 V 180" fill="none" stroke="#fb7185" stroke-width="2" stroke-linecap="round"/><path d="M 384 478 V 486 Q 384 490 388 490 H 396" fill="none" stroke="#fb7185" stroke-width="2" stroke-linecap="round"/><path d="M 614 490 H 622 Q 626 490 626 486 V 478" fill="none" stroke="#fb7185" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="405" cy="188" r="3" fill="#fb7185"/>
+  <text x="414" y="192" fill="#fb7185" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11" font-weight="600" letter-spacing="0.14em">01 / EDGE</text>
+</g>
+<g class="tier" id="tier-api" data-depth="0">
+  <rect x="738" y="168" width="545" height="322" rx="12" fill="rgba(15,23,42,0.45)" stroke="rgba(251,191,36,0.55)" stroke-width="1.1" stroke-dasharray="10 5"/>
+  <path d="M 738 180 V 172 Q 738 168 742 168 H 750" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/><path d="M 1271 168 H 1279 Q 1283 168 1283 172 V 180" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/><path d="M 738 478 V 486 Q 738 490 742 490 H 750" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/><path d="M 1271 490 H 1279 Q 1283 490 1283 486 V 478" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="759" cy="188" r="3" fill="#fbbf24"/>
+  <text x="768" y="192" fill="#fbbf24" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11" font-weight="600" letter-spacing="0.14em">02 / API LAYER · LAMBDA</text>
+</g>
+<g class="tier" id="tier-data" data-depth="0">
+  <rect x="1355" y="168" width="242" height="322" rx="12" fill="rgba(15,23,42,0.45)" stroke="rgba(167,139,250,0.55)" stroke-width="1.1" stroke-dasharray="5 5"/>
+  <path d="M 1355 180 V 172 Q 1355 168 1359 168 H 1367" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"/><path d="M 1585 168 H 1593 Q 1597 168 1597 172 V 180" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"/><path d="M 1355 478 V 486 Q 1355 490 1359 490 H 1367" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"/><path d="M 1585 490 H 1593 Q 1597 490 1597 486 V 478" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="1376" cy="188" r="3" fill="#a78bfa"/>
+  <text x="1385" y="192" fill="#a78bfa" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11" font-weight="600" letter-spacing="0.14em">03 / DATA</text>
+</g>
+<g class="tier" id="tier-async" data-depth="0">
+  <rect x="84" y="542" width="842" height="126" rx="12" fill="rgba(15,23,42,0.45)" stroke="rgba(251,146,60,0.55)" stroke-width="1.1" stroke-dasharray="5 5"/>
+  <path d="M 84 554 V 546 Q 84 542 88 542 H 96" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round"/><path d="M 914 542 H 922 Q 926 542 926 546 V 554" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round"/><path d="M 84 656 V 664 Q 84 668 88 668 H 96" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round"/><path d="M 914 668 H 922 Q 926 668 926 664 V 656" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="105" cy="562" r="3" fill="#fb923c"/>
+  <text x="114" y="566" fill="#fb923c" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11" font-weight="600" letter-spacing="0.14em">04 / ORDER PIPELINE</text>
+</g>
+<g class="tier" id="tier-ext" data-depth="0">
+  <rect x="998" y="542" width="600" height="126" rx="12" fill="rgba(15,23,42,0.45)" stroke="rgba(148,163,184,0.55)" stroke-width="1.1"/>
+  <path d="M 998 554 V 546 Q 998 542 1002 542 H 1010" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/><path d="M 1586 542 H 1594 Q 1598 542 1598 546 V 554" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/><path d="M 998 656 V 664 Q 998 668 1002 668 H 1010" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/><path d="M 1586 668 H 1594 Q 1598 668 1598 664 V 656" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="1019" cy="562" r="3" fill="#94a3b8"/>
+  <text x="1028" y="566" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11" font-weight="600" letter-spacing="0.14em">05 / THIRD-PARTY</text>
+</g></g>
+  <g id="nodes"><g class="node" id="node-users" data-role="client">
+  <rect x="84" y="298" width="194" height="62" rx="8" fill="#0a1020"/>
+  <rect x="84" y="298" width="194" height="62" rx="8" fill="rgba(34,211,238,0.13)" stroke="#22d3ee" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="97" y="312" width="34" height="34" rx="7" fill="rgba(34,211,238,0.16)" stroke="rgba(34,211,238,0.45)" stroke-width="1"/>
+  <g transform="translate(104 319) scale(0.8332999999999999)" fill="none" stroke="#22d3ee" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M22 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75"/></g>
+  <text x="143" y="325" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Shoppers</text>
+  <text x="143" y="342" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">browser · app</text>
+</g>
+<g class="node" id="node-cf" data-role="network">
+  <rect x="408" y="208" width="194" height="62" rx="8" fill="#0a1020"/>
+  <rect x="408" y="208" width="194" height="62" rx="8" fill="rgba(56,189,248,0.13)" stroke="#38bdf8" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="421" y="222" width="34" height="34" rx="7" fill="rgba(56,189,248,0.16)" stroke="rgba(56,189,248,0.45)" stroke-width="1"/>
+  <g transform="translate(428 229) scale(0.8332999999999999)" fill="none" stroke="#38bdf8" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M2 12h20 M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></g>
+  <text x="467" y="235" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">CloudFront</text>
+  <text x="467" y="252" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">CDN · TLS</text>
+</g>
+<g class="node" id="node-waf" data-role="security">
+  <rect x="408" y="306" width="194" height="62" rx="8" fill="#0a1020"/>
+  <rect x="408" y="306" width="194" height="62" rx="8" fill="rgba(251,113,133,0.13)" stroke="#fb7185" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="421" y="320" width="34" height="34" rx="7" fill="rgba(251,113,133,0.16)" stroke="rgba(251,113,133,0.45)" stroke-width="1"/>
+  <g transform="translate(428 327) scale(0.8332999999999999)" fill="none" stroke="#fb7185" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18v16H3z M3 9.3h18 M3 14.6h18 M9 4v5.3 M15 9.3v5.3 M9 14.6V20"/></g>
+  <text x="467" y="333" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">AWS WAF</text>
+  <text x="467" y="350" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">rate rules</text>
+</g>
+<g class="node" id="node-s3web" data-role="storage">
+  <rect x="408" y="404" width="194" height="62" rx="8" fill="#0a1020"/>
+  <rect x="408" y="404" width="194" height="62" rx="8" fill="rgba(251,191,36,0.13)" stroke="#fbbf24" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="421" y="418" width="34" height="34" rx="7" fill="rgba(251,191,36,0.16)" stroke="rgba(251,191,36,0.45)" stroke-width="1"/>
+  <g transform="translate(428 425) scale(0.8332999999999999)" fill="none" stroke="#fbbf24" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16l-1.8 13.2a2 2 0 0 1-2 1.8H7.8a2 2 0 0 1-2-1.8z M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3 M4 6c0 1.7 3.6 3 8 3s8-1.3 8-3"/></g>
+  <text x="467" y="431" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">S3 Static Site</text>
+  <text x="467" y="448" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">SPA assets</text>
+</g>
+<g class="node" id="node-apigw" data-role="gateway">
+  <rect x="762" y="208" width="194" height="62" rx="8" fill="#0a1020"/>
+  <rect x="762" y="208" width="194" height="62" rx="8" fill="rgba(129,140,248,0.13)" stroke="#818cf8" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="775" y="222" width="34" height="34" rx="7" fill="rgba(129,140,248,0.16)" stroke="rgba(129,140,248,0.45)" stroke-width="1"/>
+  <g transform="translate(782 229) scale(0.8332999999999999)" fill="none" stroke="#818cf8" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9h6v6H9z M12 2v7 M12 15v7 M2 12h7 M15 12h7 M5 9l-3 3 3 3 M19 9l3 3-3 3"/></g>
+  <text x="821" y="235" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">API Gateway</text>
+  <text x="821" y="252" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">REST · usage plans</text>
+</g>
+<g class="node" id="node-cognito" data-role="security">
+  <rect x="1065" y="208" width="194" height="62" rx="8" fill="#0a1020"/>
+  <rect x="1065" y="208" width="194" height="62" rx="8" fill="rgba(251,113,133,0.13)" stroke="#fb7185" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="1078" y="222" width="34" height="34" rx="7" fill="rgba(251,113,133,0.16)" stroke="rgba(251,113,133,0.45)" stroke-width="1"/>
+  <g transform="translate(1085 229) scale(0.8332999999999999)" fill="none" stroke="#fb7185" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7a4 4 0 1 1-3.9 4.9L3 20v-3h3v-3h3l2.1-2.1A4 4 0 0 1 15 7z M16 9.5h.01"/></g>
+  <text x="1124" y="235" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Cognito</text>
+  <text x="1124" y="252" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">user pools</text>
+</g>
+<g class="node" id="node-fn_catalog" data-role="compute">
+  <rect x="762" y="306" width="194" height="62" rx="8" fill="#0a1020"/>
+  <rect x="762" y="306" width="194" height="62" rx="8" fill="rgba(52,211,153,0.13)" stroke="#34d399" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="775" y="320" width="34" height="34" rx="7" fill="rgba(52,211,153,0.16)" stroke="rgba(52,211,153,0.45)" stroke-width="1"/>
+  <g transform="translate(782 327) scale(0.8332999999999999)" fill="none" stroke="#34d399" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3.5l9.5 16 M12.2 11.8L6 20 M15 20h4"/></g>
+  <text x="821" y="333" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">catalog-fn</text>
+  <text x="821" y="350" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">Lambda</text>
+</g>
+<g class="node" id="node-fn_cart" data-role="compute">
+  <rect x="1065" y="306" width="194" height="62" rx="8" fill="#0a1020"/>
+  <rect x="1065" y="306" width="194" height="62" rx="8" fill="rgba(52,211,153,0.13)" stroke="#34d399" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="1078" y="320" width="34" height="34" rx="7" fill="rgba(52,211,153,0.16)" stroke="rgba(52,211,153,0.45)" stroke-width="1"/>
+  <g transform="translate(1085 327) scale(0.8332999999999999)" fill="none" stroke="#34d399" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3.5l9.5 16 M12.2 11.8L6 20 M15 20h4"/></g>
+  <text x="1124" y="333" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">cart-fn</text>
+  <text x="1124" y="350" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">Lambda</text>
+</g>
+<g class="node" id="node-fn_checkout" data-role="compute">
+  <rect x="762" y="404" width="194" height="62" rx="8" fill="#0a1020"/>
+  <rect x="762" y="404" width="194" height="62" rx="8" fill="rgba(52,211,153,0.13)" stroke="#34d399" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="775" y="418" width="34" height="34" rx="7" fill="rgba(52,211,153,0.16)" stroke="rgba(52,211,153,0.45)" stroke-width="1"/>
+  <g transform="translate(782 425) scale(0.8332999999999999)" fill="none" stroke="#34d399" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3.5l9.5 16 M12.2 11.8L6 20 M15 20h4"/></g>
+  <text x="821" y="431" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">checkout-fn</text>
+  <text x="821" y="448" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">Lambda</text>
+</g>
+<g class="node" id="node-fn_search" data-role="compute">
+  <rect x="1065" y="404" width="194" height="62" rx="8" fill="#0a1020"/>
+  <rect x="1065" y="404" width="194" height="62" rx="8" fill="rgba(52,211,153,0.13)" stroke="#34d399" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="1078" y="418" width="34" height="34" rx="7" fill="rgba(52,211,153,0.16)" stroke="rgba(52,211,153,0.45)" stroke-width="1"/>
+  <g transform="translate(1085 425) scale(0.8332999999999999)" fill="none" stroke="#34d399" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3.5l9.5 16 M12.2 11.8L6 20 M15 20h4"/></g>
+  <text x="1124" y="431" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">search-fn</text>
+  <text x="1124" y="448" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">Lambda</text>
+</g>
+<g class="node" id="node-ddb" data-role="data">
+  <rect x="1379" y="208" width="194" height="62" rx="8" fill="#0a1020"/>
+  <rect x="1379" y="208" width="194" height="62" rx="8" fill="rgba(167,139,250,0.13)" stroke="#a78bfa" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="1392" y="222" width="34" height="34" rx="7" fill="rgba(167,139,250,0.16)" stroke="rgba(167,139,250,0.45)" stroke-width="1"/>
+  <g transform="translate(1399 229) scale(0.8332999999999999)" fill="none" stroke="#a78bfa" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C7 2 3 3.8 3 6v12c0 2.2 4 4 9 4s9-1.8 9-4V6c0-2.2-4-4-9-4z M3 6c0 2.2 4 4 9 4s9-1.8 9-4 M3 12c0 2.2 4 4 9 4s9-1.8 9-4"/></g>
+  <text x="1438" y="235" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">DynamoDB</text>
+  <text x="1438" y="252" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">products · carts</text>
+</g>
+<g class="node" id="node-os" data-role="data">
+  <rect x="1379" y="306" width="194" height="62" rx="8" fill="#0a1020"/>
+  <rect x="1379" y="306" width="194" height="62" rx="8" fill="rgba(167,139,250,0.13)" stroke="#a78bfa" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="1392" y="320" width="34" height="34" rx="7" fill="rgba(167,139,250,0.16)" stroke="rgba(167,139,250,0.45)" stroke-width="1"/>
+  <g transform="translate(1399 327) scale(0.8332999999999999)" fill="none" stroke="#a78bfa" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z M21 21l-4.3-4.3"/></g>
+  <text x="1438" y="333" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">OpenSearch</text>
+  <text x="1438" y="350" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">product search</text>
+</g>
+<g class="node" id="node-s3img" data-role="storage">
+  <rect x="1379" y="404" width="194" height="62" rx="8" fill="#0a1020"/>
+  <rect x="1379" y="404" width="194" height="62" rx="8" fill="rgba(251,191,36,0.13)" stroke="#fbbf24" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="1392" y="418" width="34" height="34" rx="7" fill="rgba(251,191,36,0.16)" stroke="rgba(251,191,36,0.45)" stroke-width="1"/>
+  <g transform="translate(1399 425) scale(0.8332999999999999)" fill="none" stroke="#fbbf24" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16l-1.8 13.2a2 2 0 0 1-2 1.8H7.8a2 2 0 0 1-2-1.8z M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3 M4 6c0 1.7 3.6 3 8 3s8-1.3 8-3"/></g>
+  <text x="1438" y="431" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">S3 Media</text>
+  <text x="1438" y="448" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">product images</text>
+</g>
+<g class="node" id="node-eb" data-role="queue">
+  <rect x="166" y="582" width="194" height="62" rx="8" fill="#0a1020"/>
+  <rect x="166" y="582" width="194" height="62" rx="8" fill="rgba(251,146,60,0.13)" stroke="#fb923c" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="179" y="596" width="34" height="34" rx="7" fill="rgba(251,146,60,0.16)" stroke="rgba(251,146,60,0.45)" stroke-width="1"/>
+  <g transform="translate(186 603) scale(0.8332999999999999)" fill="none" stroke="#fb923c" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8c2.5-3.3 5-3.3 7.5 0s5 3.3 7.5 0 3.5-3.3 5 0 M2 16c2.5-3.3 5-3.3 7.5 0s5 3.3 7.5 0 3.5-3.3 5 0"/></g>
+  <text x="225" y="609" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">EventBridge</text>
+  <text x="225" y="626" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">order bus</text>
+</g>
+<g class="node" id="node-sqs" data-role="queue">
+  <rect x="408" y="582" width="194" height="62" rx="8" fill="#0a1020"/>
+  <rect x="408" y="582" width="194" height="62" rx="8" fill="rgba(251,146,60,0.13)" stroke="#fb923c" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="421" y="596" width="34" height="34" rx="7" fill="rgba(251,146,60,0.16)" stroke="rgba(251,146,60,0.45)" stroke-width="1"/>
+  <g transform="translate(428 603) scale(0.8332999999999999)" fill="none" stroke="#fb923c" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h4v10H3z M10 7h4v10h-4z M17 7h4v10h-4z"/></g>
+  <text x="467" y="609" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">SQS</text>
+  <text x="467" y="626" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">fulfilment queue</text>
+</g>
+<g class="node" id="node-fn_fulfil" data-role="compute">
+  <rect x="650" y="582" width="194" height="62" rx="8" fill="#0a1020"/>
+  <rect x="650" y="582" width="194" height="62" rx="8" fill="rgba(52,211,153,0.13)" stroke="#34d399" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="663" y="596" width="34" height="34" rx="7" fill="rgba(52,211,153,0.16)" stroke="rgba(52,211,153,0.45)" stroke-width="1"/>
+  <g transform="translate(670 603) scale(0.8332999999999999)" fill="none" stroke="#34d399" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3.5l9.5 16 M12.2 11.8L6 20 M15 20h4"/></g>
+  <text x="709" y="609" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">fulfil-fn</text>
+  <text x="709" y="626" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">Lambda</text>
+</g>
+<g class="node" id="node-ses" data-role="external">
+  <rect x="1080" y="582" width="194" height="62" rx="8" fill="#0a1020"/>
+  <rect x="1080" y="582" width="194" height="62" rx="8" fill="rgba(148,163,184,0.13)" stroke="#94a3b8" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="1093" y="596" width="34" height="34" rx="7" fill="rgba(148,163,184,0.16)" stroke="rgba(148,163,184,0.45)" stroke-width="1"/>
+  <g transform="translate(1100 603) scale(0.8332999999999999)" fill="none" stroke="#94a3b8" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M22 6l-10 7L2 6"/></g>
+  <text x="1139" y="609" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Amazon SES</text>
+  <text x="1139" y="626" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">receipts</text>
+</g>
+<g class="node" id="node-psp" data-role="external">
+  <rect x="1322" y="582" width="194" height="62" rx="8" fill="#0a1020"/>
+  <rect x="1322" y="582" width="194" height="62" rx="8" fill="rgba(148,163,184,0.13)" stroke="#94a3b8" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="1335" y="596" width="34" height="34" rx="7" fill="rgba(148,163,184,0.16)" stroke="rgba(148,163,184,0.45)" stroke-width="1"/>
+  <g transform="translate(1342 603) scale(0.8332999999999999)" fill="none" stroke="#94a3b8" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z M2 10h20 M6 15h4"/></g>
+  <text x="1381" y="609" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Payment PSP</text>
+  <text x="1381" y="626" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">Stripe</text>
+</g></g>
+  <g id="connections"><g class="edge" id="edge-e0" data-from="users" data-to="edge" data-kind="sync">
+  <path d="M 278 329 L 384 329" fill="none" stroke="#22d3ee" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 278 329 L 384 329" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-sync)"/>
+</g>
+<g class="edge" id="edge-e1" data-from="cf" data-to="s3web" data-kind="data">
+  <path d="M 408 239 L 401 239 Q 394 239 394 246 L 394 428 Q 394 435 401 435 L 408 435" fill="none" stroke="#34d399" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 408 239 L 401 239 Q 394 239 394 246 L 394 428 Q 394 435 401 435 L 408 435" fill="none" stroke="#34d399" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-data)"/>
+</g>
+<g class="edge" id="edge-e2" data-from="edge" data-to="apigw" data-kind="sync">
+  <path d="M 626 239 L 762 239" fill="none" stroke="#22d3ee" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 626 239 L 762 239" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-sync)"/>
+</g>
+<g class="edge" id="edge-e3" data-from="apigw" data-to="cognito" data-kind="auth">
+  <path d="M 956 239 L 1065 239" fill="none" stroke="#fb7185" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 956 239 L 1065 239" fill="none" stroke="#fb7185" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="2 4" marker-end="url(#arrow-auth)"/>
+</g>
+<g class="edge" id="edge-e4" data-from="fn_catalog" data-to="ddb" data-kind="data">
+  <path d="M 956 337 L 1041 337 Q 1051 337 1051 327 L 1051 299 Q 1051 289 1061 289 L 1355 289 Q 1365 289 1365 279 L 1365 246 Q 1365 239 1372 239 L 1379 239" fill="none" stroke="#34d399" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 956 337 L 1041 337 Q 1051 337 1051 327 L 1051 299 Q 1051 289 1061 289 L 1355 289 Q 1365 289 1365 279 L 1365 246 Q 1365 239 1372 239 L 1379 239" fill="none" stroke="#34d399" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-data)"/>
+</g>
+<g class="edge" id="edge-e5" data-from="fn_search" data-to="os" data-kind="data">
+  <path d="M 1259 435 L 1355 435 Q 1365 435 1365 425 L 1365 344 Q 1365 337 1372 337 L 1379 337" fill="none" stroke="#34d399" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 1259 435 L 1355 435 Q 1365 435 1365 425 L 1365 344 Q 1365 337 1372 337 L 1379 337" fill="none" stroke="#34d399" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-data)"/>
+</g>
+<g class="edge" id="edge-e6" data-from="fn_checkout" data-to="psp" data-kind="sync">
+  <path d="M 956 435 L 1041 435 Q 1051 435 1051 445 L 1051 522 Q 1051 532 1061 532 L 1298 532 Q 1308 532 1308 542 L 1308 606 Q 1308 613 1315 613 L 1322 613" fill="none" stroke="#22d3ee" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 956 435 L 1041 435 Q 1051 435 1051 445 L 1051 522 Q 1051 532 1061 532 L 1298 532 Q 1308 532 1308 542 L 1308 606 Q 1308 613 1315 613 L 1322 613" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-sync)"/>
+</g>
+<g class="edge" id="edge-e7" data-from="fn_checkout" data-to="eb" data-kind="async">
+  <path d="M 762 435 L 646 435 Q 636 435 636 445 L 636 551.5 Q 636 561.5 626 561.5 L 404 561.5 Q 394 561.5 394 571.5 L 394 594 Q 394 604 384 604 L 360 604" fill="none" stroke="#c084fc" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 762 435 L 646 435 Q 636 435 636 445 L 636 551.5 Q 636 561.5 626 561.5 L 404 561.5 Q 394 561.5 394 571.5 L 394 594 Q 394 604 384 604 L 360 604" fill="none" stroke="#c084fc" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow-async)"/>
+</g>
+<g class="edge" id="edge-e8" data-from="eb" data-to="sqs" data-kind="async">
+  <path d="M 360 622 L 408 622" fill="none" stroke="#c084fc" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 360 622 L 408 622" fill="none" stroke="#c084fc" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow-async)"/>
+</g>
+<g class="edge" id="edge-e9" data-from="sqs" data-to="fn_fulfil" data-kind="async">
+  <path d="M 602 613 L 650 613" fill="none" stroke="#c084fc" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 602 613 L 650 613" fill="none" stroke="#c084fc" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow-async)"/>
+</g>
+<g class="edge" id="edge-e10" data-from="fn_fulfil" data-to="ses" data-kind="sync">
+  <path d="M 844 613 L 1080 613" fill="none" stroke="#22d3ee" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 844 613 L 1080 613" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-sync)"/>
+</g></g>
+  <g id="labels"><g class="edge-label" data-edge="e0">
+  <rect x="322" y="319" width="50" height="20" rx="10" fill="#020617" stroke="#22d3ee" stroke-width="1"/>
+  <text x="347" y="332.6" text-anchor="middle" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="10.5" font-weight="500">HTTPS</text>
+</g><g class="badge" data-edge="e0"><circle cx="299" cy="329" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="299" cy="329" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="299" y="333.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">1</text></g>
 
-  <g class="tier" data-id="edge">
-    <rect x="36" y="312" width="346" height="306" rx="10" ry="10"
-      fill="rgba(56,189,248,0.04)" stroke="rgba(56,189,248,0.45)" stroke-width="1" stroke-dasharray="5 4"/>
-    
-    <path d="M 44 330 L 44 320 L 54 320" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 374 330 L 374 320 L 364 320" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 44 600 L 44 610 L 54 610" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 374 600 L 374 610 L 364 610" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <text x="52" y="334" fill="#8B9BB8" font-family="ui-monospace, JetBrains Mono, SF Mono, Menlo, monospace" font-size="12"
-      letter-spacing="0.12em" font-weight="500">02 / EDGE &amp; DNS</text>
-  </g>
+<g class="edge-label" data-edge="e2">
+  <rect x="666" y="229" width="56" height="20" rx="10" fill="#020617" stroke="#22d3ee" stroke-width="1"/>
+  <text x="694" y="242.6" text-anchor="middle" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="10.5" font-weight="500">/api/*</text>
+</g><g class="badge" data-edge="e2"><circle cx="647" cy="239" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="647" cy="239" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="647" y="243.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">2</text></g>
+<g class="edge-label" data-edge="e3">
+  <rect x="973" y="229" width="75" height="20" rx="10" fill="#020617" stroke="#fb7185" stroke-width="1"/>
+  <text x="1010.5" y="242.6" text-anchor="middle" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="10.5" font-weight="500">authorize</text>
+</g>
+<g class="badge" data-edge="e4"><circle cx="977" cy="337" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="977" cy="337" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="977" y="341.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">3</text></g>
 
-  <g class="tier" data-id="use1">
-    <rect x="414" y="112" width="504" height="436" rx="10" ry="10"
-      fill="rgba(56,189,248,0.04)" stroke="rgba(56,189,248,0.45)" stroke-width="1" stroke-dasharray="5 4"/>
-    
-    <path d="M 422 130 L 422 120 L 432 120" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 910 130 L 910 120 L 900 120" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 422 530 L 422 540 L 432 540" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 910 530 L 910 540 L 900 540" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <text x="430" y="134" fill="#8B9BB8" font-family="ui-monospace, JetBrains Mono, SF Mono, Menlo, monospace" font-size="12"
-      letter-spacing="0.12em" font-weight="500">03 / US-EAST-1 PRIMARY</text>
-  </g>
+<g class="badge" data-edge="e6"><circle cx="977" cy="435" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="977" cy="435" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="977" y="439.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">4</text></g>
+<g class="edge-label" data-edge="e7">
+  <rect x="471" y="552" width="88" height="20" rx="10" fill="#020617" stroke="#c084fc" stroke-width="1"/>
+  <text x="515" y="565.6" text-anchor="middle" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="10.5" font-weight="500">OrderPlaced</text>
+</g><g class="badge" data-edge="e7"><circle cx="741" cy="435" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="741" cy="435" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="741" y="439.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">5</text></g>
 
-  <g class="tier" data-id="usw2">
-    <rect x="950" y="112" width="346" height="306" rx="10" ry="10"
-      fill="rgba(56,189,248,0.04)" stroke="rgba(56,189,248,0.45)" stroke-width="1" stroke-dasharray="5 4"/>
-    
-    <path d="M 958 130 L 958 120 L 968 120" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 1288 130 L 1288 120 L 1278 120" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 958 400 L 958 410 L 968 410" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 1288 400 L 1288 410 L 1278 410" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <text x="966" y="134" fill="#8B9BB8" font-family="ui-monospace, JetBrains Mono, SF Mono, Menlo, monospace" font-size="12"
-      letter-spacing="0.12em" font-weight="500">04 / US-WEST-2 SECONDARY</text>
-  </g>
 
-  <g class="tier" data-id="ext">
-    <rect x="1328" y="112" width="378" height="110" rx="10" ry="10"
-      fill="rgba(251,191,36,0.06)" stroke="#FBBF24" stroke-width="1" stroke-dasharray="0"/>
-    
-    <path d="M 1336 130 L 1336 120 L 1346 120" fill="none" stroke="#FBBF24" stroke-width="1.5"/>
-    <path d="M 1698 130 L 1698 120 L 1688 120" fill="none" stroke="#FBBF24" stroke-width="1.5"/>
-    <path d="M 1336 204 L 1336 214 L 1346 214" fill="none" stroke="#FBBF24" stroke-width="1.5"/>
-    <path d="M 1698 204 L 1698 214 L 1688 214" fill="none" stroke="#FBBF24" stroke-width="1.5"/>
-    <text x="1344" y="134" fill="#8B9BB8" font-family="ui-monospace, JetBrains Mono, SF Mono, Menlo, monospace" font-size="12"
-      letter-spacing="0.12em" font-weight="500">05 / THIRD-PARTY</text>
-  </g>
-
-  <g class="tier" data-id="obs">
-    <rect x="1328" y="246" width="378" height="306" rx="10" ry="10"
-      fill="rgba(56,189,248,0.04)" stroke="rgba(56,189,248,0.45)" stroke-width="1" stroke-dasharray="5 4"/>
-    
-    <path d="M 1336 264 L 1336 254 L 1346 254" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 1698 264 L 1698 254 L 1688 254" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 1336 534 L 1336 544 L 1346 544" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 1698 534 L 1698 544 L 1688 544" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <text x="1344" y="268" fill="#8B9BB8" font-family="ui-monospace, JetBrains Mono, SF Mono, Menlo, monospace" font-size="12"
-      letter-spacing="0.12em" font-weight="500">06 / OBSERVABILITY</text>
-  </g>
-  
-  <g class="edge">
-    <path d="M 105.2 288 L 105.2 312" fill="none" stroke="#22D3EE" stroke-width="1.5" 
-      marker-end="url(#arrow-sync)" style="filter:url(#edgeGlow);"/>
-    
-    
-    <circle cx="123.2" cy="316" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="2"
-      style="filter:url(#badgeGlow)"/>
-    <text x="123.2" y="321" text-anchor="middle" fill="#FFFFFF"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">1</text>
-  </g>
-
-  <g class="edge">
-    <path d="M 382 373.2 L 382 209.2 Q 382 199.2 392 199.2 L 414 199.2" fill="none" stroke="#22D3EE" stroke-width="1.5" 
-      marker-end="url(#arrow-sync)" style="filter:url(#edgeGlow);"/>
-    
-    <rect x="347.1" y="275.2" width="69.80000000000001" height="22" rx="11" ry="11"
-      fill="#0B1020" stroke="#22D3EE" stroke-width="1" opacity="0.95"/>
-    <text x="382" y="291.2" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12" font-weight="600">primary</text>
-    
-    <circle cx="400" cy="345.2" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="2"
-      style="filter:url(#badgeGlow)"/>
-    <text x="400" y="350.2" text-anchor="middle" fill="#FFFFFF"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">2</text>
-  </g>
-
-  <g class="edge">
-    <path d="M 382 434.4 L 382 183.2 Q 382 173.2 392 173.2 L 950 173.2" fill="none" stroke="#22D3EE" stroke-width="1.5" 
-      marker-end="url(#arrow-sync)" style="filter:url(#edgeGlow);"/>
-    
-    <rect x="627.4" y="117" width="77.2" height="22" rx="11" ry="11"
-      fill="#0B1020" stroke="#22D3EE" stroke-width="1" opacity="0.95"/>
-    <text x="666" y="133" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12" font-weight="600">failover</text>
-    
-  </g>
-
-  <g class="edge">
-    <path d="M 578 168.8 L 596 168.8" fill="none" stroke="#22D3EE" stroke-width="1.5" 
-      marker-end="url(#arrow-sync)" style="filter:url(#edgeGlow);"/>
-    
-    
-    <circle cx="606" cy="150.8" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="2"
-      style="filter:url(#badgeGlow)"/>
-    <text x="606" y="155.8" text-anchor="middle" fill="#FFFFFF"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">3</text>
-  </g>
-
-  <g class="edge">
-    <path d="M 624 260 L 624 276" fill="none" stroke="#22D3EE" stroke-width="1.5" 
-      marker-end="url(#arrow-sync)" style="filter:url(#edgeGlow);"/>
-    
-    
-  </g>
-
-  <g class="edge">
-    <path d="M 736 298.8 L 741.31 298.8 Q 746.62 298.8 746.62 293.49 L 746.62 172.49 Q 746.62 168.8 750.31 168.8 L 754 168.8" fill="none" stroke="#22D3EE" stroke-width="1.5" 
-      marker-end="url(#arrow-sync)" style="filter:url(#edgeGlow);"/>
-    
-    
-  </g>
-
-  <g class="edge">
-    <path d="M 736 321.6 L 1342 321.6 Q 1352 321.6 1352 311.6 L 1352 155.6" fill="none" stroke="#22D3EE" stroke-width="1.5" 
-      marker-end="url(#arrow-sync)" style="filter:url(#edgeGlow);"/>
-    
-    
-    <circle cx="764" cy="303.6" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="2"
-      style="filter:url(#badgeGlow)"/>
-    <text x="764" y="308.6" text-anchor="middle" fill="#FFFFFF"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">4</text>
-  </g>
-
-  <g class="edge">
-    <path d="M 624 390 L 624 406" fill="none" stroke="#34D399" stroke-width="1.5" 
-      marker-end="url(#arrow-data)" style="filter:url(#edgeGlow);"/>
-    
-    
-    <circle cx="642" cy="418" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="2"
-      style="filter:url(#badgeGlow)"/>
-    <text x="642" y="423" text-anchor="middle" fill="#FFFFFF"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">5</text>
-  </g>
-
-  <g class="edge">
-    <path d="M 754 191.6 L 754 418.8 Q 754 428.8 744 428.8 L 578 428.8" fill="none" stroke="#34D399" stroke-width="1.5" 
-      marker-end="url(#arrow-data)" style="filter:url(#edgeGlow);"/>
-    
-    
-  </g>
-
-  <g class="edge">
-    <path d="M 736 344.4 L 739.15 344.4 Q 742.3 344.4 742.3 347.54999999999995 L 742.3 422.95 Q 742.3 428.8 748.15 428.8 L 754 428.8" fill="none" stroke="#A78BFA" stroke-width="1.5" stroke-dasharray="6 4"
-      marker-end="url(#arrow-async)" style="filter:url(#edgeGlow);"/>
-    
-    
-    <circle cx="764" cy="326.4" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="2"
-      style="filter:url(#badgeGlow)"/>
-    <text x="764" y="331.4" text-anchor="middle" fill="#FFFFFF"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">6</text>
-  </g>
-
-  <g class="edge">
-    <path d="M 894 428.8 L 1516 428.8 Q 1526 428.8 1526 418.8 L 1526 155.6" fill="none" stroke="#A78BFA" stroke-width="1.5" stroke-dasharray="6 4"
-      marker-end="url(#arrow-async)" style="filter:url(#edgeGlow);"/>
-    
-    
-  </g>
-
-  <g class="edge">
-    <path d="M 736 428.8 L 1122 428.8 Q 1132 428.8 1132 418.8 L 1132 298.8" fill="none" stroke="#A78BFA" stroke-width="1.5" stroke-dasharray="6 4"
-      marker-end="url(#arrow-async)" style="filter:url(#edgeGlow);"/>
-    
-    <rect x="899.1" y="417.8" width="69.80000000000001" height="22" rx="11" ry="11"
-      fill="#0B1020" stroke="#A78BFA" stroke-width="1" opacity="0.95"/>
-    <text x="934" y="433.8" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12" font-weight="600">replica</text>
-    
-    <circle cx="764" cy="410.8" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="2"
-      style="filter:url(#badgeGlow)"/>
-    <text x="764" y="415.8" text-anchor="middle" fill="#FFFFFF"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">7</text>
-  </g>
-
-  <g class="edge">
-    <path d="M 918 199.2 L 918 297.2 Q 918 307.2 928 307.2 L 1328 307.2" fill="none" stroke="#A78BFA" stroke-width="1.5" stroke-dasharray="6 4"
-      marker-end="url(#arrow-async)" style="filter:url(#edgeGlow);"/>
-    
-    
-  </g>
-
-  <g class="edge">
-    <path d="M 1508 302.8 L 1526 302.8" fill="none" stroke="#34D399" stroke-width="1.5" 
-      marker-end="url(#arrow-data)" style="filter:url(#edgeGlow);"/>
-    
-    
-  </g>
-
-  <g class="edge">
-    <path d="M 1526 325.6 L 1526 423.8 Q 1526 432.8 1517 432.8 L 1508 432.8" fill="none" stroke="#22D3EE" stroke-width="1.5" 
-      marker-end="url(#arrow-sync)" style="filter:url(#edgeGlow);"/>
-    
-    
-  </g>
-  
-  <g class="card" data-id="users">
-    <rect x="60" y="146" width="140" height="114" rx="12" ry="12"
-      fill="rgba(255,255,255,0.06)" stroke="#94A3B8" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(116, 162)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2 M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg></g>
-    <text x="130" y="204" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">Users</text>
-    
-  </g>
-
-  <g class="card" data-id="web">
-    <rect x="218" y="146" width="140" height="114" rx="12" ry="12"
-      fill="rgba(255,255,255,0.06)" stroke="#94A3B8" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(274, 162)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6z M2 10h20"/></svg></g>
-    <text x="288" y="204" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">Web / Mobile</text>
-    
-  </g>
-
-  <g class="card" data-id="cf">
-    <rect x="60" y="346" width="140" height="114" rx="12" ry="12"
-      fill="rgba(255,255,255,0.06)" stroke="#38BDF8" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(116, 362)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M2 12h20 M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></g>
-    <text x="130" y="404" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">CDN</text>
-    
-  </g>
-
-  <g class="card" data-id="r53">
-    <rect x="218" y="346" width="140" height="114" rx="12" ry="12"
-      fill="rgba(255,255,255,0.06)" stroke="#38BDF8" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(274, 362)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M2 12h20 M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></g>
-    <text x="288" y="404" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">DNS</text>
-    <text x="288" y="422" text-anchor="middle" fill="#8B9BB8" font-family="ui-monospace, JetBrains Mono, SF Mono, Menlo, monospace" font-size="11">latency</text>
-  </g>
-
-  <g class="card" data-id="waf">
-    <rect x="60" y="476" width="140" height="114" rx="12" ry="12"
-      fill="rgba(255,255,255,0.06)" stroke="#F472B6" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(116, 492)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F472B6" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></g>
-    <text x="130" y="534" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">WAF</text>
-    
-  </g>
-
-  <g class="card" data-id="alb_e">
-    <rect x="438" y="146" width="140" height="114" rx="12" ry="12"
-      fill="rgba(255,255,255,0.06)" stroke="#FB923C" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(494, 162)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FB923C" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z M2 17l10 5 10-5 M2 12l10 5 10-5"/></svg></g>
-    <text x="508" y="204" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">ALB</text>
-    
-  </g>
-
-  <g class="card" data-id="gw_e">
-    <rect x="596" y="146" width="140" height="114" rx="12" ry="12"
-      fill="rgba(255,255,255,0.06)" stroke="#FB923C" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(652, 162)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FB923C" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z M2 17l10 5 10-5 M2 12l10 5 10-5"/></svg></g>
-    <text x="666" y="204" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">API Gateway</text>
-    
-  </g>
-
-  <g class="card" data-id="cart">
-    <rect x="754" y="146" width="140" height="114" rx="12" ry="12"
-      fill="rgba(255,255,255,0.06)" stroke="#22D3EE" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(810, 162)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M4 14h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z M6 8h.01 M6 18h.01"/></svg></g>
-    <text x="824" y="204" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">Cart</text>
-    
-  </g>
-
-  <g class="card" data-id="catalog">
-    <rect x="438" y="276" width="140" height="114" rx="12" ry="12"
-      fill="rgba(255,255,255,0.06)" stroke="#22D3EE" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(494, 292)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M4 14h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z M6 8h.01 M6 18h.01"/></svg></g>
-    <text x="508" y="334" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">Catalog</text>
-    
-  </g>
-
-  <g class="card" data-id="checkout">
-    <rect x="596" y="276" width="140" height="114" rx="12" ry="12"
-      fill="rgba(255,255,255,0.06)" stroke="#22D3EE" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(652, 292)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M4 14h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z M6 8h.01 M6 18h.01"/></svg></g>
-    <text x="666" y="334" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">Checkout</text>
-    
-  </g>
-
-  <g class="card" data-id="search">
-    <rect x="754" y="276" width="140" height="114" rx="12" ry="12"
-      fill="rgba(255,255,255,0.06)" stroke="#22D3EE" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(810, 292)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z M21 21l-4.3-4.3"/></svg></g>
-    <text x="824" y="334" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">Search</text>
-    
-  </g>
-
-  <g class="card" data-id="redis_e">
-    <rect x="438" y="406" width="140" height="114" rx="12" ry="12"
-      fill="rgba(255,255,255,0.06)" stroke="#34D399" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(494, 422)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6 M12 16v6 M4.9 4.9l4.2 4.2 M14.9 14.9l4.2 4.2 M2 12h6 M16 12h6 M4.9 19.1l4.2-4.2 M14.9 9.1l4.2-4.2"/></svg></g>
-    <text x="508" y="464" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">Redis</text>
-    
-  </g>
-
-  <g class="card" data-id="aurora_e">
-    <rect x="596" y="406" width="140" height="114" rx="12" ry="12"
-      fill="rgba(255,255,255,0.06)" stroke="#34D399" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(652, 422)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C7 2 3 3.8 3 6v12c0 2.2 4 4 9 4s9-1.8 9-4V6c0-2.2-4-4-9-4z M3 6c0 2.2 4 4 9 4s9-1.8 9-4 M3 12c0 2.2 4 4 9 4s9-1.8 9-4"/></svg></g>
-    <text x="666" y="464" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">Aurora</text>
-    
-  </g>
-
-  <g class="card" data-id="msk_e">
-    <rect x="754" y="406" width="140" height="114" rx="12" ry="12"
-      fill="rgba(255,255,255,0.06)" stroke="#A78BFA" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(810, 422)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16 M4 12h16 M4 18h10 M18 16l4 2-4 2"/></svg></g>
-    <text x="824" y="464" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">MSK</text>
-    
-  </g>
-
-  <g class="card" data-id="alb_w">
-    <rect x="974" y="146" width="140" height="114" rx="12" ry="12"
-      fill="rgba(255,255,255,0.06)" stroke="#FB923C" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(1030, 162)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FB923C" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z M2 17l10 5 10-5 M2 12l10 5 10-5"/></svg></g>
-    <text x="1044" y="204" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">ALB</text>
-    
-  </g>
-
-  <g class="card" data-id="cart_w">
-    <rect x="1132" y="146" width="140" height="114" rx="12" ry="12"
-      fill="rgba(255,255,255,0.06)" stroke="#22D3EE" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(1188, 162)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z M2 17l10 5 10-5 M2 12l10 5 10-5"/></svg></g>
-    <text x="1202" y="204" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">Cart</text>
-    
-  </g>
-
-  <g class="card" data-id="catalog_w">
-    <rect x="974" y="276" width="140" height="114" rx="12" ry="12"
-      fill="rgba(255,255,255,0.06)" stroke="#22D3EE" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(1030, 292)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z M2 17l10 5 10-5 M2 12l10 5 10-5"/></svg></g>
-    <text x="1044" y="334" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">Catalog</text>
-    
-  </g>
-
-  <g class="card" data-id="aurora_w">
-    <rect x="1132" y="276" width="140" height="114" rx="12" ry="12"
-      fill="rgba(255,255,255,0.06)" stroke="#34D399" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(1188, 292)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C7 2 3 3.8 3 6v12c0 2.2 4 4 9 4s9-1.8 9-4V6c0-2.2-4-4-9-4z M3 6c0 2.2 4 4 9 4s9-1.8 9-4 M3 12c0 2.2 4 4 9 4s9-1.8 9-4"/></svg></g>
-    <text x="1202" y="334" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">Aurora replica</text>
-    
-  </g>
-
-  <g class="card" data-id="stripe">
-    <rect x="1352" y="146" width="156" height="48" rx="8" ry="8"
-      fill="rgba(255,255,255,0.06)" stroke="#94A3B8" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    
-    <text x="1430" y="175" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">Payment Provider</text>
-    
-  </g>
-
-  <g class="card" data-id="ses">
-    <rect x="1526" y="146" width="156" height="48" rx="8" ry="8"
-      fill="rgba(255,255,255,0.06)" stroke="#94A3B8" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    
-    <text x="1604" y="175" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">Email / SMS</text>
-    
-  </g>
-
-  <g class="card" data-id="otel">
-    <rect x="1368" y="280" width="140" height="114" rx="12" ry="12"
-      fill="rgba(255,255,255,0.06)" stroke="#F472B6" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(1424, 296)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F472B6" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18 M7 14l4-4 4 4 5-6"/></svg></g>
-    <text x="1438" y="338" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">OTel</text>
-    
-  </g>
-
-  <g class="card" data-id="prom">
-    <rect x="1526" y="280" width="140" height="114" rx="12" ry="12"
-      fill="rgba(255,255,255,0.06)" stroke="#F472B6" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(1582, 296)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F472B6" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18 M7 14l4-4 4 4 5-6"/></svg></g>
-    <text x="1596" y="338" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">Prometheus</text>
-    
-  </g>
-
-  <g class="card" data-id="graf">
-    <rect x="1368" y="410" width="140" height="114" rx="12" ry="12"
-      fill="rgba(255,255,255,0.06)" stroke="#F472B6" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(1424, 426)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F472B6" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18 M7 14l4-4 4 4 5-6"/></svg></g>
-    <text x="1438" y="468" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">Grafana</text>
-    
-  </g>
-  
-  <g class="sidebar">
-    <rect x="1730" y="112" width="300" height="690" rx="12" ry="12"
-      fill="rgba(15,23,42,0.85)" stroke="rgba(148,163,184,0.25)" stroke-width="1"/>
-    <text x="1750" y="140" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="16" font-weight="700">Steps</text>
-    <circle cx="1758" cy="172" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="1.5"/>
-    <text x="1758" y="177" text-anchor="middle" fill="#FFFFFF"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">1</text>
-    <text x="1780" y="168" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="14" font-weight="700">Clients → Edge</text><text x="1780" y="186" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">CDN / DNS / WAF</text>
-    <circle cx="1758" cy="218" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="1.5"/>
-    <text x="1758" y="223" text-anchor="middle" fill="#FFFFFF"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">2</text>
-    <text x="1780" y="214" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="14" font-weight="700">Route primary</text><text x="1780" y="232" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">Traffic to us-east-1</text>
-    <circle cx="1758" cy="264" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="1.5"/>
-    <text x="1758" y="269" text-anchor="middle" fill="#FFFFFF"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">3</text>
-    <text x="1780" y="260" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="14" font-weight="700">Ingress</text><text x="1780" y="278" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">ALB → Gateway → services</text>
-    <circle cx="1758" cy="310" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="1.5"/>
-    <text x="1758" y="315" text-anchor="middle" fill="#FFFFFF"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">4</text>
-    <text x="1780" y="306" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="14" font-weight="700">Payment</text><text x="1780" y="324" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">Checkout → provider</text>
-    <circle cx="1758" cy="356" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="1.5"/>
-    <text x="1758" y="361" text-anchor="middle" fill="#FFFFFF"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">5</text>
-    <text x="1780" y="352" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="14" font-weight="700">Persist</text><text x="1780" y="370" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">Aurora / Redis</text>
-    <circle cx="1758" cy="402" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="1.5"/>
-    <text x="1758" y="407" text-anchor="middle" fill="#FFFFFF"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">6</text>
-    <text x="1780" y="398" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="14" font-weight="700">Events</text><text x="1780" y="416" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">MSK fan-out</text>
-    <circle cx="1758" cy="448" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="1.5"/>
-    <text x="1758" y="453" text-anchor="middle" fill="#FFFFFF"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">7</text>
-    <text x="1780" y="444" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="14" font-weight="700">Replicate</text><text x="1780" y="462" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">Async to west</text><text x="1750" y="682" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">Legend</text>
-    <line x1="1750" y1="704" x2="1778" y2="704" stroke="#22D3EE" stroke-width="2" />
-    <text x="1786" y="708" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">Sync / request</text>
-    <line x1="1750" y1="730" x2="1778" y2="730" stroke="#A78BFA" stroke-width="2" stroke-dasharray="4 3"/>
-    <text x="1786" y="734" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">Async / event</text>
-    <line x1="1750" y1="756" x2="1778" y2="756" stroke="#34D399" stroke-width="2" />
-    <text x="1786" y="760" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">Data path</text></g>
+<g class="badge" data-edge="e10"><circle cx="865" cy="613" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="865" cy="613" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="865" y="617.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">6</text></g></g>
+  <g class="steps"><circle cx="54" cy="745" r="3" fill="#fbbf24"/>
+  <text x="64" y="749" fill="#64748b" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11" font-weight="600" letter-spacing="0.16em">WALKTHROUGH</text><rect x="48" y="772" width="515" height="77" rx="12" fill="rgba(15,23,42,0.55)" stroke="rgba(148,163,184,0.16)"/><g class="badge" ><circle cx="74" cy="796" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="74" cy="796" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="74" y="800.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">1</text></g><text x="96" y="800.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12.5" font-weight="600">Edge</text><text x="96" y="820" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">CloudFront serves the SPA from S3 and forwards /api/* through WAF.</text><rect x="583" y="772" width="515" height="77" rx="12" fill="rgba(15,23,42,0.55)" stroke="rgba(148,163,184,0.16)"/><g class="badge" ><circle cx="609" cy="796" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="609" cy="796" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="609" y="800.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">2</text></g><text x="631" y="800.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12.5" font-weight="600">API</text><text x="631" y="820" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">API Gateway authorizes with Cognito and invokes per-domain Lambdas.</text><rect x="1118" y="772" width="515" height="77" rx="12" fill="rgba(15,23,42,0.55)" stroke="rgba(148,163,184,0.16)"/><g class="badge" ><circle cx="1144" cy="796" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="1144" cy="796" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="1144" y="800.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">3</text></g><text x="1166" y="800.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12.5" font-weight="600">Data</text><text x="1166" y="820" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">Lambdas read and write DynamoDB; search queries hit OpenSearch.</text><rect x="48" y="869" width="515" height="77" rx="12" fill="rgba(15,23,42,0.55)" stroke="rgba(148,163,184,0.16)"/><g class="badge" ><circle cx="74" cy="893" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="74" cy="893" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="74" y="897.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">4</text></g><text x="96" y="897.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12.5" font-weight="600">Payment</text><text x="96" y="917" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">checkout-fn authorizes the card with the external PSP.</text><rect x="583" y="869" width="515" height="77" rx="12" fill="rgba(15,23,42,0.55)" stroke="rgba(148,163,184,0.16)"/><g class="badge" ><circle cx="609" cy="893" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="609" cy="893" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="609" y="897.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">5</text></g><text x="631" y="897.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12.5" font-weight="600">Order event</text><text x="631" y="917" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">OrderPlaced is published to EventBridge and buffered in SQS.</text><rect x="1118" y="869" width="515" height="77" rx="12" fill="rgba(15,23,42,0.55)" stroke="rgba(148,163,184,0.16)"/><g class="badge" ><circle cx="1144" cy="893" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="1144" cy="893" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="1144" y="897.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">6</text></g><text x="1166" y="897.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12.5" font-weight="600">Fulfilment</text><text x="1166" y="917" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">fulfil-fn processes the queue and sends the receipt via SES.</text><g class="legend"><text x="52" y="992" fill="#64748b" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11" font-weight="600" letter-spacing="0.16em">LEGEND</text><line x1="142" y1="988" x2="168" y2="988" stroke="#22d3ee" stroke-width="2"/><path d="M 164 984 L 170 988 L 164 992 z" fill="#22d3ee"/><text x="180" y="992" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">Sync request</text><line x1="291.2" y1="988" x2="317.2" y2="988" stroke="#c084fc" stroke-width="2" stroke-dasharray="7 5"/><path d="M 313.2 984 L 319.2 988 L 313.2 992 z" fill="#c084fc"/><text x="329.2" y="992" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">Async event</text><line x1="433.79999999999995" y1="988" x2="459.79999999999995" y2="988" stroke="#34d399" stroke-width="2"/><path d="M 455.79999999999995 984 L 461.79999999999995 988 L 455.79999999999995 992 z" fill="#34d399"/><text x="471.79999999999995" y="992" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">Data read / write</text><line x1="616" y1="988" x2="642" y2="988" stroke="#fb7185" stroke-width="2" stroke-dasharray="2 4"/><path d="M 638 984 L 644 988 L 638 992 z" fill="#fb7185"/><text x="654" y="992" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">Auth / identity</text></g></g>
+  <g class="footer"><line x1="48" y1="1028" x2="1633" y2="1028" stroke="rgba(148,163,184,0.16)"/>
+  <text x="48" y="1048" fill="#64748b" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="10" letter-spacing="0.08em">SERVERLESS WEB STORE ON AWS · REFERENCE ARCHITECTURE</text>
+  <text x="1633" y="1048" text-anchor="end" fill="#64748b" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="10" letter-spacing="0.08em">DIAGRAM-MCP</text></g>
 </svg>

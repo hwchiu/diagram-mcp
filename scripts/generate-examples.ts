@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import { renderPipeline } from "../src/render/pipeline.js";
 import { compileCloud } from "../src/compilers/cloud.js";
 import { compileMicroservice } from "../src/compilers/microservice.js";
+import * as A from "../src/showcase/architecture.js";
 import { compileFlowchart } from "../src/compilers/flowchart.js";
 import { compileDecision } from "../src/compilers/decision.js";
 import { compileDependency } from "../src/compilers/dependency.js";
@@ -21,6 +22,8 @@ async function render(
     source: string;
     theme?: string;
     layout?: "tala" | "elk" | "dagre" | "grid";
+    drawio?: string;
+    qa?: import("../src/types.js").QaIssue[];
   },
   theme: string,
 ) {
@@ -32,143 +35,14 @@ async function render(
     outputDir: OUT,
     includePreview: false,
     layout: compiled.layout,
+    drawio: compiled.drawio,
+    qa: compiled.qa,
   });
+  const errs = (result.qa ?? []).filter((q) => q.severity === "error");
+  if (errs.length) throw new Error(`${name}: ${errs.length} QA error(s)\n` + errs.map((e) => e.message).join("\n"));
+  if (result.drawioPath) console.log(`  ↳ draw.io ${result.drawioPath}`);
   console.log(`✓ ${name} → ${result.pngPath} (${result.width}×${result.height})`);
   return result;
-}
-
-function cloudExample() {
-  return compileCloud({
-    title: "Multi-Region Commerce Platform",
-    subtitle: "AWS + EKS · Active-active · sparse main flows",
-    theme: "dark",
-    name: "01-cloud-architecture",
-    provider: "aws",
-    columns: [["clients", "edge"], ["use1"], ["usw2"], ["ext", "obs"]],
-    groups: [
-      { id: "clients", label: "Clients" },
-      { id: "edge", label: "Edge & DNS" },
-      { id: "use1", label: "us-east-1 Primary" },
-      { id: "usw2", label: "us-west-2 Secondary" },
-      { id: "ext", label: "Third-Party" },
-      { id: "obs", label: "Observability" },
-    ],
-    nodes: [
-      { id: "users", label: "Users", role: "external", icon: "user", group: "clients" },
-      { id: "web", label: "Web / Mobile", role: "external", icon: "browser", group: "clients" },
-      { id: "cf", label: "CDN", role: "network", icon: "globe", group: "edge" },
-      { id: "r53", label: "DNS", subtitle: "latency", role: "network", icon: "globe", group: "edge" },
-      { id: "waf", label: "WAF", role: "security", icon: "shield", group: "edge" },
-      { id: "alb_e", label: "ALB", role: "gateway", icon: "gateway", group: "use1" },
-      { id: "gw_e", label: "API Gateway", role: "gateway", icon: "gateway", group: "use1" },
-      { id: "cart", label: "Cart", role: "compute", icon: "server", group: "use1" },
-      { id: "catalog", label: "Catalog", role: "compute", icon: "server", group: "use1" },
-      { id: "checkout", label: "Checkout", role: "compute", icon: "server", group: "use1" },
-      { id: "search", label: "Search", role: "compute", icon: "search", group: "use1" },
-      { id: "redis_e", label: "Redis", role: "data", icon: "cache", group: "use1" },
-      { id: "aurora_e", label: "Aurora", role: "data", icon: "database", group: "use1" },
-      { id: "msk_e", label: "MSK", role: "queue", icon: "queue", group: "use1" },
-      { id: "alb_w", label: "ALB", role: "gateway", icon: "gateway", group: "usw2" },
-      { id: "cart_w", label: "Cart", role: "compute", icon: "cluster", group: "usw2" },
-      { id: "catalog_w", label: "Catalog", role: "compute", icon: "cluster", group: "usw2" },
-      { id: "aurora_w", label: "Aurora replica", role: "data", icon: "database", group: "usw2" },
-      { id: "stripe", label: "Payment Provider", role: "external", group: "ext" },
-      { id: "ses", label: "Email / SMS", role: "external", group: "ext" },
-      { id: "otel", label: "OTel", role: "observability", icon: "chart", group: "obs" },
-      { id: "prom", label: "Prometheus", role: "observability", icon: "chart", group: "obs" },
-      { id: "graf", label: "Grafana", role: "observability", icon: "chart", group: "obs" },
-    ],
-    edges: [
-      { from: "clients", to: "edge", step: 1, kind: "sync" },
-      { from: "edge", to: "use1", step: 2, label: "primary", kind: "sync" },
-      { from: "edge", to: "usw2", label: "failover", kind: "sync" },
-      { from: "alb_e", to: "gw_e", step: 3, kind: "sync" },
-      { from: "gw_e", to: "checkout", kind: "sync" },
-      { from: "checkout", to: "cart", kind: "sync" },
-      { from: "checkout", to: "stripe", step: 4, kind: "sync" },
-      { from: "checkout", to: "aurora_e", step: 5, kind: "data" },
-      { from: "cart", to: "redis_e", kind: "data" },
-      { from: "checkout", to: "msk_e", step: 6, kind: "async" },
-      { from: "msk_e", to: "ses", kind: "async" },
-      { from: "aurora_e", to: "aurora_w", step: 7, label: "replica", kind: "async" },
-      { from: "use1", to: "obs", kind: "async" },
-      { from: "otel", to: "prom", kind: "data" },
-      { from: "prom", to: "graf", kind: "sync" },
-    ],
-    steps: [
-      { n: 1, label: "Clients → Edge", description: "CDN / DNS / WAF" },
-      { n: 2, label: "Route primary", description: "Traffic to us-east-1" },
-      { n: 3, label: "Ingress", description: "ALB → Gateway → services" },
-      { n: 4, label: "Payment", description: "Checkout → provider" },
-      { n: 5, label: "Persist", description: "Aurora / Redis" },
-      { n: 6, label: "Events", description: "MSK fan-out" },
-      { n: 7, label: "Replicate", description: "Async to west" },
-    ],
-  });
-}
-
-function microserviceExample() {
-  return compileMicroservice({
-    title: "Event-Driven Order Platform",
-    subtitle: "Edge · BFF · App · Ops · Data",
-    theme: "dark",
-    name: "02-microservice-architecture",
-    columns: [["clients", "edge"], ["bff", "core"], ["ops", "data"], ["ext"]],
-    groups: [
-      { id: "clients", label: "Clients" },
-      { id: "edge", label: "Edge" },
-      { id: "bff", label: "Web / BFF" },
-      { id: "core", label: "App Tier" },
-      { id: "ops", label: "Ops" },
-      { id: "data", label: "Data & Messaging" },
-      { id: "ext", label: "Third-Party" },
-    ],
-    nodes: [
-      { id: "web", label: "Web App", role: "external", icon: "browser", group: "clients" },
-      { id: "mobile", label: "Mobile", role: "external", icon: "mobile", group: "clients" },
-      { id: "cdn", label: "CDN", role: "network", icon: "globe", group: "edge" },
-      { id: "waf", label: "WAF", role: "security", icon: "shield", group: "edge" },
-      { id: "apigw", label: "API Gateway", role: "gateway", icon: "gateway", group: "bff" },
-      { id: "bff_web", label: "Web BFF", role: "gateway", icon: "gateway", group: "bff" },
-      { id: "auth", label: "Auth", role: "security", icon: "lock", group: "bff" },
-      { id: "orders", label: "Orders", role: "compute", icon: "server", group: "core" },
-      { id: "inventory", label: "Inventory", role: "compute", icon: "server", group: "core" },
-      { id: "catalog", label: "Catalog", role: "compute", icon: "server", group: "core" },
-      { id: "payments", label: "Payments", role: "compute", icon: "server", group: "core" },
-      { id: "customers", label: "Customers", role: "compute", icon: "server", group: "core" },
-      { id: "shipping", label: "Shipping", role: "compute", icon: "server", group: "ops" },
-      { id: "notify", label: "Notify", role: "compute", icon: "mail", group: "ops" },
-      { id: "analytics", label: "Analytics", role: "compute", icon: "chart", group: "ops" },
-      { id: "kafka", label: "Kafka", role: "queue", icon: "queue", group: "data" },
-      { id: "pg_orders", label: "Orders DB", role: "data", icon: "database", group: "data" },
-      { id: "redis", label: "Redis", role: "data", icon: "cache", group: "data" },
-      { id: "mongo_cat", label: "Catalog DB", role: "data", icon: "database", group: "data" },
-      { id: "stripe", label: "Payment Provider", role: "external", group: "ext" },
-      { id: "ses", label: "Email / SMS", role: "external", group: "ext" },
-    ],
-    edges: [
-      { from: "clients", to: "edge", step: 1, kind: "sync" },
-      { from: "edge", to: "bff", step: 2, kind: "sync" },
-      { from: "apigw", to: "auth", label: "JWT", kind: "sync" },
-      { from: "bff", to: "core", step: 3, kind: "sync" },
-      { from: "orders", to: "inventory", kind: "sync" },
-      { from: "orders", to: "payments", step: 4, kind: "sync" },
-      { from: "payments", to: "stripe", step: 5, kind: "sync" },
-      { from: "core", to: "data", step: 6, kind: "data" },
-      { from: "orders", to: "kafka", step: 7, kind: "async" },
-      { from: "kafka", to: "ops", kind: "async" },
-      { from: "notify", to: "ses", kind: "sync" },
-    ],
-    steps: [
-      { n: 1, label: "Clients → Edge", description: "CDN / WAF" },
-      { n: 2, label: "Authenticate", description: "Gateway + Auth + BFF" },
-      { n: 3, label: "BFF → App", description: "Domain service calls" },
-      { n: 4, label: "Coordinate", description: "Orders → Inventory / Payments" },
-      { n: 5, label: "External pay", description: "Card network" },
-      { n: 6, label: "Persist", description: "Owned data stores" },
-      { n: 7, label: "Async ops", description: "Kafka → Shipping / Notify" },
-    ],
-  });
 }
 
 function flowchartExample() {
@@ -501,6 +375,10 @@ function dependencyExample() {
     edges,
   });
 }
+
+const withDrawio = <T extends object>(x: T) => ({ ...x, outputs: ["svg", "png", "drawio"] as ("svg" | "png" | "drawio")[] });
+const cloudExample = () => compileCloud(withDrawio(A.cloudExample()));
+const microserviceExample = () => compileMicroservice(withDrawio(A.microserviceExample()));
 
 async function main() {
   console.log("Generating showcase examples into", OUT);
