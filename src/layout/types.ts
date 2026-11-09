@@ -1,10 +1,6 @@
 import type { DiagramEdge, DiagramGroup, DiagramNode, DiagramStep, EdgeKind } from "../types.js";
+import type { NodeRole } from "../design/themes.js";
 import type { MonoIcon } from "./icons.js";
-
-export interface LayoutColumns {
-  /** Column stacks of tier/group ids. Each inner array is stacked top→bottom. */
-  columns: string[][];
-}
 
 export interface ArchitectureLayoutInput {
   title?: string;
@@ -14,9 +10,12 @@ export interface ArchitectureLayoutInput {
   groups?: DiagramGroup[];
   edges?: DiagramEdge[];
   steps?: DiagramStep[];
-  legend?: Array<{ label: string; role?: string; kind?: EdgeKind }>;
-  /** Column layout hint. Defaults to one column per root group (L→R). */
+  legend?: Array<{ label: string; role?: NodeRole; kind?: EdgeKind }>;
+  /** Column stacks of tier (group) ids — or ungrouped node ids — each stacked top→bottom. */
   columns?: string[][];
+  /** Tier ids laid out as one full-width band under the columns. */
+  bottomRow?: string[];
+  stepsPosition?: "auto" | "right" | "bottom";
 }
 
 export interface Rect {
@@ -26,43 +25,82 @@ export interface Rect {
   h: number;
 }
 
-export interface PlacedNode {
-  id: string;
-  label: string;
-  subtitle?: string;
-  role?: string;
-  icon: MonoIcon;
-  rect: Rect;
-  /** Parent tier id if any */
-  tierId?: string;
-  compact?: boolean;
-}
-
-export interface PlacedTier {
-  id: string;
-  label: string;
-  index: number;
-  rect: Rect;
-  nodeIds: string[];
-  kind?: string;
-  external?: boolean;
-}
-
 export interface Point {
   x: number;
   y: number;
 }
 
+export type Side = "left" | "right" | "top" | "bottom";
+
+export interface TextLine {
+  text: string;
+  truncated: boolean;
+  /** measured width */
+  width: number;
+}
+
+export interface PlacedNode {
+  id: string;
+  label: TextLine;
+  subtitle?: TextLine;
+  /** original strings (for draw.io / tooltips) */
+  rawLabel: string;
+  rawSubtitle?: string;
+  role: NodeRole;
+  icon: MonoIcon;
+  rect: Rect;
+  /** Innermost tier id if any */
+  tierId?: string;
+}
+
+export interface PlacedTier {
+  id: string;
+  label: string;
+  /** "01" style index for top-level tiers, "01.2" for nested */
+  index: string;
+  rect: Rect;
+  /** Header label bounding box (obstacle for routing / labels) */
+  labelRect: Rect;
+  depth: number;
+  parentId?: string;
+  kind?: DiagramGroup["kind"];
+  external: boolean;
+  /** invisible wrapper for ungrouped nodes */
+  hidden: boolean;
+  accentRole: NodeRole;
+  nodeIds: string[];
+}
+
 export interface RoutedEdge {
+  id: string;
   from: string;
   to: string;
   kind: EdgeKind;
   label?: string;
   step?: number;
   points: Point[];
-  /** Midpoint of longest straight segment for label/badge */
-  labelAt: Point;
+  fromSide: Side;
+  toSide: Side;
+  /** endpoint targets a tier frame (intentional tier-to-tier flow) */
+  fromTier: boolean;
+  toTier: boolean;
+  labelRect?: Rect;
   badgeAt?: Point;
+  /** bundle key: edges sharing a port/trunk */
+  bundle: string;
+}
+
+export interface StepCard {
+  n: number;
+  label: TextLine;
+  lines: string[];
+  rect: Rect;
+}
+
+export interface LegendItem {
+  label: string;
+  role?: NodeRole;
+  kind?: EdgeKind;
 }
 
 export interface LayoutResult {
@@ -74,10 +112,18 @@ export interface LayoutResult {
   tiers: PlacedTier[];
   edges: RoutedEdge[];
   steps: DiagramStep[];
-  legend: Array<{ label: string; role?: string; kind?: EdgeKind }>;
-  /** Diagram content area (excludes sidebar) */
+  stepCards: StepCard[];
+  stepsPosition: "right" | "bottom" | "none";
+  legend: LegendItem[];
+  legendRect: Rect;
+  /** Diagram panel (frames + cards) */
   content: Rect;
-  /** Right sidebar for steps + legend */
+  /** Steps panel (right) or band (bottom) */
   sidebar: Rect;
   titleRect: Rect;
+  footerY: number;
+  /** Diagnostics from the router (unroutable edges, etc.) */
+  routeNotes: string[];
 }
+
+export const BADGE_R = 11;

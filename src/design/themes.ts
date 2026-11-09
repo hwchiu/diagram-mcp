@@ -8,6 +8,7 @@ export type NodeRole =
   | "network"
   | "security"
   | "external"
+  | "client"
   | "queue"
   | "gateway"
   | "storage"
@@ -71,6 +72,7 @@ export const THEMES: Record<ThemeId, ThemePalette> = {
       network: { fill: "#F0F9FF", stroke: "#0EA5E9", tint: "#E0F2FE" },
       security: { fill: "#FEF2F2", stroke: "#EF4444", tint: "#FEE2E2" },
       external: { fill: "#F8FAFC", stroke: "#94A3B8", tint: "#F1F5F9" },
+      client: { fill: "#ECFEFF", stroke: "#0891B2", tint: "#CFFAFE" },
       queue: { fill: "#F5F3FF", stroke: "#8B5CF6", tint: "#EDE9FE" },
       gateway: { fill: "#FFF7ED", stroke: "#F97316", tint: "#FFEDD5" },
       storage: { fill: "#FFFBEB", stroke: "#F59E0B", tint: "#FEF3C7" },
@@ -103,6 +105,7 @@ export const THEMES: Record<ThemeId, ThemePalette> = {
       network: { fill: "#0C4A6E", stroke: "#38BDF8", tint: "#075985" },
       security: { fill: "#7F1D1D", stroke: "#F87171", tint: "#991B1B" },
       external: { fill: "#1E293B", stroke: "#64748B", tint: "#334155" },
+      client: { fill: "#082F44", stroke: "#22D3EE", tint: "#0E3A4F" },
       queue: { fill: "#4C1D95", stroke: "#A78BFA", tint: "#5B21B6" },
       gateway: { fill: "#7C2D12", stroke: "#FB923C", tint: "#9A3412" },
       storage: { fill: "#78350F", stroke: "#FBBF24", tint: "#92400E" },
@@ -135,6 +138,7 @@ export const THEMES: Record<ThemeId, ThemePalette> = {
       network: { fill: "#F0F9FF", stroke: "#0284C7", tint: "#E0F2FE" },
       security: { fill: "#FEF2F2", stroke: "#DC2626", tint: "#FEE2E2" },
       external: { fill: "#F9FAFB", stroke: "#9CA3AF", tint: "#F3F4F6" },
+      client: { fill: "#ECFEFF", stroke: "#0891B2", tint: "#CFFAFE" },
       queue: { fill: "#F5F3FF", stroke: "#7C3AED", tint: "#EDE9FE" },
       gateway: { fill: "#FFF7ED", stroke: "#EA580C", tint: "#FFEDD5" },
       storage: { fill: "#FFFBEB", stroke: "#D97706", tint: "#FEF3C7" },
@@ -167,6 +171,7 @@ export const THEMES: Record<ThemeId, ThemePalette> = {
       network: { fill: "#0C4A6E", stroke: "#22D3EE", tint: "#155E75" },
       security: { fill: "#4C0519", stroke: "#FB7185", tint: "#881337" },
       external: { fill: "#1E293B", stroke: "#94A3B8", tint: "#334155" },
+      client: { fill: "#082F44", stroke: "#22D3EE", tint: "#0E3A4F" },
       queue: { fill: "#1E1B4B", stroke: "#A5B4FC", tint: "#312E81" },
       gateway: { fill: "#431407", stroke: "#FDBA74", tint: "#7C2D12" },
       storage: { fill: "#422006", stroke: "#FCD34D", tint: "#78350F" },

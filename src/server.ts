@@ -15,7 +15,8 @@ import {
   dependencySchema,
   renderSchema,
 } from "./tools/schemas.js";
-import type { EngineKind, RenderResult } from "./types.js";
+import type { EngineKind, QaIssue, RenderResult } from "./types.js";
+import { summarizeQa } from "./layout/qa.js";
 import type { z } from "zod";
 
 function formatResult(result: RenderResult) {
@@ -24,7 +25,12 @@ function formatResult(result: RenderResult) {
     `SVG: ${result.svgPath}`,
     `PNG: ${result.pngPath}`,
     `Source: ${result.sourcePath}`,
+    result.drawioPath ? `draw.io: ${result.drawioPath}` : null,
     result.width && result.height ? `Size: ${result.width}×${result.height}px` : null,
+    result.qa ? summarizeQa(result.qa) : null,
+    result.qa
+      ? "Self-review: inspect the preview for balance, crossings and label legibility; if QA lists issues, adjust columns / bottomRow / group cols and re-render."
+      : null,
   ]
     .filter(Boolean)
     .join("\n");
@@ -50,6 +56,8 @@ async function runCompiled(
     source: string;
     theme?: string;
     layout?: "tala" | "elk" | "dagre" | "grid";
+    drawio?: string;
+    qa?: QaIssue[];
   },
   meta: {
     theme?: string;
@@ -67,6 +75,8 @@ async function runCompiled(
     includePreview: meta.includePreview,
     outputDir: meta.outputDir,
     layout: compiled.layout,
+    drawio: compiled.drawio,
+    qa: compiled.qa,
   });
   return formatResult(result);
 }
@@ -82,7 +92,7 @@ export function createServer(): McpServer {
     {
       title: "Create cloud architecture diagram",
       description:
-        "Generate a polished cloud / Kubernetes architecture diagram with deterministic grid layout, monoline icons, orthogonal edges, and numbered steps. Returns SVG+PNG paths and a compact PNG preview.",
+        "Generate a reference-architecture style cloud / Kubernetes diagram (dark tech theme by default): deterministic tier grid (columns + optional bottomRow, nested groups), uniform cards with monoline icons, A*-routed orthogonal edges that never cross cards, numbered step badges + walkthrough panel. Returns SVG+PNG paths, structural QA findings, a compact PNG preview, and optionally an editable .drawio file (outputs: [\"drawio\"]).",
       inputSchema: cloudSchema.shape,
     },
     async (args: z.infer<typeof cloudSchema>) => {
@@ -96,7 +106,7 @@ export function createServer(): McpServer {
     {
       title: "Create microservice architecture diagram",
       description:
-        "Generate a polished microservice architecture diagram with deterministic grid layout, sync/async/data edges, and numbered steps panel. Returns SVG+PNG paths and a compact PNG preview.",
+        "Generate a microservice architecture diagram (frontend → edge → BFF → services → data / events → third-party) with sync / async / data / auth edge styles, numbered steps, structural QA, PNG preview, and optional editable .drawio output (outputs: [\"drawio\"]).",
       inputSchema: microserviceSchema.shape,
     },
     async (args: z.infer<typeof microserviceSchema>) => {

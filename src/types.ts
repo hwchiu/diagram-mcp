@@ -1,6 +1,9 @@
 import type { NodeRole, ThemeId } from "./design/themes.js";
 
-export type EdgeKind = "sync" | "async" | "data" | "default";
+export type EdgeKind = "sync" | "async" | "data" | "auth" | "default";
+
+/** Output artifacts. svg + png are always produced; drawio is opt-in for architecture tools. */
+export type OutputFormat = "svg" | "png" | "drawio";
 
 export interface DiagramMeta {
   title?: string;
@@ -34,7 +37,11 @@ export interface DiagramGroup {
   /** Nesting parent */
   parent?: string;
   /** Semantic kind for styling depth / color */
-  kind?: "region" | "vpc" | "subnet" | "cluster" | "namespace" | "zone" | "lane" | "other";
+  kind?: "region" | "vpc" | "subnet" | "cluster" | "namespace" | "zone" | "lane" | "security" | "external" | "other";
+  /** Cards per row inside this container (architecture grid). Auto when omitted. */
+  cols?: number;
+  /** How child containers are arranged inside this one (default "row"). */
+  layout?: "row" | "column";
 }
 
 export interface DiagramEdge {
@@ -80,8 +87,14 @@ export interface StructuredDiagramInput extends DiagramMeta {
    * Example: [["clients"],["edge"],["bff","app"],["data","events"]]
    */
   columns?: string[][];
-  /** Optional legend entries */
+  /** Optional legend entries (auto-derived from used edge kinds / roles when omitted) */
   legend?: Array<{ label: string; role?: NodeRole; kind?: EdgeKind }>;
+  /** Tier ids rendered as a full-width band under the columns (e.g. third-party, observability). */
+  bottomRow?: string[];
+  /** Where the numbered walkthrough goes. "auto" picks the side that keeps the canvas closest to 16:10. */
+  stepsPosition?: "auto" | "right" | "bottom";
+  /** Extra outputs. ["drawio"] also writes an editable .drawio file. */
+  outputs?: OutputFormat[];
 }
 
 export interface CloudDiagramInput extends StructuredDiagramInput {
@@ -130,4 +143,15 @@ export interface RenderResult {
   previewBase64?: string;
   width?: number;
   height?: number;
+  /** Editable draw.io file (architecture tools, when outputs includes "drawio") */
+  drawioPath?: string;
+  /** Structural QA findings (architecture tools) */
+  qa?: QaIssue[];
+}
+
+export interface QaIssue {
+  code: string;
+  severity: "error" | "warning" | "info";
+  message: string;
+  ids?: string[];
 }

@@ -13,6 +13,7 @@ const nodeSchema = z.object({
       "network",
       "security",
       "external",
+      "client",
       "queue",
       "gateway",
       "storage",
@@ -32,15 +33,19 @@ const groupSchema = z.object({
   label: z.string(),
   parent: z.string().optional(),
   kind: z
-    .enum(["region", "vpc", "subnet", "cluster", "namespace", "zone", "lane", "other"])
+    .enum(["region", "vpc", "subnet", "cluster", "namespace", "zone", "lane", "security", "external", "other"])
     .optional(),
+  /** Cards per row inside this container (architecture). */
+  cols: z.number().int().min(1).max(8).optional(),
+  /** Arrange child containers in a row (default) or column. */
+  layout: z.enum(["row", "column"]).optional(),
 });
 
 const edgeSchema = z.object({
   from: z.string(),
   to: z.string(),
   label: z.string().optional(),
-  kind: z.enum(["sync", "async", "data", "default"]).optional(),
+  kind: z.enum(["sync", "async", "data", "auth", "default"]).optional(),
   step: z.number().int().positive().optional(),
 });
 
@@ -62,15 +67,24 @@ const meta = {
   layout: z.enum(["tala", "elk", "dagre", "grid"]).optional(),
 };
 
+const archExtras = {
+  /** Column stacks of tier ids (or ungrouped node ids), left → right, each stacked top → bottom */
+  columns: z.array(z.array(z.string())).optional(),
+  /** Tier ids rendered as one full-width band under the columns */
+  bottomRow: z.array(z.string()).optional(),
+  stepsPosition: z.enum(["auto", "right", "bottom"]).optional(),
+  /** Extra outputs; "drawio" writes an editable diagrams.net file next to the SVG/PNG */
+  outputs: z.array(z.enum(["svg", "png", "drawio"])).optional(),
+};
+
 export const cloudSchema = z.object({
   ...meta,
+  ...archExtras,
   provider: z.enum(["aws", "gcp", "azure", "kubernetes", "multi"]).optional(),
   nodes: z.array(nodeSchema).min(1),
   groups: z.array(groupSchema).optional(),
   edges: z.array(edgeSchema).optional(),
   steps: z.array(stepSchema).optional(),
-  /** Column stacks of tier ids for the SVG grid engine */
-  columns: z.array(z.array(z.string())).optional(),
   legend: z
     .array(
       z.object({
@@ -84,11 +98,11 @@ export const cloudSchema = z.object({
 
 export const microserviceSchema = z.object({
   ...meta,
+  ...archExtras,
   nodes: z.array(nodeSchema).min(1),
   groups: z.array(groupSchema).optional(),
   edges: z.array(edgeSchema).optional(),
   steps: z.array(stepSchema).optional(),
-  columns: z.array(z.array(z.string())).optional(),
   legend: cloudSchema.shape.legend,
 });
 

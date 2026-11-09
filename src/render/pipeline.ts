@@ -7,7 +7,7 @@ import { renderD2 } from "../engines/d2.js";
 import { renderMermaid } from "../engines/mermaid.js";
 import { renderDot } from "../engines/graphviz.js";
 import { postprocessSvg } from "./postprocess.js";
-import type { EngineKind, RenderResult } from "../types.js";
+import type { EngineKind, QaIssue, RenderResult } from "../types.js";
 
 export const DEFAULT_OUTPUT_DIR = path.resolve(process.cwd(), "output");
 
@@ -91,6 +91,10 @@ export interface PipelineInput {
   layout?: "elk" | "dagre" | "tala" | "grid";
   /** Graphviz layout engine */
   graphvizLayout?: "dot" | "sfdp" | "neato" | "fdp";
+  /** Editable draw.io XML to write next to the SVG (architecture tools) */
+  drawio?: string;
+  /** Structural QA findings to pass through */
+  qa?: QaIssue[];
 }
 
 export async function renderPipeline(input: PipelineInput): Promise<RenderResult> {
@@ -131,6 +135,12 @@ export async function renderPipeline(input: PipelineInput): Promise<RenderResult
     dims = await svgToPng(svgPath, pngPath, 2);
   }
 
+  let drawioPath: string | undefined;
+  if (input.drawio) {
+    drawioPath = path.join(outDir, `${base}.drawio`);
+    await fs.writeFile(drawioPath, input.drawio, "utf8");
+  }
+
   let previewBase64: string | undefined;
   if (input.includePreview !== false) {
     previewBase64 = await makePreview(pngPath);
@@ -145,5 +155,7 @@ export async function renderPipeline(input: PipelineInput): Promise<RenderResult
     previewBase64,
     width: dims.width,
     height: dims.height,
+    drawioPath,
+    qa: input.qa,
   };
 }
