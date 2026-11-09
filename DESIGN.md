@@ -37,10 +37,12 @@ Tokens live in `src/design/themes.ts`.
 
 1. **Cloud / microservice → D2 + ELK** with nested tinted containers and local `grid-columns` so sibling nodes pack horizontally.
 2. **Flowchart / decision → Mermaid** with native SVG labels (`htmlLabels: false`) so PNG text survives rasterization; yes/no edges are color-coded.
-3. **Dependency → Graphviz DOT** with clustered subgraphs, `concentrate=true` on large graphs, and slightly transparent edges to reduce hairball noise.
+3. **Dependency → Graphviz DOT** with clustered subgraphs packed into ~2 rows, `concentrate=true`, aiming near **16:9**.
 4. Nested depth stays shallow (≤3) for architecture posters; deeper trees get skyscraper-tall.
 5. Edges only connect **nodes**, never group containers.
-6. Every render: SVG post-process (canvas fill, Inter import, soft shadow filter) + PNG at **2×**.
+6. **D2 edges MUST use fully-qualified paths** (`board.domain.order -> board.events.kafka`). Bare ids create duplicate top-level ghosts. Compilers call `buildQualifiedPaths` + `assertValidEdges` / `assertD2EdgesAreQualified`.
+7. Prefer edge **color** over dense edge labels (labels become visual noise).
+8. Every render: SVG post-process (canvas fill, Inter import, soft shadow filter) + PNG at **2×**.
 
 ## Engines
 

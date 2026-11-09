@@ -22,6 +22,8 @@ function run(cmd: string, args: string[]): Promise<void> {
 
 export function mermaidThemeConfig(theme: ThemePalette): object {
   const isDark = theme.id === "dark" || theme.id === "blueprint";
+  // Puppeteer often lacks Inter — use fonts available on macOS Chrome
+  const font = '"Helvetica Neue", Helvetica, Arial, sans-serif';
   return {
     theme: isDark ? "dark" : "base",
     themeVariables: {
@@ -30,9 +32,9 @@ export function mermaidThemeConfig(theme: ThemePalette): object {
       primaryColor: theme.roles.compute.fill,
       primaryTextColor: theme.ink,
       primaryBorderColor: theme.roles.compute.stroke,
-      secondaryColor: theme.roles.data.fill,
+      secondaryColor: theme.roles.gateway.fill,
       tertiaryColor: theme.roles.queue.fill,
-      lineColor: theme.edgeDefault,
+      lineColor: theme.edgeSync,
       textColor: theme.ink,
       mainBkg: theme.card,
       nodeBorder: theme.border,
@@ -40,17 +42,60 @@ export function mermaidThemeConfig(theme: ThemePalette): object {
       clusterBorder: theme.groupStrokes[0],
       titleColor: theme.ink,
       edgeLabelBackground: theme.surface,
-      fontFamily: "Inter, Helvetica Neue, Arial, sans-serif",
-      fontSize: "16px",
+      fontFamily: font,
+      fontSize: "17px",
+      // Sequence-specific
+      actorBkg: theme.roles.gateway.fill,
+      actorBorder: theme.roles.gateway.stroke,
+      actorTextColor: theme.ink,
+      actorLineColor: theme.border,
+      signalColor: theme.edgeSync,
+      signalTextColor: theme.ink,
+      labelBoxBkgColor: theme.surface,
+      labelBoxBorderColor: theme.border,
+      labelTextColor: theme.ink,
+      loopTextColor: theme.ink,
+      noteBkgColor: theme.roles.queue.tint,
+      noteTextColor: theme.ink,
+      noteBorderColor: theme.roles.queue.stroke,
+      activationBkgColor: theme.roles.compute.tint,
+      activationBorderColor: theme.roles.compute.stroke,
+      sequenceNumberColor: "#FFFFFF",
     },
+    themeCSS: `
+      svg, text, tspan, .actor, .actor-man, .messageText, .noteText, .labelText, .loopText {
+        font-family: ${font} !important;
+      }
+      .actor { stroke-width: 1.75px !important; fill: ${theme.roles.gateway.fill} !important; stroke: ${theme.roles.gateway.stroke} !important; }
+      .actor-line { stroke: ${theme.border} !important; }
+      .messageLine0, .messageLine1 { stroke: ${theme.edgeSync} !important; }
+      .messageText { font-size: 15px !important; fill: ${theme.ink} !important; }
+      .note { fill: ${theme.roles.queue.tint} !important; stroke: ${theme.roles.queue.stroke} !important; }
+      .activation0, .activation1, .activation2 {
+        fill: ${theme.roles.compute.tint} !important;
+        stroke: ${theme.roles.compute.stroke} !important;
+      }
+    `,
     flowchart: {
       curve: "basis",
       padding: 28,
       nodeSpacing: 55,
       rankSpacing: 65,
-      // foreignObject HTML labels break rsvg/sharp text — keep native SVG text
       htmlLabels: false,
       useMaxWidth: false,
+    },
+    sequence: {
+      actorMargin: 36,
+      messageMargin: 44,
+      mirrorActors: false,
+      bottomMarginAdj: 18,
+      rightAngles: true,
+      showSequenceNumbers: true,
+      actorFontFamily: font,
+      actorFontSize: 15,
+      noteFontFamily: font,
+      messageFontFamily: font,
+      messageFontSize: 14,
     },
   };
 }
@@ -65,16 +110,13 @@ export async function renderMermaid(
   await fs.mkdir(path.dirname(outSvg), { recursive: true });
   const srcPath = outSvg.replace(/\.svg$/i, ".mmd");
   const cfgPath = outSvg.replace(/\.svg$/i, ".mermaid.json");
-  // Sequence diagrams benefit from larger scale for poster crispness
-  const isSequence = /^\s*sequenceDiagram/m.test(source) || source.includes("sequenceDiagram");
+  const isSequence = source.includes("sequenceDiagram");
   const pngScale = isSequence ? Math.max(scale, 3) : scale;
   await fs.writeFile(srcPath, source, "utf8");
   await fs.writeFile(cfgPath, JSON.stringify(mermaidThemeConfig(theme), null, 2), "utf8");
 
-  // SVG (for editing / archival)
   await run(MMDC, ["-i", srcPath, "-o", outSvg, "-c", cfgPath, "-b", theme.canvas, "--quiet"]);
 
-  // PNG via Puppeteer so labels render correctly (scale 2+ for retina)
   if (outPng) {
     await run(MMDC, [
       "-i",

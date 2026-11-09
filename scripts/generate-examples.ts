@@ -26,7 +26,7 @@ async function render(
     name,
     outputDir: OUT,
     includePreview: false,
-    layout: "elk",
+    layout: "dagre",
   });
   console.log(`✓ ${name} → ${result.pngPath} (${result.width}×${result.height})`);
   return result;

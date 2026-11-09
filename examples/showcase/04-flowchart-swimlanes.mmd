@@ -1,55 +1,39 @@
 %%{init: {"flowchart": {"htmlLabels": false, "curve": "basis", "padding": 24, "nodeSpacing": 50, "rankSpacing": 60}} }%%
-flowchart LR
-  title_block["CI/CD Release Pipeline — PR to production with canary · swimlanes"]
+flowchart TB
+  title_block["CI/CD Release Pipeline — PR to production with canary · swimlanes via role colors"]
   style title_block fill:#F8FAFC,stroke:#1D4ED8,color:#111827,stroke-width:2px
-  subgraph dev[Developer]
-    direction LR
-    start((Open Pull Request))
-      style start fill:#F9FAFB,stroke:#9CA3AF,color:#111827,stroke-width:2px
-    review[Code Review]
-      style review fill:#EFF6FF,stroke:#2563EB,color:#111827,stroke-width:2px
-    fix((Notify Author))
-      style fix fill:#F9FAFB,stroke:#9CA3AF,color:#111827,stroke-width:2px
-  end
-  style dev fill:#F5F3FF,stroke:#7C3AED,color:#111827,stroke-width:2px
-  subgraph ci[CI System]
-    direction LR
-    lint[Lint + Typecheck]
-      style lint fill:#EFF6FF,stroke:#2563EB,color:#111827,stroke-width:2px
-    unit[Unit Tests]
-      style unit fill:#EFF6FF,stroke:#2563EB,color:#111827,stroke-width:2px
-    build[Build Container]
-      style build fill:#EFF6FF,stroke:#2563EB,color:#111827,stroke-width:2px
-    sast[SAST / SCA Scan]
-      style sast fill:#FEF2F2,stroke:#DC2626,color:#111827,stroke-width:2px
-    pass_ci{CI Green?}
-      style pass_ci fill:#F0F9FF,stroke:#0284C7,color:#111827,stroke-width:2px
-  end
-  style ci fill:#F5F3FF,stroke:#7C3AED,color:#111827,stroke-width:2px
-  subgraph cd[CD / Release]
-    direction LR
-    staging[[Deploy Staging]]
-      style staging fill:#FFF7ED,stroke:#EA580C,color:#111827,stroke-width:2px
-    e2e[E2E + Contract Tests]
-      style e2e fill:#EFF6FF,stroke:#2563EB,color:#111827,stroke-width:2px
-    approve{Manual Approval?}
-      style approve fill:#F0F9FF,stroke:#0284C7,color:#111827,stroke-width:2px
-    canary[[Canary 5%]]
-      style canary fill:#FFF7ED,stroke:#EA580C,color:#111827,stroke-width:2px
-    rollout[Full Rollout]
-      style rollout fill:#EFF6FF,stroke:#2563EB,color:#111827,stroke-width:2px
-  end
-  style cd fill:#F5F3FF,stroke:#7C3AED,color:#111827,stroke-width:2px
-  subgraph ops[SRE / Ops]
-    direction LR
-    healthy{SLOs Healthy?}
-      style healthy fill:#FDF2F8,stroke:#DB2777,color:#111827,stroke-width:2px
-    rollback[Auto Rollback]
-      style rollback fill:#FEF2F2,stroke:#DC2626,color:#111827,stroke-width:2px
-    done((Release Complete))
-      style done fill:#ECFDF5,stroke:#059669,color:#111827,stroke-width:2px
-  end
-  style ops fill:#F5F3FF,stroke:#7C3AED,color:#111827,stroke-width:2px
+  start((Open Pull Request - Developer))
+    style start fill:#F9FAFB,stroke:#9CA3AF,color:#111827,stroke-width:2px
+  review[Code Review - Developer]
+    style review fill:#EFF6FF,stroke:#2563EB,color:#111827,stroke-width:2px
+  lint[Lint + Typecheck - CI]
+    style lint fill:#EFF6FF,stroke:#2563EB,color:#111827,stroke-width:2px
+  unit[Unit Tests - CI]
+    style unit fill:#EFF6FF,stroke:#2563EB,color:#111827,stroke-width:2px
+  build[Build Container - CI]
+    style build fill:#EFF6FF,stroke:#2563EB,color:#111827,stroke-width:2px
+  sast[SAST / SCA Scan - CI]
+    style sast fill:#FEF2F2,stroke:#DC2626,color:#111827,stroke-width:2px
+  pass_ci{CI Green? - CI}
+    style pass_ci fill:#F0F9FF,stroke:#0284C7,color:#111827,stroke-width:2px
+  staging[[Deploy Staging - CD]]
+    style staging fill:#FFF7ED,stroke:#EA580C,color:#111827,stroke-width:2px
+  e2e[E2E + Contract Tests - CD]
+    style e2e fill:#EFF6FF,stroke:#2563EB,color:#111827,stroke-width:2px
+  approve{Manual Approval? - CD}
+    style approve fill:#F0F9FF,stroke:#0284C7,color:#111827,stroke-width:2px
+  canary[[Canary 5% - CD]]
+    style canary fill:#FFF7ED,stroke:#EA580C,color:#111827,stroke-width:2px
+  healthy{SLOs Healthy? - SRE}
+    style healthy fill:#FDF2F8,stroke:#DB2777,color:#111827,stroke-width:2px
+  rollout[Full Rollout - CD]
+    style rollout fill:#EFF6FF,stroke:#2563EB,color:#111827,stroke-width:2px
+  rollback[Auto Rollback - SRE]
+    style rollback fill:#FEF2F2,stroke:#DC2626,color:#111827,stroke-width:2px
+  done((Release Complete - SRE))
+    style done fill:#ECFDF5,stroke:#059669,color:#111827,stroke-width:2px
+  fix((Notify Author - Developer))
+    style fix fill:#F9FAFB,stroke:#9CA3AF,color:#111827,stroke-width:2px
   title_block --> start
   start --> review
   review --> lint

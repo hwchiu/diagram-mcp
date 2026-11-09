@@ -34,21 +34,43 @@ export function slugify(name: string): string {
   );
 }
 
+/** Cap raster width so diagrams stay readable when viewed ~1600px wide. */
+const MAX_PNG_WIDTH = 3600;
+
 async function svgToPng(
   svgPath: string,
   pngPath: string,
   scale = 2,
 ): Promise<{ width: number; height: number }> {
+  const tmp = pngPath.replace(/\.png$/i, ".raw.png");
   try {
-    await run("rsvg-convert", ["-z", String(scale), "-o", pngPath, svgPath]);
-    const meta = await sharp(pngPath).metadata();
-    return { width: meta.width ?? 0, height: meta.height ?? 0 };
+    await run("rsvg-convert", ["-z", String(scale), "-o", tmp, svgPath]);
   } catch {
-    const img = sharp(svgPath, { density: 144 * scale });
-    const meta = await img.metadata();
-    await img.png().toFile(pngPath);
-    return { width: meta.width ?? 0, height: meta.height ?? 0 };
+    await sharp(svgPath, { density: 144 * scale }).png().toFile(tmp);
   }
+  const meta = await sharp(tmp).metadata();
+  const w = meta.width ?? 0;
+  if (w > MAX_PNG_WIDTH) {
+    await sharp(tmp).resize({ width: MAX_PNG_WIDTH }).png().toFile(pngPath);
+    await fs.unlink(tmp).catch(() => undefined);
+    const out = await sharp(pngPath).metadata();
+    return { width: out.width ?? MAX_PNG_WIDTH, height: out.height ?? 0 };
+  }
+  await fs.rename(tmp, pngPath);
+  return { width: w, height: meta.height ?? 0 };
+}
+
+async function fitPngWidth(pngPath: string): Promise<{ width: number; height: number }> {
+  const meta = await sharp(pngPath).metadata();
+  const w = meta.width ?? 0;
+  if (w > MAX_PNG_WIDTH) {
+    const tmp = pngPath.replace(/\.png$/i, ".fit.png");
+    await sharp(pngPath).resize({ width: MAX_PNG_WIDTH }).png().toFile(tmp);
+    await fs.rename(tmp, pngPath);
+    const out = await sharp(pngPath).metadata();
+    return { width: out.width ?? MAX_PNG_WIDTH, height: out.height ?? 0 };
+  }
+  return { width: w, height: meta.height ?? 0 };
 }
 
 async function makePreview(pngPath: string, maxWidth = 720): Promise<string> {
@@ -89,16 +111,15 @@ export async function renderPipeline(input: PipelineInput): Promise<RenderResult
       source: input.source,
       outSvg: svgPath,
       theme,
-      layout: input.layout ?? "elk",
+      layout: input.layout ?? "dagre",
     });
     await postprocessSvg(svgPath, theme);
     dims = await svgToPng(svgPath, pngPath, 2);
   } else if (input.engine === "mermaid") {
-    // Puppeteer PNG preserves text; SVG still post-processed for archival
+    // Puppeteer PNG keeps Mermaid text (rsvg drops many labels). SVG still post-processed.
     sourcePath = await renderMermaid(input.source, svgPath, theme, pngPath);
     await postprocessSvg(svgPath, theme);
-    const meta = await sharp(pngPath).metadata();
-    dims = { width: meta.width ?? 0, height: meta.height ?? 0 };
+    dims = await fitPngWidth(pngPath);
   } else {
     sourcePath = await renderDot(input.source, svgPath, input.graphvizLayout ?? "dot");
     await postprocessSvg(svgPath, theme);

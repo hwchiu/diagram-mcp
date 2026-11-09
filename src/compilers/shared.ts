@@ -61,7 +61,7 @@ export function nodeStyleD2(theme: ThemePalette, node: DiagramNode): string {
     `  stroke-width: 2`,
     `  border-radius: 8`,
     `  shadow: true`,
-    `  font-size: 14`,
+    `  font-size: 22`,
     `  font-color: "${theme.ink}"`,
     `}`,
   ];
@@ -133,7 +133,7 @@ export function legendD2(
     fill: "${c.fill}"
     stroke: "${c.stroke}"
     border-radius: 6
-    font-size: 12
+    font-size: 16
     font-color: "${theme.ink}"
   }
 }`;
@@ -147,7 +147,7 @@ export function legendD2(
     stroke: "${color}"
     stroke-width: 2
     border-radius: 6
-    font-size: 12
+    font-size: 16
     font-color: "${theme.ink}"${dash}
   }
 }`;
@@ -162,7 +162,7 @@ legend: Legend {
     stroke: "${theme.border}"
     border-radius: 10
     font-color: "${theme.muted}"
-    font-size: 13
+    font-size: 16
   }
   ${items}
 }

@@ -29,7 +29,7 @@ function run(cmd: string, args: string[], cwd?: string): Promise<{ stdout: strin
 }
 
 /** Inject canvas / sketchy-free theme vars into D2 source if not already present. */
-export function wrapD2Source(source: string, theme: ThemePalette, layout: "elk" | "dagre" | "tala" = "elk"): string {
+export function wrapD2Source(source: string, theme: ThemePalette, layout: "elk" | "dagre" | "tala" = "dagre"): string {
   if (source.includes("vars:") && source.includes("d2-config")) {
     return source;
   }
@@ -53,7 +53,8 @@ export function wrapD2Source(source: string, theme: ThemePalette, layout: "elk" 
 }
 
 export async function renderD2(opts: D2RenderOptions): Promise<void> {
-  const layout = opts.layout ?? "elk";
+  // dagre tends to route container-crossing edges more cleanly than elk for our grids
+  const layout = opts.layout ?? "dagre";
   const wrapped = wrapD2Source(opts.source, opts.theme, layout);
   const srcPath = opts.outSvg.replace(/\.svg$/i, ".d2");
   await fs.mkdir(path.dirname(opts.outSvg), { recursive: true });
@@ -62,7 +63,7 @@ export async function renderD2(opts: D2RenderOptions): Promise<void> {
   const args = [
     `--layout=${layout}`,
     "--theme=0",
-    `--pad=${opts.pad ?? 64}`,
+    `--pad=${opts.pad ?? 48}`,
     "--sketch=false",
     srcPath,
     opts.outSvg,

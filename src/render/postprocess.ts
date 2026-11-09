@@ -56,5 +56,15 @@ export async function postprocessSvg(svgPath: string, theme: ThemePalette): Prom
     svg = svg.replace(/fill="black"/gi, `fill="${theme.ink}"`);
   }
 
+  // Force design-system sans on Mermaid sequence (often emits serif / Times)
+  svg = svg.replace(
+    /font-family\s*[:=]\s*["']?(?:Times|Times New Roman|serif)["']?/gi,
+    `font-family: ${theme.fontFamily}`,
+  );
+  svg = svg.replace(
+    /font-family="[^"]*"/gi,
+    `font-family="${theme.fontFamily.replace(/"/g, "")}"`,
+  );
+
   await fs.writeFile(svgPath, svg, "utf8");
 }

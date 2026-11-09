@@ -1,6 +1,6 @@
 vars: {
   d2-config: {
-    layout-engine: elk
+    layout-engine: dagre
     theme-id: 0
     pad: 64
   }
@@ -32,7 +32,7 @@ title: |md
 
 board: " " {
   grid-columns: 3
-  grid-gap: 56
+  grid-gap: 40
   style: {
     fill: "transparent"
     stroke: "transparent"
@@ -40,13 +40,13 @@ board: " " {
     font-color: "transparent"
   }
   edge: "Edge" {
-    grid-columns: 3
+    grid-columns: 2
     style: {
       fill: "#EEF2FF"
       stroke: "#6366F1"
       stroke-width: 2
       border-radius: 12
-      font-size: 15
+      font-size: 20
       bold: true
       font-color: "#0F172A"
     }
@@ -59,7 +59,7 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
@@ -71,7 +71,7 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
@@ -84,20 +84,20 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
   }
 
   bff: "BFF / Gateways" {
-    grid-columns: 3
+    grid-columns: 2
     style: {
       fill: "#EEF2FF"
       stroke: "#6366F1"
       stroke-width: 2
       border-radius: 12
-      font-size: 15
+      font-size: 20
       bold: true
       font-color: "#0F172A"
     }
@@ -110,7 +110,7 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
@@ -123,7 +123,7 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
@@ -136,20 +136,20 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
   }
 
   core: "Core Domain" {
-    grid-columns: 4
+    grid-columns: 3
     style: {
       fill: "#EEF2FF"
       stroke: "#6366F1"
       stroke-width: 2
       border-radius: 12
-      font-size: 15
+      font-size: 20
       bold: true
       font-color: "#0F172A"
     }
@@ -162,7 +162,7 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
@@ -175,7 +175,7 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
@@ -188,7 +188,7 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
@@ -201,7 +201,7 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
@@ -214,7 +214,7 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
@@ -227,20 +227,20 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
   }
 
   ops: "Ops & Fulfillment" {
-    grid-columns: 4
+    grid-columns: 3
     style: {
       fill: "#EEF2FF"
       stroke: "#6366F1"
       stroke-width: 2
       border-radius: 12
-      font-size: 15
+      font-size: 20
       bold: true
       font-color: "#0F172A"
     }
@@ -253,7 +253,7 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
@@ -266,7 +266,7 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
@@ -279,7 +279,7 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
@@ -292,7 +292,7 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
@@ -305,20 +305,20 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
   }
 
   data: "Data & Messaging" {
-    grid-columns: 4
+    grid-columns: 3
     style: {
       fill: "#EEF2FF"
       stroke: "#6366F1"
       stroke-width: 2
       border-radius: 12
-      font-size: 15
+      font-size: 20
       bold: true
       font-color: "#0F172A"
     }
@@ -331,7 +331,7 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
@@ -344,7 +344,7 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
@@ -357,7 +357,7 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
@@ -370,7 +370,7 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
@@ -383,7 +383,7 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
@@ -396,20 +396,20 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
   }
 
   plat: "Platform" {
-    grid-columns: 3
+    grid-columns: 2
     style: {
       fill: "#EEF2FF"
       stroke: "#6366F1"
       stroke-width: 2
       border-radius: 12
-      font-size: 15
+      font-size: 20
       bold: true
       font-color: "#0F172A"
     }
@@ -422,7 +422,7 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
@@ -435,7 +435,7 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
@@ -448,7 +448,7 @@ board: " " {
         stroke-width: 2
         border-radius: 8
         shadow: true
-        font-size: 14
+        font-size: 22
         font-color: "#0F172A"
       }
     }
@@ -457,183 +457,183 @@ board: " " {
 
 
 
-web -> cdn {
+board.edge.web -> board.edge.cdn {
   style: {
     stroke: "#334155"
     stroke-width: 2
   }
 }
-mobile -> apigw {
+board.edge.mobile -> board.bff.apigw {
   style: {
     stroke: "#334155"
     stroke-width: 2
   }
 }
-cdn -> apigw {
+board.edge.cdn -> board.bff.apigw {
   style: {
     stroke: "#334155"
     stroke-width: 2
   }
 }
-apigw -> auth: "validate" {
+board.bff.apigw -> board.plat.auth: "validate" {
   style: {
     stroke: "#334155"
     stroke-width: 2
   }
 }
-apigw -> bff_web {
+board.bff.apigw -> board.bff.bff_web {
   style: {
     stroke: "#334155"
     stroke-width: 2
   }
 }
-apigw -> bff_mobile {
+board.bff.apigw -> board.bff.bff_mobile {
   style: {
     stroke: "#334155"
     stroke-width: 2
   }
 }
-bff_web -> orders {
+board.bff.bff_web -> board.core.orders {
   style: {
     stroke: "#334155"
     stroke-width: 2
   }
 }
-bff_web -> catalog {
+board.bff.bff_web -> board.core.catalog {
   style: {
     stroke: "#334155"
     stroke-width: 2
   }
 }
-bff_web -> customers {
+board.bff.bff_web -> board.core.customers {
   style: {
     stroke: "#334155"
     stroke-width: 2
   }
 }
-bff_mobile -> orders {
+board.bff.bff_mobile -> board.core.orders {
   style: {
     stroke: "#334155"
     stroke-width: 2
   }
 }
-bff_mobile -> pricing {
+board.bff.bff_mobile -> board.core.pricing {
   style: {
     stroke: "#334155"
     stroke-width: 2
   }
 }
-orders -> pg_orders {
+board.core.orders -> board.data.pg_orders {
   style: {
     stroke: "#059669"
     stroke-width: 3
   }
 }
-inventory -> pg_inv {
+board.core.inventory -> board.data.pg_inv {
   style: {
     stroke: "#059669"
     stroke-width: 3
   }
 }
-catalog -> mongo_cat {
+board.core.catalog -> board.data.mongo_cat {
   style: {
     stroke: "#059669"
     stroke-width: 3
   }
 }
-catalog -> es {
+board.core.catalog -> board.data.es {
   style: {
     stroke: "#059669"
     stroke-width: 3
   }
 }
-catalog -> redis {
+board.core.catalog -> board.data.redis {
   style: {
     stroke: "#059669"
     stroke-width: 3
   }
 }
-orders -> kafka: "OrderCreated" {
+board.core.orders -> board.data.kafka: "OrderCreated" {
   style: {
     stroke: "#7C3AED"
     stroke-dash: 4
     stroke-width: 2
   }
 }
-payments -> kafka: "PaymentCaptured" {
+board.core.payments -> board.data.kafka: "PaymentCaptured" {
   style: {
     stroke: "#7C3AED"
     stroke-dash: 4
     stroke-width: 2
   }
 }
-inventory -> kafka: "StockReserved" {
+board.core.inventory -> board.data.kafka: "StockReserved" {
   style: {
     stroke: "#7C3AED"
     stroke-dash: 4
     stroke-width: 2
   }
 }
-kafka -> shipping: "consume" {
+board.data.kafka -> board.ops.shipping: "consume" {
   style: {
     stroke: "#7C3AED"
     stroke-dash: 4
     stroke-width: 2
   }
 }
-kafka -> warehouse: "consume" {
+board.data.kafka -> board.ops.warehouse: "consume" {
   style: {
     stroke: "#7C3AED"
     stroke-dash: 4
     stroke-width: 2
   }
 }
-kafka -> notify: "consume" {
+board.data.kafka -> board.ops.notify: "consume" {
   style: {
     stroke: "#7C3AED"
     stroke-dash: 4
     stroke-width: 2
   }
 }
-kafka -> analytics: "consume" {
+board.data.kafka -> board.ops.analytics: "consume" {
   style: {
     stroke: "#7C3AED"
     stroke-dash: 4
     stroke-width: 2
   }
 }
-kafka -> returns: "consume" {
+board.data.kafka -> board.ops.returns: "consume" {
   style: {
     stroke: "#7C3AED"
     stroke-dash: 4
     stroke-width: 2
   }
 }
-orders -> payments: "authorize" {
+board.core.orders -> board.core.payments: "authorize" {
   style: {
     stroke: "#334155"
     stroke-width: 2
   }
 }
-orders -> inventory: "reserve" {
+board.core.orders -> board.core.inventory: "reserve" {
   style: {
     stroke: "#334155"
     stroke-width: 2
   }
 }
-pricing -> redis {
+board.core.pricing -> board.data.redis {
   style: {
     stroke: "#059669"
     stroke-width: 3
   }
 }
-config -> orders {
+board.plat.config -> board.core.orders {
   style: {
     stroke: "#334155"
     stroke-width: 2
   }
 }
-otel -> orders {
+board.plat.otel -> board.core.orders {
   style: {
     stroke: "#7C3AED"
     stroke-dash: 4
@@ -649,7 +649,7 @@ legend: Legend {
     stroke: "#CBD5E1"
     border-radius: 10
     font-color: "#64748B"
-    font-size: 13
+    font-size: 16
   }
   leg_0: "Service" {
   shape: rectangle
@@ -657,7 +657,7 @@ legend: Legend {
     fill: "#EFF6FF"
     stroke: "#3B82F6"
     border-radius: 6
-    font-size: 12
+    font-size: 16
     font-color: "#0F172A"
   }
 }
@@ -667,7 +667,7 @@ legend: Legend {
     fill: "#FFF7ED"
     stroke: "#F97316"
     border-radius: 6
-    font-size: 12
+    font-size: 16
     font-color: "#0F172A"
   }
 }
@@ -677,7 +677,7 @@ legend: Legend {
     fill: "#F5F3FF"
     stroke: "#8B5CF6"
     border-radius: 6
-    font-size: 12
+    font-size: 16
     font-color: "#0F172A"
   }
 }
@@ -687,7 +687,7 @@ legend: Legend {
     fill: "#ECFDF5"
     stroke: "#10B981"
     border-radius: 6
-    font-size: 12
+    font-size: 16
     font-color: "#0F172A"
   }
 }
@@ -698,7 +698,7 @@ legend: Legend {
     stroke: "#334155"
     stroke-width: 2
     border-radius: 6
-    font-size: 12
+    font-size: 16
     font-color: "#0F172A"
   }
 }
@@ -709,7 +709,7 @@ legend: Legend {
     stroke: "#7C3AED"
     stroke-width: 2
     border-radius: 6
-    font-size: 12
+    font-size: 16
     font-color: "#0F172A"
     stroke-dash: 3
   }

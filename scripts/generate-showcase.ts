@@ -10,8 +10,6 @@ import { compileMicroservice } from "../src/compilers/microservice.js";
 import { compileFlowchart } from "../src/compilers/flowchart.js";
 import { compileDecision } from "../src/compilers/decision.js";
 import { compileDependency } from "../src/compilers/dependency.js";
-import { getTheme } from "../src/design/themes.js";
-
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = path.join(ROOT, "examples", "showcase");
 
@@ -27,7 +25,7 @@ async function render(
     name,
     outputDir: OUT,
     includePreview: false,
-    layout: "elk",
+    layout: "dagre",
   });
   console.log(`✓ ${name}  ${result.width}×${result.height}  ${result.pngPath}`);
   return result;
@@ -99,54 +97,54 @@ function ecommerceE2E() {
       { from: "admin", to: "apigw", label: "HTTPS", kind: "sync" },
       { from: "cdn", to: "waf", kind: "sync" },
       { from: "waf", to: "apigw", kind: "sync" },
-      { from: "apigw", to: "bff_web", label: "route", kind: "sync" },
-      { from: "apigw", to: "bff_mobile", label: "route", kind: "sync" },
-      { from: "apigw", to: "bff_admin", label: "route", kind: "sync" },
-      { from: "apigw", to: "auth", label: "validate JWT", kind: "sync" },
+      { from: "apigw", to: "bff_web", kind: "sync" },
+      { from: "apigw", to: "bff_mobile", kind: "sync" },
+      { from: "apigw", to: "bff_admin", kind: "sync" },
+      { from: "apigw", to: "auth", kind: "sync" },
       // BFF → services (sync)
-      { from: "bff_web", to: "catalog", label: "gRPC", kind: "sync" },
-      { from: "bff_web", to: "search", label: "REST", kind: "sync" },
-      { from: "bff_web", to: "cart", label: "gRPC", kind: "sync" },
-      { from: "bff_web", to: "order", label: "gRPC", kind: "sync" },
-      { from: "bff_web", to: "user", label: "gRPC", kind: "sync" },
-      { from: "bff_web", to: "rec", label: "REST", kind: "sync" },
+      { from: "bff_web", to: "catalog", kind: "sync" },
+      { from: "bff_web", to: "search", kind: "sync" },
+      { from: "bff_web", to: "cart", kind: "sync" },
+      { from: "bff_web", to: "order", kind: "sync" },
+      { from: "bff_web", to: "user", kind: "sync" },
+      { from: "bff_web", to: "rec", kind: "sync" },
       { from: "bff_mobile", to: "catalog", kind: "sync" },
       { from: "bff_mobile", to: "cart", kind: "sync" },
       { from: "bff_mobile", to: "order", kind: "sync" },
       { from: "bff_admin", to: "inventory", kind: "sync" },
       { from: "bff_admin", to: "shipping", kind: "sync" },
       { from: "bff_admin", to: "user", kind: "sync" },
-      // Cross-service sync
-      { from: "order", to: "inventory", label: "reserve gRPC", kind: "sync" },
-      { from: "order", to: "payment", label: "authorize gRPC", kind: "sync" },
-      { from: "order", to: "cart", label: "read cart", kind: "sync" },
-      { from: "payment", to: "stripe", label: "charge", kind: "sync" },
-      { from: "search", to: "catalog", label: "hydrate", kind: "sync" },
+      // Cross-service sync (labels only on key hops)
+      { from: "order", to: "inventory", kind: "sync" },
+      { from: "order", to: "payment", kind: "sync" },
+      { from: "order", to: "cart", kind: "sync" },
+      { from: "payment", to: "stripe", kind: "sync" },
+      { from: "search", to: "catalog", kind: "sync" },
       // DB edges (data)
-      { from: "auth", to: "pg_user", label: "R/W", kind: "data" },
-      { from: "user", to: "pg_user", label: "R/W", kind: "data" },
-      { from: "order", to: "pg_order", label: "R/W", kind: "data" },
-      { from: "inventory", to: "mysql_inv", label: "R/W", kind: "data" },
-      { from: "catalog", to: "mongo_cat", label: "R/W", kind: "data" },
-      { from: "cart", to: "redis", label: "R/W", kind: "data" },
-      { from: "search", to: "es", label: "query", kind: "data" },
-      { from: "catalog", to: "s3", label: "images", kind: "data" },
-      { from: "payment", to: "s3", label: "invoices", kind: "data" },
-      { from: "rec", to: "redis", label: "features", kind: "data" },
+      { from: "auth", to: "pg_user", kind: "data" },
+      { from: "user", to: "pg_user", kind: "data" },
+      { from: "order", to: "pg_order", kind: "data" },
+      { from: "inventory", to: "mysql_inv", kind: "data" },
+      { from: "catalog", to: "mongo_cat", kind: "data" },
+      { from: "cart", to: "redis", kind: "data" },
+      { from: "search", to: "es", kind: "data" },
+      { from: "catalog", to: "s3", kind: "data" },
+      { from: "payment", to: "s3", kind: "data" },
+      { from: "rec", to: "redis", kind: "data" },
       // Kafka topology
       { from: "order", to: "t_order", label: "OrderPlaced", kind: "async" },
-      { from: "payment", to: "t_pay", label: "PaymentCaptured", kind: "async" },
-      { from: "inventory", to: "t_inv", label: "StockReserved", kind: "async" },
-      { from: "shipping", to: "t_ship", label: "Shipped", kind: "async" },
+      { from: "payment", to: "t_pay", kind: "async" },
+      { from: "inventory", to: "t_inv", kind: "async" },
+      { from: "shipping", to: "t_ship", kind: "async" },
       { from: "t_order", to: "kafka", kind: "async" },
       { from: "t_pay", to: "kafka", kind: "async" },
       { from: "t_inv", to: "kafka", kind: "async" },
       { from: "t_ship", to: "kafka", kind: "async" },
-      { from: "kafka", to: "shipping", label: "consume order", kind: "async" },
-      { from: "kafka", to: "notify", label: "consume *", kind: "async" },
-      { from: "kafka", to: "rec", label: "consume order", kind: "async" },
-      { from: "kafka", to: "search", label: "reindex", kind: "async" },
-      { from: "notify", to: "twilio", label: "send", kind: "sync" },
+      { from: "kafka", to: "shipping", kind: "async" },
+      { from: "kafka", to: "notify", kind: "async" },
+      { from: "kafka", to: "rec", kind: "async" },
+      { from: "kafka", to: "search", kind: "async" },
+      { from: "notify", to: "twilio", kind: "sync" },
     ],
     legend: [
       { label: "Sync REST / gRPC", kind: "sync" },
@@ -164,45 +162,9 @@ function ecommerceE2E() {
  * Styled to match design system (presentation theme).
  */
 function placeOrderFlow() {
-  const theme = getTheme("presentation");
-  const source = `%%{init: {
-  "theme": "base",
-  "themeVariables": {
-    "fontFamily": "Inter, Helvetica Neue, Arial, sans-serif",
-    "fontSize": "15px",
-    "primaryColor": "${theme.roles.compute.fill}",
-    "primaryTextColor": "${theme.ink}",
-    "primaryBorderColor": "${theme.roles.compute.stroke}",
-    "secondaryColor": "${theme.roles.gateway.fill}",
-    "tertiaryColor": "${theme.roles.queue.fill}",
-    "lineColor": "${theme.edgeSync}",
-    "signalColor": "${theme.edgeSync}",
-    "signalTextColor": "${theme.ink}",
-    "labelBoxBkgColor": "${theme.surface}",
-    "labelBoxBorderColor": "${theme.border}",
-    "labelTextColor": "${theme.ink}",
-    "actorBkg": "${theme.roles.gateway.fill}",
-    "actorBorder": "${theme.roles.gateway.stroke}",
-    "actorTextColor": "${theme.ink}",
-    "actorLineColor": "${theme.border}",
-    "noteBkgColor": "${theme.roles.queue.tint}",
-    "noteBorderColor": "${theme.roles.queue.stroke}",
-    "noteTextColor": "${theme.ink}",
-    "activationBkgColor": "${theme.roles.compute.tint}",
-    "activationBorderColor": "${theme.roles.compute.stroke}",
-    "sequenceNumberColor": "${theme.accent}"
-  },
-  "sequence": {
-    "actorMargin": 36,
-    "messageMargin": 48,
-    "mirrorActors": false,
-    "bottomMarginAdj": 20,
-    "rightAngles": true,
-    "showSequenceNumbers": true,
-    "width": 240
-  }
-}}%%
-sequenceDiagram
+  // Theme fonts/colors come from mermaidThemeConfig (DESIGN.md) via -c config —
+  // avoid %%{init}%% which would override Inter / role colors with Mermaid defaults.
+  const source = `sequenceDiagram
   autonumber
   actor User as Web SPA
   participant GW as API Gateway
@@ -321,7 +283,7 @@ function k8sMultiRegion() {
       { from: "alb_e", to: "ing_e", kind: "sync" },
       { from: "ing_e", to: "istio_e", kind: "sync" },
       { from: "istio_e", to: "gw_e", kind: "sync" },
-      { from: "gw_e", to: "order_e", label: "gRPC", kind: "sync" },
+      { from: "gw_e", to: "order_e", kind: "sync" },
       { from: "gw_e", to: "cart_e", kind: "sync" },
       { from: "gw_e", to: "catalog_e", kind: "sync" },
       { from: "gw_e", to: "search_e", kind: "sync" },
@@ -344,7 +306,7 @@ function k8sMultiRegion() {
       { from: "ing_w", to: "catalog_w", kind: "sync" },
       { from: "ing_w", to: "pay_w", kind: "sync" },
       { from: "aurora_e", to: "aurora_w", label: "async replica", kind: "async" },
-      { from: "redis_e", to: "redis_w", label: "replica", kind: "async" },
+      { from: "redis_e", to: "redis_w", kind: "async" },
       { from: "otel", to: "prom", kind: "data" },
       { from: "otel", to: "tempo", kind: "data" },
       { from: "otel", to: "loki", kind: "data" },
@@ -364,35 +326,31 @@ function k8sMultiRegion() {
 }
 
 function flowchartSwimlanes() {
+  // Flat TB flow (no Mermaid subgraph swimlanes) — subgraphs + feedback edges
+  // split styled nodes from the main chain. Lane is encoded in the subtitle.
   return compileFlowchart({
     title: "CI/CD Release Pipeline",
-    subtitle: "PR to production with canary · swimlanes",
+    subtitle: "PR to production with canary · swimlanes via role colors",
     theme: "presentation",
     name: "04-flowchart-swimlanes",
-    direction: "LR",
-    groups: [
-      { id: "dev", label: "Developer", kind: "lane" },
-      { id: "ci", label: "CI System", kind: "lane" },
-      { id: "cd", label: "CD / Release", kind: "lane" },
-      { id: "ops", label: "SRE / Ops", kind: "lane" },
-    ],
+    direction: "TB",
     nodes: [
-      { id: "start", label: "Open Pull Request", type: "start", group: "dev", role: "external" },
-      { id: "review", label: "Code Review", type: "process", group: "dev", role: "compute" },
-      { id: "lint", label: "Lint + Typecheck", type: "process", group: "ci", role: "compute" },
-      { id: "unit", label: "Unit Tests", type: "process", group: "ci", role: "compute" },
-      { id: "build", label: "Build Container", type: "process", group: "ci", role: "compute" },
-      { id: "sast", label: "SAST / SCA Scan", type: "process", group: "ci", role: "security" },
-      { id: "pass_ci", label: "CI Green?", type: "decision", group: "ci", role: "network" },
-      { id: "staging", label: "Deploy Staging", type: "subprocess", group: "cd", role: "gateway" },
-      { id: "e2e", label: "E2E + Contract Tests", type: "process", group: "cd", role: "compute" },
-      { id: "approve", label: "Manual Approval?", type: "decision", group: "cd", role: "network" },
-      { id: "canary", label: "Canary 5%", type: "subprocess", group: "cd", role: "gateway" },
-      { id: "healthy", label: "SLOs Healthy?", type: "decision", group: "ops", role: "observability" },
-      { id: "rollout", label: "Full Rollout", type: "process", group: "cd", role: "compute" },
-      { id: "rollback", label: "Auto Rollback", type: "process", group: "ops", role: "security" },
-      { id: "done", label: "Release Complete", type: "end", group: "ops", role: "data" },
-      { id: "fix", label: "Notify Author", type: "end", group: "dev", role: "external" },
+      { id: "start", label: "Open Pull Request", subtitle: "Developer", type: "start", role: "external" },
+      { id: "review", label: "Code Review", subtitle: "Developer", type: "process", role: "compute" },
+      { id: "lint", label: "Lint + Typecheck", subtitle: "CI", type: "process", role: "compute" },
+      { id: "unit", label: "Unit Tests", subtitle: "CI", type: "process", role: "compute" },
+      { id: "build", label: "Build Container", subtitle: "CI", type: "process", role: "compute" },
+      { id: "sast", label: "SAST / SCA Scan", subtitle: "CI", type: "process", role: "security" },
+      { id: "pass_ci", label: "CI Green?", subtitle: "CI", type: "decision", role: "network" },
+      { id: "staging", label: "Deploy Staging", subtitle: "CD", type: "subprocess", role: "gateway" },
+      { id: "e2e", label: "E2E + Contract Tests", subtitle: "CD", type: "process", role: "compute" },
+      { id: "approve", label: "Manual Approval?", subtitle: "CD", type: "decision", role: "network" },
+      { id: "canary", label: "Canary 5%", subtitle: "CD", type: "subprocess", role: "gateway" },
+      { id: "healthy", label: "SLOs Healthy?", subtitle: "SRE", type: "decision", role: "observability" },
+      { id: "rollout", label: "Full Rollout", subtitle: "CD", type: "process", role: "compute" },
+      { id: "rollback", label: "Auto Rollback", subtitle: "SRE", type: "process", role: "security" },
+      { id: "done", label: "Release Complete", subtitle: "SRE", type: "end", role: "data" },
+      { id: "fix", label: "Notify Author", subtitle: "Developer", type: "end", role: "external" },
     ],
     edges: [
       { from: "start", to: "review" },
