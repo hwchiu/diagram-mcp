@@ -82,6 +82,12 @@ export function runArchitectureQa(layout: LayoutResult, opts: QaOptions = {}): Q
     }
     if (n.subtitle && measureText(n.subtitle.text, FONTS.cardSub) > room) add("error", "text-overflow", `subtitle of ${n.id} overflows`, [n.id]);
     for (const d of n.desc ?? []) if (measureText(d, SHAPE_FONTS.desc) > room) add("error", "text-overflow", `description of ${n.id} overflows`, [n.id]);
+    if (n.shape === "table") {
+      for (const r of n.rows ?? []) {
+        const need = 40 + measureText(r.name + (r.nullable ? "?" : ""), { font: "mono", size: 12.5, weight: 700 }) + (r.type ? 14 + measureText(r.type, { font: "mono", size: 12 }) : 0) + 12;
+        if (need > n.rect.w + 1) add("error", "text-overflow", `column ${r.name} of table ${n.id} overflows (${Math.round(need)}px > ${n.rect.w}px)`, [n.id]);
+      }
+    }
     if (n.label.truncated || n.label2?.truncated || n.subtitle?.truncated || (n.desc ?? []).some((d) => d.endsWith("…"))) add("warning", "text-truncated", `text of ${n.id} was truncated with an ellipsis — shorten it`, [n.id]);
   }
 

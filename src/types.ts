@@ -42,7 +42,25 @@ export type NodeShape =
   | "terminator"
   | "component"
   | "interface"
-  | "pod";
+  | "pod"
+  /** UML state (rounded, name + activity compartment) */
+  | "state"
+  /** UML initial pseudo-state (filled dot) */
+  | "initial"
+  /** UML final state (bullseye) */
+  | "final"
+  /** UML choice pseudo-state (small diamond) */
+  | "choice"
+  /** flowchart input / output (parallelogram) */
+  | "io"
+  /** flowchart predefined process (double side bars) */
+  | "subprocess"
+  /** flowchart document (wavy bottom) */
+  | "document"
+  /** ERD table: header + column rows (node.rows) */
+  | "table"
+  /** knowledge-graph entity (pill with type chip) */
+  | "entityType";
 
 export interface DiagramNode {
   id: string;
@@ -66,7 +84,27 @@ export interface DiagramNode {
   detail?: string;
   /** @internal dimmed stub for an endpoint that lives in another view */
   stub?: boolean;
+  /** de-emphasised (impact analysis: not on the highlighted path) */
+  dim?: boolean;
+  /** emphasised outline (impact analysis: changed / impacted) */
+  emphasis?: "changed" | "impacted" | "focus";
+  /** ERD table rows */
+  rows?: TableRow[];
+  /** status chip colour override (workflow task status) */
+  status?: string;
 }
+
+export interface TableRow {
+  name: string;
+  type?: string;
+  /** "PK" | "FK" | "PK,FK" | "UK" … */
+  key?: string;
+  nullable?: boolean;
+  note?: string;
+}
+
+/** Edge-end notation (default: filled arrow at the target). */
+export type EdgeMark = "arrow" | "open" | "none" | "one" | "many" | "zeroOrOne" | "exactlyOne" | "zeroOrMany" | "oneOrMany";
 
 export type GroupKind =
   | "region"
@@ -88,7 +126,13 @@ export type GroupKind =
   /** network: public internet / DMZ / on-prem site */
   | "internet"
   | "dmz"
-  | "site";
+  | "site"
+  /** UML composite state */
+  | "composite"
+  /** pipeline stage / phase column */
+  | "stage"
+  /** workflow task group */
+  | "taskgroup";
 
 export interface DiagramGroup {
   id: string;
@@ -120,6 +164,11 @@ export interface DiagramEdge {
   highlight?: boolean;
   /** Draw arrowheads on both ends */
   bidirectional?: boolean;
+  /** de-emphasised */
+  dim?: boolean;
+  /** custom end notation (ERD crow's foot, UML open arrows) */
+  startMark?: EdgeMark;
+  endMark?: EdgeMark;
 }
 
 /** Numbered architecture walkthrough (AWS reference-style side panel). */

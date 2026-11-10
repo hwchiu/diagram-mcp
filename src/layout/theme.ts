@@ -93,6 +93,9 @@ export const DARK: ArchTheme = {
     dmz: "#f59e0b",
     site: "#2dd4bf",
     lane: "#818cf8",
+    composite: "#818cf8",
+    stage: "#38bdf8",
+    taskgroup: "#34d399",
   },
   alert: "#f43f5e",
 };
@@ -153,6 +156,9 @@ export const LIGHT: ArchTheme = {
     dmz: "#d97706",
     site: "#0d9488",
     lane: "#4f46e5",
+    composite: "#4f46e5",
+    stage: "#0284c7",
+    taskgroup: "#059669",
   },
   alert: "#e11d48",
 };

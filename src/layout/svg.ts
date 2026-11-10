@@ -8,8 +8,10 @@ import { CARD_TEXT_X, FONTS, ICON_BOX, CARD_PAD_X, tierLabelText } from "./grid.
 import { archTheme, rgba, tierAccent, type ArchTheme } from "./theme.js";
 import { measureText } from "./text.js";
 import { tagSuffix } from "./notation.js";
-import { SHAPE_FONTS } from "./shapes.js";
+import { legendFlow } from "./legend.js";
+import { SHAPE_FONTS, TABLE_HEAD, TABLE_ROW } from "./shapes.js";
 import { BADGE_R, type LayoutResult, type PlacedNode, type PlacedTier, type Point, type RoutedEdge } from "./types.js";
+import type { EdgeMark } from "../types.js";
 
 export function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -151,7 +153,7 @@ function renderCard(n: PlacedNode, t: ArchTheme): string {
   const c = t.roles[n.role] ?? t.roles.default;
   const shape = n.shape ?? "rounded";
   const glow = n.stub ? "" : t.glow ? ` filter="url(#glow)"` : ` filter="url(#shadow)"`;
-  const op = n.stub ? ` opacity="0.62"` : "";
+  const op = n.stub ? ` opacity="0.62"` : n.dim ? ` opacity="0.36"` : "";
   const dash = n.stub ? ` stroke-dasharray="4 3"` : "";
   const fill = rgba(c, n.stub ? 0.06 : t.fillAlpha);
   const parts: string[] = [];
@@ -166,7 +168,12 @@ function renderCard(n: PlacedNode, t: ArchTheme): string {
     h -= k;
     parts.push(tagChip(`×${n.replicas}`, x + w - 6, y + h - 21, c, t));
   }
-  const body = (inner: string) => `<g class="node${n.stub ? " stub" : ""}" id="node-${esc(n.id)}" data-role="${n.role}" data-shape="${shape}"${op}>
+  if (n.emphasis) {
+    const ec = n.emphasis === "changed" ? t.alert : n.emphasis === "impacted" ? t.roles.storage : t.badgeFill;
+    const k = 5;
+    parts.push(`<rect x="${x - k}" y="${y - k}" width="${w + 2 * k}" height="${h + 2 * k}" rx="12" fill="${rgba(ec, 0.06)}" stroke="${ec}" stroke-width="${n.emphasis === "changed" ? 1.8 : 1.2}"${n.emphasis === "changed" ? "" : ' stroke-dasharray="5 3"'} opacity="0.9"/>`);
+  }
+  const body = (inner: string) => `<g class="node${n.stub ? " stub" : ""}${n.dim ? " dim" : ""}" id="node-${esc(n.id)}" data-role="${n.role}" data-shape="${shape}"${op}>
   ${parts.join("\n  ")}${inner}
 </g>`;
   const top = n.top ?? 0;
@@ -206,6 +213,43 @@ function renderCard(n: PlacedNode, t: ArchTheme): string {
   ${n.tag ? `<line x1="${x}" y1="${y + head}" x2="${x + w}" y2="${y + head}" stroke="${rgba(c, 0.5)}" stroke-width="1"/><text x="${cx}" y="${y + 15}" text-anchor="middle" fill="${c}" font-family="${t.mono}" font-size="10.5" font-weight="700" letter-spacing="0.08em">${esc(n.tag)}</text>` : ""}
   ${drawText(lines, cx, y + head, y + h, "middle")}`);
     }
+    case "state": {
+      const lab = lines.filter((l) => l.family === t.mono && l.weight !== 400);
+      const subs = lines.filter((l) => l.family === t.mono && l.weight === 400);
+      const desc = n.desc ?? [];
+      const head = desc.length ? 20 + lab.length * 18 + subs.length * 17 : h;
+      const tagged = n.tag ? tagChip(n.tag, x + w - 8, y + 6, c, t) : "";
+      return body(`${base(16)}<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="16" fill="${fill}" stroke="${c}" stroke-width="1.5"${dash}${glow}/>
+  ${tagged}
+  ${drawText([...lab, ...subs], cx, y, y + head, "middle")}
+  ${desc.length ? `<line x1="${x}" y1="${y + head}" x2="${x + w}" y2="${y + head}" stroke="${rgba(c, 0.45)}" stroke-width="1"/>` + desc.map((d, i) => `<text x="${x + 14}" y="${r1(y + head + 18 + i * 16)}" fill="${t.id === "dark" ? "#a5b4c8" : "#475569"}" font-family="${t.sans}" font-size="12">${esc(d)}</text>`).join("") : ""}`);
+    }
+    case "initial":
+      return body(`<circle cx="${cx}" cy="${y + h / 2}" r="${w / 2}" fill="${rgba(c, 0.18)}"/><circle cx="${cx}" cy="${y + h / 2}" r="${w / 2 - 5}" fill="${c}"${glow}/>`);
+    case "final":
+      return body(`<circle cx="${cx}" cy="${y + h / 2}" r="${w / 2 - 1}" fill="${t.cardBase}" stroke="${c}" stroke-width="1.8"${glow}/><circle cx="${cx}" cy="${y + h / 2}" r="${w / 2 - 7}" fill="${c}"/>`);
+    case "choice": {
+      const d = `M ${cx} ${y} L ${x + w} ${y + h / 2} L ${cx} ${y + h} L ${x} ${y + h / 2} Z`;
+      return body(`<path d="${d}" fill="${t.cardBase}"/><path d="${d}" fill="${rgba(c, 0.2)}" stroke="${c}" stroke-width="1.5" stroke-linejoin="round"${glow}/>`);
+    }
+    case "io": {
+      const k = 16;
+      const d = `M ${x + k} ${y} H ${x + w} L ${x + w - k} ${y + h} H ${x} Z`;
+      return body(`<path d="${d}" fill="${t.cardBase}"/><path d="${d}" fill="${fill}" stroke="${c}" stroke-width="1.4" stroke-linejoin="round"${glow}/>
+  ${drawText(lines, cx, y, y + h, "middle")}`);
+    }
+    case "subprocess":
+      return body(`${base(4)}<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4" fill="${fill}" stroke="${c}" stroke-width="1.4"${glow}/>
+  <line x1="${x + 11}" y1="${y}" x2="${x + 11}" y2="${y + h}" stroke="${c}" stroke-width="1.1"/><line x1="${x + w - 11}" y1="${y}" x2="${x + w - 11}" y2="${y + h}" stroke="${c}" stroke-width="1.1"/>
+  ${drawText(lines, cx, y, y + h, "middle")}`);
+    case "document": {
+      const wv = 8;
+      const d = `M ${x} ${y + 4} Q ${x} ${y} ${x + 4} ${y} H ${x + w - 4} Q ${x + w} ${y} ${x + w} ${y + 4} V ${y + h - wv} C ${x + w * 0.75} ${y + h - wv * 2.2} ${x + w * 0.5} ${y + h + wv * 0.6} ${x + w * 0.25} ${y + h - wv * 0.4} S ${x} ${y + h - wv * 1.2} ${x} ${y + h - wv} Z`;
+      return body(`<path d="${d}" fill="${t.cardBase}"/><path d="${d}" fill="${fill}" stroke="${c}" stroke-width="1.4"${glow}/>
+  ${drawText(lines, cx, y, y + h - wv, "middle")}`);
+    }
+    case "table":
+      return body(renderTable(n, t, c, glow));
     case "entity":
       return body(`${base(2)}<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2" fill="${fill}" stroke="${c}" stroke-width="1.6"${dash}${glow}/>
   <rect x="${x + 4}" y="${y + 4}" width="${w - 8}" height="${h - 8}" rx="1" fill="none" stroke="${rgba(c, 0.55)}" stroke-width="0.9"/>
@@ -252,6 +296,71 @@ function renderCard(n: PlacedNode, t: ArchTheme): string {
   }
 }
 
+/** ERD table: header band (icon + name) and one row per column (key chip, name, type). */
+function renderTable(n: PlacedNode, t: ArchTheme, c: string, glow: string): string {
+  const { x, y, w, h } = n.rect;
+  const rows = n.rows ?? [];
+  const out: string[] = [
+    `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="9" fill="${t.cardBase}"/>`,
+    `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="9" fill="${rgba(c, t.fillAlpha * 0.6)}" stroke="${c}" stroke-width="1.3"${glow}/>`,
+    `<path d="M ${x} ${y + TABLE_HEAD} V ${y + 9} Q ${x} ${y} ${x + 9} ${y} H ${x + w - 9} Q ${x + w} ${y} ${x + w} ${y + 9} V ${y + TABLE_HEAD} Z" fill="${rgba(c, t.id === "dark" ? 0.24 : 0.16)}"/>`,
+    `<line x1="${x}" y1="${y + TABLE_HEAD}" x2="${x + w}" y2="${y + TABLE_HEAD}" stroke="${rgba(c, 0.7)}" stroke-width="1"/>`,
+    iconMarkup("table", c, x + 12, y + 9, 18),
+    `<text x="${x + 38}" y="${y + 23}" fill="${t.ink}" font-family="${t.mono}" font-size="14" font-weight="700">${esc(n.label.text)}</text>`,
+  ];
+  rows.forEach((r, i) => {
+    const ry = y + TABLE_HEAD + 4 + i * TABLE_ROW;
+    if (i % 2 === 1) out.push(`<rect x="${x + 1}" y="${ry}" width="${w - 2}" height="${TABLE_ROW}" fill="${rgba(c, 0.05)}"/>`);
+    const key = (r.key ?? "").toUpperCase();
+    const pk = key.includes("PK");
+    const fk = key.includes("FK");
+    const kc = pk ? t.badgeFill : fk ? t.edges.sync : key ? t.muted : "";
+    if (key) {
+      const kt = pk && fk ? "PF" : pk ? "PK" : fk ? "FK" : key.slice(0, 2);
+      out.push(`<rect x="${x + 10}" y="${ry + 4}" width="22" height="14" rx="3" fill="${rgba(kc, 0.16)}" stroke="${rgba(kc, 0.7)}" stroke-width="0.8"/><text x="${x + 21}" y="${ry + 14.5}" text-anchor="middle" fill="${kc}" font-family="${t.mono}" font-size="10" font-weight="700">${kt}</text>`);
+    }
+    out.push(`<text x="${x + 40}" y="${ry + 15.5}" fill="${pk ? t.ink : t.id === "dark" ? "#cbd5e1" : "#334155"}" font-family="${t.mono}" font-size="12.5"${pk ? ' font-weight="700"' : ""}>${esc(r.name)}${r.nullable ? `<tspan fill="${t.dim}">?</tspan>` : ""}</text>`);
+    if (r.type) out.push(`<text x="${x + w - 12}" y="${ry + 15.5}" text-anchor="end" fill="${t.muted}" font-family="${t.mono}" font-size="12">${esc(r.type)}</text>`);
+  });
+  return out.join("\n  ");
+}
+
+/** Crow's-foot / bar / circle glyphs at an edge end (p = endpoint on the card, q = previous point). */
+export function endGlyph(mark: EdgeMark | undefined, p: Point, q: Point, color: string, canvas: string): string {
+  if (!mark || mark === "arrow" || mark === "open" || mark === "none") return "";
+  const L = Math.hypot(p.x - q.x, p.y - q.y) || 1;
+  const u = { x: (p.x - q.x) / L, y: (p.y - q.y) / L };
+  const v = { x: -u.y, y: u.x };
+  const at = (d: number) => ({ x: p.x - u.x * d, y: p.y - u.y * d });
+  const bar = (d: number) => {
+    const c = at(d);
+    return `<line x1="${r1(c.x + v.x * 7)}" y1="${r1(c.y + v.y * 7)}" x2="${r1(c.x - v.x * 7)}" y2="${r1(c.y - v.y * 7)}" stroke="${color}" stroke-width="1.6"/>`;
+  };
+  const ring = (d: number) => {
+    const c = at(d);
+    return `<circle cx="${r1(c.x)}" cy="${r1(c.y)}" r="4.6" fill="${canvas}" stroke="${color}" stroke-width="1.5"/>`;
+  };
+  const crow = () => {
+    const a = at(13);
+    return `<path d="M ${r1(a.x)} ${r1(a.y)} L ${r1(p.x + v.x * 8)} ${r1(p.y + v.y * 8)} M ${r1(a.x)} ${r1(a.y)} L ${r1(p.x - v.x * 8)} ${r1(p.y - v.y * 8)}" fill="none" stroke="${color}" stroke-width="1.6" stroke-linecap="round"/>`;
+  };
+  switch (mark) {
+    case "one":
+      return bar(10);
+    case "exactlyOne":
+      return bar(8) + bar(14);
+    case "zeroOrOne":
+      return bar(8) + ring(18);
+    case "many":
+      return crow();
+    case "oneOrMany":
+      return crow() + bar(18);
+    case "zeroOrMany":
+      return crow() + ring(20);
+  }
+  return "";
+}
+
 function renderEdge(e: RoutedEdge, t: ArchTheme): string {
   const color = t.edges[e.kind] ?? t.edges.default;
   const d = pathD(e.points, 10);
@@ -263,8 +372,14 @@ function renderEdge(e: RoutedEdge, t: ArchTheme): string {
   const marks = (e.crossings ?? [])
     .map((p) => `<g class="boundary-cross"><circle cx="${r1(p.x)}" cy="${r1(p.y)}" r="6.5" fill="${t.canvas}" stroke="${t.alert}" stroke-width="1.6"/><path d="M ${r1(p.x - 2.6)} ${r1(p.y - 2.6)} L ${r1(p.x + 2.6)} ${r1(p.y + 2.6)} M ${r1(p.x + 2.6)} ${r1(p.y - 2.6)} L ${r1(p.x - 2.6)} ${r1(p.y + 2.6)}" stroke="${t.alert}" stroke-width="1.5" stroke-linecap="round"/></g>`)
     .join("");
-  return `<g class="edge${hl ? " highlight" : ""}" id="edge-${e.id}" data-from="${esc(e.from)}" data-to="${esc(e.to)}" data-kind="${e.kind}">
-  ${under}<path d="${d}" fill="none" stroke="${color}" stroke-width="${hl ? 2.2 : 1.6}" stroke-linejoin="round"${edgeDash(e.kind)}${start} marker-end="url(#arrow-${e.kind})"/>${marks}
+  const mk = (m: EdgeMark | undefined, end: boolean) =>
+    !m || m === "arrow" ? (end ? ` marker-end="url(#arrow-${e.kind})"` : "") : m === "open" ? ` marker-${end ? "end" : "start"}="url(#arrow-open${end ? "" : "-start"}-${e.kind})"` : "";
+  const startM = e.startMark ? mk(e.startMark, false) : start;
+  const endM = mk(e.endMark, true);
+  const n = e.points.length;
+  const glyphs = n >= 2 ? endGlyph(e.endMark, e.points[n - 1], e.points[n - 2], color, t.canvas) + endGlyph(e.startMark, e.points[0], e.points[1], color, t.canvas) : "";
+  return `<g class="edge${hl ? " highlight" : ""}${e.dim ? " dim" : ""}" id="edge-${e.id}" data-from="${esc(e.from)}" data-to="${esc(e.to)}" data-kind="${e.kind}"${e.dim ? ' opacity="0.3"' : ""}>
+  ${under}<path d="${d}" fill="none" stroke="${color}" stroke-width="${hl ? 2.2 : 1.6}" stroke-linejoin="round"${edgeDash(e.kind)}${startM}${endM}/>${glyphs}${marks}
 </g>`;
 }
 
@@ -290,7 +405,7 @@ function renderAnnotations(e: RoutedEdge, t: ArchTheme): string {
       const q = { x: Math.max(r.x, Math.min(r.x + r.w, p.x)), y: Math.max(r.y, Math.min(r.y + r.h, p.y)) };
       out += `<g class="edge-leader" data-edge="${e.id}"><line x1="${p.x}" y1="${p.y}" x2="${q.x}" y2="${q.y}" stroke="${color}" stroke-width="1" stroke-dasharray="2 2.5" opacity="0.9"/><circle cx="${p.x}" cy="${p.y}" r="2.6" fill="${color}"/></g>`;
     }
-    out += `<g class="edge-label" data-edge="${e.id}">
+    out += `<g class="edge-label" data-edge="${e.id}"${e.dim ? ' opacity="0.45"' : ""}>
   <rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" rx="${r.h / 2}" fill="${t.pillFill}" stroke="${pill}" stroke-width="${e.tags?.length ? 1.3 : 1}"/>
   <text x="${r.x + (e.badgeInLabel ? BADGE_R * 2 + 2 : 0) + (r.w - (e.badgeInLabel ? BADGE_R * 2 + 2 : 0)) / 2}" y="${r.y + r.h / 2 + 4.2}" text-anchor="middle" fill="${t.ink}" font-family="${t.mono}" font-size="${FONTS.edgeLabel.size}" font-weight="500">${labelText(e, t)}</text>
 </g>`;
@@ -329,8 +444,74 @@ function legendSwatch(item: LayoutResult["legend"][0], x: number, y: number, t: 
         return `<rect x="${x + 2}" y="${y - 8}" width="25" height="16" rx="1" fill="${rgba(c, 0.18)}" stroke="${c}" stroke-width="1.2"/><rect x="${x + 4.5}" y="${y - 5.5}" width="20" height="11" fill="none" stroke="${rgba(c, 0.6)}" stroke-width="0.7"/>`;
       case "replicas":
         return `<rect x="${x + 8}" y="${y - 9}" width="18" height="13" rx="3" fill="none" stroke="${rgba(c, 0.5)}"/><rect x="${x + 4}" y="${y - 5}" width="18" height="13" rx="3" fill="${t.cardBase}" stroke="${c}" stroke-width="1.2"/>`;
+      case "changed":
+        return `<rect x="${x + 2}" y="${y - 8}" width="25" height="16" rx="4" fill="${rgba(t.alert, 0.12)}" stroke="${t.alert}" stroke-width="1.6"/>`;
+      case "impacted":
+        return `<rect x="${x + 2}" y="${y - 8}" width="25" height="16" rx="4" fill="${rgba(t.roles.storage, 0.12)}" stroke="${t.roles.storage}" stroke-width="1.2" stroke-dasharray="4 2"/>`;
+      case "dimmed":
+        return `<rect x="${x + 2}" y="${y - 8}" width="25" height="16" rx="4" fill="${rgba(t.roles.default, 0.1)}" stroke="${t.roles.default}" stroke-width="1.1" opacity="0.4"/>`;
+      case "state":
+        return `<rect x="${x + 2}" y="${y - 8}" width="25" height="16" rx="7" fill="${rgba(c, 0.18)}" stroke="${c}" stroke-width="1.2"/>`;
+      case "initial":
+        return `<circle cx="${x + 14}" cy="${y}" r="6" fill="${c}"/>`;
+      case "final":
+        return `<circle cx="${x + 14}" cy="${y}" r="7.5" fill="none" stroke="${c}" stroke-width="1.4"/><circle cx="${x + 14}" cy="${y}" r="4" fill="${c}"/>`;
+      case "choice":
+        return `<path d="M ${x + 14} ${y - 8} L ${x + 22} ${y} L ${x + 14} ${y + 8} L ${x + 6} ${y} Z" fill="${rgba(c, 0.2)}" stroke="${c}" stroke-width="1.2"/>`;
+      case "composite":
+      case "stage":
+        return `<rect x="${x + 1}" y="${y - 8}" width="27" height="16" rx="4" fill="${rgba(c, 0.06)}" stroke="${rgba(c, 0.7)}" stroke-width="1.1" stroke-dasharray="4 3"/>`;
+      case "table":
+        return `<rect x="${x + 2}" y="${y - 8}" width="25" height="16" rx="3" fill="${rgba(c, 0.1)}" stroke="${c}" stroke-width="1.1"/><rect x="${x + 2}" y="${y - 8}" width="25" height="5" fill="${rgba(c, 0.4)}"/>`;
+      case "pk":
+      case "fk": {
+        const kc = item.mark === "pk" ? t.badgeFill : t.edges.sync;
+        return `<rect x="${x + 3}" y="${y - 7}" width="22" height="14" rx="3" fill="${rgba(kc, 0.16)}" stroke="${rgba(kc, 0.7)}" stroke-width="0.8"/><text x="${x + 14}" y="${y + 3.5}" text-anchor="middle" fill="${kc}" font-family="${t.mono}" font-size="10" font-weight="700">${item.mark.toUpperCase()}</text>`;
+      }
+      case "crow": {
+        const col = t.edges.default === c ? t.muted : t.edges.data;
+        return `<line x1="${x}" y1="${y}" x2="${x + 28}" y2="${y}" stroke="${col}" stroke-width="1.6"/>` + endGlyph("oneOrMany", { x: x + 28, y }, { x, y }, col, t.canvas);
+      }
+      case "io":
+        return `<path d="M ${x + 7} ${y - 8} H ${x + 28} L ${x + 21} ${y + 8} H ${x} Z" fill="${rgba(c, 0.18)}" stroke="${c}" stroke-width="1.2"/>`;
+      case "terminator":
+        return `<rect x="${x + 1}" y="${y - 8}" width="27" height="16" rx="8" fill="${rgba(c, 0.2)}" stroke="${c}" stroke-width="1.2"/>`;
+      case "subprocess":
+        return `<rect x="${x + 2}" y="${y - 8}" width="25" height="16" rx="2" fill="${rgba(c, 0.18)}" stroke="${c}" stroke-width="1.2"/><line x1="${x + 6}" y1="${y - 8}" x2="${x + 6}" y2="${y + 8}" stroke="${c}"/><line x1="${x + 23}" y1="${y - 8}" x2="${x + 23}" y2="${y + 8}" stroke="${c}"/>`;
       case "lane":
         return `<rect x="${x + 1}" y="${y - 7}" width="26" height="14" fill="${rgba(c, 0.12)}" stroke="${rgba(c, 0.6)}"/><rect x="${x + 1}" y="${y - 7}" width="3" height="14" fill="${c}"/>`;
+      case "syncmsg":
+        return `<line x1="${x}" y1="${y}" x2="${x + 24}" y2="${y}" stroke="${t.edges.sync}" stroke-width="1.6"/><path d="M ${x + 21} ${y - 4.5} L ${x + 28} ${y} L ${x + 21} ${y + 4.5} z" fill="${t.edges.sync}"/>`;
+      case "asyncmsg":
+        return `<line x1="${x}" y1="${y}" x2="${x + 27}" y2="${y}" stroke="${t.edges.async}" stroke-width="1.6"/><path d="M ${x + 21} ${y - 4.5} L ${x + 27.5} ${y} L ${x + 21} ${y + 4.5}" fill="none" stroke="${t.edges.async}" stroke-width="1.6"/>`;
+      case "return":
+        return `<line x1="${x + 28}" y1="${y}" x2="${x + 1}" y2="${y}" stroke="${t.muted}" stroke-width="1.3" stroke-dasharray="5 3"/><path d="M ${x + 7} ${y - 4.5} L ${x + 0.5} ${y} L ${x + 7} ${y + 4.5}" fill="none" stroke="${t.muted}" stroke-width="1.4"/>`;
+      case "activation":
+        return `<line x1="${x + 14}" y1="${y - 9}" x2="${x + 14}" y2="${y + 9}" stroke="${t.muted}" stroke-dasharray="3 3"/><rect x="${x + 8}" y="${y - 7}" width="12" height="14" rx="2" fill="${rgba(t.roles.compute, 0.3)}" stroke="${t.roles.compute}"/>`;
+      case "note":
+        return `<path d="M ${x + 2} ${y - 8} H ${x + 21} L ${x + 27} ${y - 2} V ${y + 8} H ${x + 2} Z" fill="${rgba(t.badgeFill, 0.14)}" stroke="${t.badgeFill}" stroke-width="1.1"/>`;
+      case "fragment":
+        return `<rect x="${x + 1}" y="${y - 8}" width="27" height="16" rx="3" fill="none" stroke="${t.edges.async}" stroke-width="1.1"/><path d="M ${x + 1} ${y - 8} H ${x + 12} V ${y - 3} L ${x + 9} ${y} H ${x + 1} Z" fill="${rgba(t.edges.async, 0.3)}"/>`;
+      case "allow":
+      case "deny":
+      case "conditional":
+      case "na": {
+        const col = item.mark === "allow" ? t.roles.compute : item.mark === "deny" ? t.alert : item.mark === "conditional" ? t.badgeFill : t.muted;
+        const g = item.mark === "allow" ? `<path d="M ${x + 9} ${y} l 3.5 3.5 l 7 -7" fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>` : item.mark === "deny" ? `<path d="M ${x + 10} ${y - 4} l 8 8 M ${x + 18} ${y - 4} l -8 8" stroke="${col}" stroke-width="2" stroke-linecap="round"/>` : item.mark === "conditional" ? `<circle cx="${x + 14}" cy="${y}" r="4.5" fill="none" stroke="${col}" stroke-width="1.6"/><path d="M ${x + 14} ${y - 4.5} A 4.5 4.5 0 0 1 ${x + 14} ${y + 4.5} Z" fill="${col}"/>` : `<line x1="${x + 10}" y1="${y}" x2="${x + 18}" y2="${y}" stroke="${col}" stroke-width="1.6"/>`;
+        return `<rect x="${x + 3}" y="${y - 9}" width="22" height="18" rx="4" fill="${rgba(col, 0.16)}" stroke="${rgba(col, 0.55)}"/>` + g;
+      }
+      case "bar":
+        return `<rect x="${x + 1}" y="${y - 6}" width="27" height="12" rx="3" fill="${rgba(c, 0.22)}" stroke="${c}" stroke-width="1.1"/><rect x="${x + 1}" y="${y - 6}" width="15" height="12" rx="3" fill="${rgba(c, 0.6)}"/>`;
+      case "critical":
+        return `<rect x="${x + 1}" y="${y - 6}" width="27" height="12" rx="3" fill="${rgba(t.alert, 0.22)}" stroke="${t.alert}" stroke-width="1.4"/>`;
+      case "milestone":
+        return `<path d="M ${x + 14} ${y - 8} L ${x + 22} ${y} L ${x + 14} ${y + 8} L ${x + 6} ${y} Z" fill="${t.badgeFill}" stroke="${t.canvas}" stroke-width="1.2"/>`;
+      case "today":
+        return `<line x1="${x + 14}" y1="${y - 9}" x2="${x + 14}" y2="${y + 9}" stroke="${t.alert}" stroke-width="1.6" stroke-dasharray="4 2"/><circle cx="${x + 14}" cy="${y - 7}" r="2.5" fill="${t.alert}"/>`;
+      case "era":
+        return `<rect x="${x + 1}" y="${y - 7}" width="27" height="14" rx="3" fill="${rgba(c, 0.14)}" stroke="${rgba(c, 0.6)}"/>`;
+      case "event":
+        return `<line x1="${x}" y1="${y + 4}" x2="${x + 28}" y2="${y + 4}" stroke="${t.muted}" stroke-width="1.4"/><line x1="${x + 14}" y1="${y + 4}" x2="${x + 14}" y2="${y - 6}" stroke="${c}" stroke-width="1.2"/><circle cx="${x + 14}" cy="${y + 4}" r="3.5" fill="${c}" stroke="${t.canvas}" stroke-width="1.2"/>`;
     }
   }
   if (item.kind) {
@@ -353,10 +534,17 @@ function renderLegend(layout: LayoutResult, t: ArchTheme, vertical: boolean): st
       out += `<text x="${r.x + 46}" y="${y + 4}" fill="${t.muted}" font-family="${t.mono}" font-size="${FONTS.legend.size}">${esc(it.label)}</text>`;
     });
   } else {
+    const flow = r.h > 40 ? legendFlow(layout.legend, r) : null;
     let x = r.x + 4;
-    const y = r.y + r.h / 2;
+    const y = flow ? flow[0].y : r.y + r.h / 2;
     out += `<text x="${x}" y="${y + 4}" fill="${t.dim}" font-family="${t.mono}" font-size="${FONTS.panelHead.size}" font-weight="600" letter-spacing="0.16em">LEGEND</text>`;
     x += 90;
+    if (flow) {
+      for (const f of flow) {
+        out += legendSwatch(f.item, f.x, f.y, t);
+        out += `<text x="${f.x + 38}" y="${f.y + 4}" fill="${t.muted}" font-family="${t.mono}" font-size="${FONTS.legend.size}">${esc(f.item.label)}</text>`;
+      }
+    } else
     for (const it of layout.legend) {
       out += legendSwatch(it, x, y, t);
       out += `<text x="${x + 38}" y="${y + 4}" fill="${t.muted}" font-family="${t.mono}" font-size="${FONTS.legend.size}">${esc(it.label)}</text>`;
@@ -414,6 +602,9 @@ export function renderArchitectureSvg(layout: LayoutResult, themeId?: string): s
     .join("\n    ") +
     (Object.keys(t.edges) as Array<keyof typeof t.edges>)
       .map((k) => `<marker id="arrow-start-${k}" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto"><path d="M 10 0.5 L 0 5 L 10 9.5 z" fill="${t.edges[k]}"/></marker>`)
+      .join("") +
+    (Object.keys(t.edges) as Array<keyof typeof t.edges>)
+      .map((k) => `<marker id="arrow-open-${k}" viewBox="0 0 10 10" refX="9.5" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto"><path d="M 0.5 0.8 L 9.5 5 L 0.5 9.2" fill="none" stroke="${t.edges[k]}" stroke-width="1.5" stroke-linejoin="round"/></marker><marker id="arrow-open-start-${k}" viewBox="0 0 10 10" refX="0.5" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto"><path d="M 9.5 0.8 L 0.5 5 L 9.5 9.2" fill="none" stroke="${t.edges[k]}" stroke-width="1.5" stroke-linejoin="round"/></marker>`)
       .join("");
   const defs = `<defs>
     ${markers}
@@ -426,7 +617,7 @@ export function renderArchitectureSvg(layout: LayoutResult, themeId?: string): s
   const tr = layout.titleRect;
   const titleW = layout.title ? measureText(layout.title, FONTS.title) : 0;
   const prof = layout.profile;
-  const meta = `${layout.nodes.length} ${prof?.nodeNoun ?? "COMPONENTS"} · ${layout.edges.length} ${prof?.edgeNoun ?? "FLOWS"}`;
+  const meta = layout.meta ?? `${layout.nodes.length} ${prof?.nodeNoun ?? "COMPONENTS"} · ${layout.edges.length} ${prof?.edgeNoun ?? "FLOWS"}`;
   const metaW = measureText(meta, { font: "mono", size: 11, tracking: 0.12 });
   const header = `<g class="title">
   <circle cx="${tr.x + 7}" cy="${tr.y + 19}" r="9" fill="${rgba(t.titleDot, 0.18)}"/>

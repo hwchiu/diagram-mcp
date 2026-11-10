@@ -60,6 +60,16 @@ export const MONO_PATHS = {
   plug: "M9 2v6 M15 2v6 M6 8h12v4a6 6 0 0 1-12 0z M12 18v4",
   approve: "M22 11.1V12a10 10 0 1 1-5.9-9.1 M22 4L12 14l-3-3",
   namespace: "M4 4h16v16H4z M4 9h16 M8 6.5h.01",
+  table: "M3 4h18v16H3z M3 9h18 M3 14.5h18 M9 9v11",
+  dag: "M4 4h5v5H4z M15 4h5v5h-5z M15 15h5v5h-5z M9 6.5h6 M17.5 9v6 M7 9v8.5h8",
+  play: "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M10 8l6 4-6 4z",
+  circle: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z",
+  clock: "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M12 6v6l4 2",
+  flag: "M4 22V4 M4 4h13l-2 4 2 4H4",
+  cross: "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M9 9l6 6 M15 9l-6 6",
+  code: "M8 6l-6 6 6 6 M16 6l6 6-6 6 M14 4l-4 16",
+  package: "M3 7l9-4 9 4v10l-9 4-9-4z M3 7l9 4 9-4 M12 11v10 M7.5 5l9 4",
+  link: "M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1 M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1",
   none: "",
 } as const;
 
@@ -107,6 +117,9 @@ const ALIAS: Record<string, MonoIcon> = {
   doc: "file", document: "file", form: "file", report: "file", api: "plug", endpoint: "plug", review: "approve", approval: "approve",
   ns: "namespace", statefulset: "container", daemonset: "container", job: "cpu", cronjob: "cpu", mariadb: "database", oracle: "database",
   replication: "replica", replica: "replica",
+  view: "table", dataset: "table", model: "cpu", dashboard: "chart", bi: "chart", notebook: "file", task: "play", sensor: "clock",
+  concept: "circle", class: "circle", entity: "circle", instance: "circle", lib: "package", library: "package", pkg: "package",
+  schedule: "clock", timer: "clock", milestone: "flag", failed: "cross", relation: "link",
 };
 
 /** Map role / common icon aliases → monoline icon */

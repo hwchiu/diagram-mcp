@@ -1,4 +1,4 @@
-import type { DiagramEdge, DiagramGroup, DiagramNode, DiagramStep, EdgeKind, NodeShape } from "../types.js";
+import type { DiagramEdge, DiagramGroup, DiagramNode, DiagramStep, EdgeKind, EdgeMark, NodeShape, TableRow } from "../types.js";
 import type { NodeRole } from "../design/themes.js";
 import type { MonoIcon } from "./icons.js";
 
@@ -29,7 +29,7 @@ export interface ArchitectureLayoutInput {
   profile?: DiagramProfile;
 }
 
-export type DiagramKind = "architecture" | "context" | "component" | "deployment" | "network" | "dfd" | "swimlane";
+export type DiagramKind = "architecture" | "context" | "component" | "deployment" | "network" | "dfd" | "swimlane" | "lineage" | "workflow" | "dependency" | "knowledge" | "flowchart" | "state" | "erd" | "sequence" | "authz" | "gantt" | "timeline";
 
 export interface DiagramProfile {
   kind: DiagramKind;
@@ -96,6 +96,10 @@ export interface PlacedNode {
   centered?: boolean;
   /** space reserved at the top by the shape */
   top?: number;
+  dim?: boolean;
+  emphasis?: DiagramNode["emphasis"];
+  rows?: TableRow[];
+  status?: string;
 }
 
 export interface PlacedTier {
@@ -151,6 +155,9 @@ export interface RoutedEdge {
   bidirectional?: boolean;
   /** points where the path crosses a trust boundary (DFD) */
   crossings?: Point[];
+  dim?: boolean;
+  startMark?: EdgeMark;
+  endMark?: EdgeMark;
 }
 
 export interface Junction {
@@ -165,7 +172,7 @@ export interface StepCard {
   rect: Rect;
 }
 
-export type LegendMark = "trust" | "cross" | "sensitive" | "boundary" | "decision" | "person" | "datastore" | "process" | "entity" | "replicas" | "lane";
+export type LegendMark = "trust" | "cross" | "sensitive" | "boundary" | "decision" | "person" | "datastore" | "process" | "entity" | "replicas" | "lane" | "changed" | "impacted" | "dimmed" | "state" | "initial" | "final" | "choice" | "composite" | "stage" | "table" | "pk" | "fk" | "crow" | "io" | "terminator" | "subprocess" | "syncmsg" | "asyncmsg" | "return" | "activation" | "note" | "fragment" | "allow" | "deny" | "conditional" | "na" | "bar" | "milestone" | "today" | "critical" | "era" | "event";
 
 export interface LegendItem {
   label: string;
@@ -204,6 +211,8 @@ export interface LayoutResult {
   plan?: { rows: string[][][]; variant: number; spacing: number; score: number };
   view?: ViewInfo;
   profile?: DiagramProfile;
+  /** header meta text override ("12 PARTICIPANTS · 30 MESSAGES") */
+  meta?: string;
 }
 
 export const BADGE_R = 11;

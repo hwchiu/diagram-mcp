@@ -15,11 +15,14 @@ export const SHAPE_FONTS = {
 };
 
 export const DESC_LINE = 16;
+/** ERD table geometry */
+export const TABLE_HEAD = 36;
+export const TABLE_ROW = 22;
 export const LABEL_LINE = 18;
 const MAX_DESC = 3;
 
 /** Shapes whose text block is centred (no icon box). */
-export const CENTERED: ReadonlySet<NodeShape> = new Set<NodeShape>(["person", "decision", "terminator", "process", "entity", "system"]);
+export const CENTERED: ReadonlySet<NodeShape> = new Set<NodeShape>(["person", "decision", "terminator", "process", "entity", "system", "state", "io", "subprocess", "document", "initial", "final", "choice"]);
 
 export interface CardMetrics {
   w: number;
@@ -106,6 +109,32 @@ export function cardMetrics(n: DiagramNode, base: CardBase): CardMetrics {
       room = w - 46;
       minH = 40;
       break;
+    case "initial":
+      return { w: 30, h: 30, textRoom: 0, label: [""], labelTruncated: false, desc: [], centered: true, top: 0 };
+    case "final":
+      return { w: 34, h: 34, textRoom: 0, label: [""], labelTruncated: false, desc: [], centered: true, top: 0 };
+    case "choice":
+      return { w: 44, h: 44, textRoom: 0, label: [""], labelTruncated: false, desc: [], centered: true, top: 0 };
+    case "table": {
+      const rows = n.rows ?? [];
+      return { w, h: TABLE_HEAD + rows.length * TABLE_ROW + 10, textRoom: w - 48, label: [n.label], labelTruncated: false, desc: [], centered: false, top: 0 };
+    }
+    case "state":
+      room = w - 28;
+      minH = 52;
+      break;
+    case "io":
+      room = w - 64;
+      minH = cardH - 4;
+      break;
+    case "subprocess":
+      room = w - 48;
+      minH = cardH - 4;
+      break;
+    case "document":
+      room = w - 30;
+      minH = cardH + 8;
+      break;
     case "cylinder":
       room = hasIcon ? w - iconTextX - 12 : w - 28;
       top = 8;
@@ -115,12 +144,14 @@ export function cardMetrics(n: DiagramNode, base: CardBase): CardMetrics {
       room = hasIcon ? w - iconTextX - 12 : w - 28;
   }
   if (n.replicas && n.replicas > 1) room -= 8;
-  if (n.tag && shape !== "system" && shape !== "process" && shape !== "datastore" && shape !== "person" && shape !== "decision") top += 16;
+  if (n.tag && shape !== "system" && shape !== "process" && shape !== "datastore" && shape !== "person" && shape !== "decision" && shape !== "state") top += 16;
   const lf = shape === "system" ? SHAPE_FONTS.labelLg : SHAPE_FONTS.label;
   const lab = wrapLabel(n.label, lf, room, shape === "interface" || shape === "terminator" || shape === "datastore" ? 1 : 2);
   let desc: string[] = [];
-  if (n.description && shape !== "decision" && shape !== "terminator" && shape !== "interface") {
-    const all = wrapText(n.description, SHAPE_FONTS.desc, room).length <= MAX_DESC ? wrapBalanced(n.description, SHAPE_FONTS.desc, room) : wrapText(n.description, SHAPE_FONTS.desc, room);
+  if (n.description && shape !== "decision" && shape !== "terminator" && shape !== "interface" && shape !== "io") {
+    const all = n.description.includes("\n")
+      ? n.description.split("\n").flatMap((l) => wrapText(l, SHAPE_FONTS.desc, room))
+      : wrapText(n.description, SHAPE_FONTS.desc, room).length <= MAX_DESC ? wrapBalanced(n.description, SHAPE_FONTS.desc, room) : wrapText(n.description, SHAPE_FONTS.desc, room);
     desc = all.slice(0, MAX_DESC);
     if (all.length > MAX_DESC) desc[MAX_DESC - 1] = ellipsize(all.slice(MAX_DESC - 1).join(" "), SHAPE_FONTS.desc, room).text;
   }
@@ -128,6 +159,8 @@ export function cardMetrics(n: DiagramNode, base: CardBase): CardMetrics {
   const textH = (lab.lines.length - 1) * LABEL_LINE + 14 + (lines - lab.lines.length) * 17 + (desc.length ? 8 + desc.length * DESC_LINE : 0);
   let h = Math.max(minH, top + textH + 30);
   if (shape === "decision") h = Math.max(104, textH * 2 + 40);
+  if (shape === "state" && desc.length) h += 8;
+  if (shape === "document") h += 6;
   if (n.replicas && n.replicas > 1) h += 8;
   return { w, h: Math.round(h), textRoom: room, label: lab.lines, labelTruncated: lab.truncated, desc, centered, top };
 }

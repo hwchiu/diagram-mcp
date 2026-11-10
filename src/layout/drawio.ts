@@ -160,7 +160,20 @@ export function renderArchitectureDrawio(layout: LayoutResult, themeId?: string)
     const sub = (txt?: string) => (txt ? `<br><font style="font-size:11px" color="${t.muted}">${htmlEsc(txt)}</font>` : "");
     const desc = n.desc?.length ? `<br><font style="font-size:11px" face="Inter" color="${t.muted}">${n.desc.map(htmlEsc).join(" ")}</font>` : "";
     const tag = n.tag ? `<font style="font-size:10px" color="${shape === "process" || shape === "datastore" ? t.muted : color}">${htmlEsc(n.tag)}</font><br>` : "";
-    const value = `${tag}<b>${htmlEsc(n.rawLabel)}</b>${sub(n.rawSubtitle)}${sub(n.detail?.text)}${desc}`;
+    if (shape === "table") {
+      // ERD table: draw.io swimlane container + one text row per column
+      vertex(id, `<b>${htmlEsc(n.rawLabel)}</b>`, style({ swimlane: "", startSize: 36, container: 1, collapsible: 0, html: 1, rounded: 1, arcSize: 9, absoluteArcSize: 1, fillColor: blend(color, 0.24, t.cardBase), swimlaneFillColor: blend(color, t.fillAlpha * 0.6, t.cardBase), strokeColor: color, strokeWidth: 1.3, fontFamily: mono, fontSize: 14, fontColor: t.ink, align: "left", spacingLeft: 12 }), n.rect, parent?.id ?? "1", parent?.rect);
+      (n.rows ?? []).forEach((r, i) => {
+        const key = (r.key ?? "").toUpperCase();
+        const kc = key.includes("PK") ? t.badgeFill : key.includes("FK") ? t.edges.sync : t.muted;
+        const txt = `${key ? `<font color="${kc}"><b>${htmlEsc(key.replace(/\s+/g, ""))}</b></font>&nbsp;` : ""}${key.includes("PK") ? `<b>${htmlEsc(r.name)}</b>` : htmlEsc(r.name)}${r.nullable ? "?" : ""}${r.type ? `&nbsp;&nbsp;<font color="${t.muted}">${htmlEsc(r.type)}</font>` : ""}`;
+        vertex(nid("row"), txt, style({ text: "", html: 1, align: "left", verticalAlign: "middle", spacingLeft: 10, fontFamily: mono, fontSize: 12, fontColor: t.ink, connectable: 0, movable: 0 }), { x: n.rect.x, y: n.rect.y + 40 + i * 22, w: n.rect.w, h: 22 }, id, n.rect);
+      });
+      nodeCell.set(n.id, { id, rect: n.rect });
+      continue;
+    }
+    const blank = shape === "initial" || shape === "final" || shape === "choice";
+    const value = blank ? "" : `${tag}<b>${htmlEsc(n.rawLabel)}</b>${sub(n.rawSubtitle)}${sub(n.detail?.text)}${desc}`;
     const shapeStyle = drawioShape(shape);
     const centered = shapeStyle.align === "center";
     if (n.replicas && n.replicas > 1) {
@@ -179,11 +192,11 @@ export function renderArchitectureDrawio(layout: LayoutResult, themeId?: string)
         ...shapeStyle,
         whiteSpace: "wrap",
         html: 1,
-        fillColor: blend(color, t.fillAlpha, t.cardBase),
-        strokeColor: color,
-        strokeWidth: 1.3,
+        fillColor: shape === "initial" || shape === "final" ? color : blend(color, t.fillAlpha, t.cardBase),
+        strokeColor: n.emphasis === "changed" ? t.alert : color,
+        strokeWidth: n.emphasis ? 2.4 : 1.3,
         dashed: n.stub ? 1 : 0,
-        opacity: n.stub ? 62 : undefined,
+        opacity: n.stub ? 62 : n.dim ? 36 : undefined,
         textOpacity: n.stub ? 70 : undefined,
         fontFamily: mono,
         fontSize: 13,
@@ -203,7 +216,7 @@ export function renderArchitectureDrawio(layout: LayoutResult, themeId?: string)
       // C4 person: head above the body card
       vertex(nid("head"), "", style({ ellipse: "", fillColor: blend(color, t.fillAlpha, t.cardBase), strokeColor: color, strokeWidth: 1.3, connectable: 0, movable: 0 }), { x: n.rect.x + n.rect.w / 2 - 13, y: n.rect.y - 14, w: 26, h: 26 }, parent?.id ?? "1", parent?.rect);
     }
-    if (hasIcon && !centered) {
+    if (hasIcon && !centered && !blank) {
       vertex(
         `${id}-icon`,
         "",
@@ -234,12 +247,13 @@ export function renderArchitectureDrawio(layout: LayoutResult, themeId?: string)
       html: 1,
       strokeColor: color,
       strokeWidth: e.highlight ? 2.4 : 1.6,
-      endArrow: "block",
-      endFill: 1,
-      endSize: 6,
-      startArrow: e.bidirectional ? "block" : "none",
-      startFill: e.bidirectional ? 1 : undefined,
-      startSize: e.bidirectional ? 6 : undefined,
+      endArrow: drawioMark(e.endMark ?? "arrow"),
+      endFill: (e.endMark ?? "arrow") === "arrow" ? 1 : 0,
+      endSize: e.endMark && e.endMark !== "arrow" && e.endMark !== "open" ? 12 : 6,
+      startArrow: e.startMark ? drawioMark(e.startMark) : e.bidirectional ? "block" : "none",
+      startFill: e.startMark ? (e.startMark === "arrow" ? 1 : 0) : e.bidirectional ? 1 : undefined,
+      startSize: e.startMark && e.startMark !== "arrow" && e.startMark !== "open" ? 12 : e.bidirectional ? 6 : undefined,
+      opacity: e.dim ? 30 : undefined,
       dashed: e.kind === "async" || e.kind === "auth" ? 1 : 0,
       dashPattern: e.kind === "async" ? "7 5" : e.kind === "auth" ? "2 4" : undefined,
       exitX: round3(ex.x),
@@ -361,11 +375,29 @@ function drawioShape(shape: string): Record<string, string | number | undefined>
       return { shape: "partialRectangle", top: 1, bottom: 1, left: 1, right: 0, rounded: 0, align: "center" };
     case "cylinder":
       return { shape: "cylinder3", boundedLbl: 1, size: 10, rounded: 0 };
+    case "state":
+      return { arcSize: 16, align: "center" };
+    case "initial":
+      return { ellipse: "", rounded: 0, align: "center" };
+    case "final":
+      return { shape: "doubleEllipse", rounded: 0, align: "center" };
+    case "choice":
+      return { rhombus: "", rounded: 0, align: "center" };
+    case "io":
+      return { shape: "parallelogram", perimeter: "parallelogramPerimeter", fixedSize: 1, size: 16, rounded: 0, align: "center" };
+    case "subprocess":
+      return { shape: "process", backgroundOutline: 1, size: 0.05, rounded: 0, align: "center" };
+    case "document":
+      return { shape: "document", boundedLbl: 1, size: 0.14, rounded: 0, align: "center" };
     case "component":
       return { shape: "module", jettyWidth: 12, jettyHeight: 6, rounded: 0 };
     default:
       return {};
   }
+}
+
+function drawioMark(m: string): string {
+  return ({ arrow: "block", open: "open", none: "none", one: "ERone", many: "ERmany", exactlyOne: "ERmandOne", zeroOrOne: "ERzeroToOne", oneOrMany: "ERoneToMany", zeroOrMany: "ERzeroToMany" } as Record<string, string>)[m] ?? "block";
 }
 
 function safe(s: string): string {
