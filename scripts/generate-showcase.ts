@@ -637,8 +637,9 @@ async function main() {
   console.log("Showcase →", OUT);
   await render("01-ecommerce-microservices-e2e", ecommerceE2E(), "dark");
   await render("01b-ecommerce-data-kafka", ecommerceDataDetail(), "dark");
-  await render("02-place-order-sequence", placeOrderFlow(), "presentation");
   await render("03-k8s-dual-region", k8sMultiRegion(), "dark");
+  if (process.argv.includes("--architecture-only")) return;
+  await render("02-place-order-sequence", placeOrderFlow(), "presentation");
   await render("04-flowchart-swimlanes", flowchartSwimlanes(), "presentation");
   await render("05-decision-tree", decisionTree(), "light");
   await render("06-dependency-graph-80", dependency80(), "presentation");

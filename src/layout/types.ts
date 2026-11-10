@@ -60,9 +60,18 @@ export interface RoutedEdge {
   label?: string;
   step?: number;
   points: Point[];
-  /** Midpoint of longest straight segment for label/badge */
+  /** Collision-checked label position */
   labelAt: Point;
   badgeAt?: Point;
+}
+
+export interface RoutingQuality {
+  crossings: number;
+  overlapLength: number;
+  /** Parallel overlap weighted by the shortfall from the preferred track spacing. */
+  closeParallelLength: number;
+  length: number;
+  bends: number;
 }
 
 export interface LayoutResult {
@@ -73,6 +82,7 @@ export interface LayoutResult {
   nodes: PlacedNode[];
   tiers: PlacedTier[];
   edges: RoutedEdge[];
+  routing: RoutingQuality;
   steps: DiagramStep[];
   legend: Array<{ label: string; role?: string; kind?: EdgeKind }>;
   /** Diagram content area (excludes sidebar) */
