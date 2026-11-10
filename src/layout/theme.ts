@@ -30,6 +30,8 @@ export interface ArchTheme {
   roles: Record<NodeRole, string>;
   edges: Record<EdgeKind, string>;
   frameKinds: Partial<Record<NonNullable<DiagramGroup["kind"]>, string>>;
+  /** sensitive data / trust-boundary alert color */
+  alert: string;
 }
 
 const MONO = "'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace";
@@ -84,7 +86,15 @@ export const DARK: ArchTheme = {
     zone: "#94a3b8",
     security: "#fb7185",
     external: "#94a3b8",
+    boundary: "#60a5fa",
+    trust: "#f43f5e",
+    pool: "#38bdf8",
+    internet: "#94a3b8",
+    dmz: "#f59e0b",
+    site: "#2dd4bf",
+    lane: "#818cf8",
   },
+  alert: "#f43f5e",
 };
 
 export const LIGHT: ArchTheme = {
@@ -136,7 +146,15 @@ export const LIGHT: ArchTheme = {
     zone: "#64748b",
     security: "#e11d48",
     external: "#64748b",
+    boundary: "#2563eb",
+    trust: "#e11d48",
+    pool: "#0284c7",
+    internet: "#64748b",
+    dmz: "#d97706",
+    site: "#0d9488",
+    lane: "#4f46e5",
   },
+  alert: "#e11d48",
 };
 
 export function archTheme(themeId?: string): ArchTheme {

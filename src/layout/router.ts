@@ -570,6 +570,7 @@ export function routeEdges(input: RouteInput): { edges: RoutedEdge[]; notes: str
   const zones: Zone[] = [
     ...nodes.map((n) => ({ r: inflate(n.rect, CLEARANCE - 1), owner: n.id })),
     ...tiers.map((t) => ({ r: inflate(t.labelRect, LABEL_CLR - 1), owner: `label:${t.id}` })),
+    ...tiers.filter((t) => t.tagRect).map((t) => ({ r: inflate(t.tagRect!, LABEL_CLR - 1), owner: `label:${t.id}` })),
   ];
 
   const chain = (tierId?: string): string[] => {
@@ -834,6 +835,9 @@ export function routeEdges(input: RouteInput): { edges: RoutedEdge[]; notes: str
       kind: s.kind,
       label: s.e.label,
       step: s.e.step,
+      tags: s.e.tags,
+      highlight: s.e.highlight,
+      bidirectional: s.e.bidirectional,
       points: s.points,
       fromSide: s.fromPort.side,
       toSide: s.toPort.side,
@@ -997,7 +1001,7 @@ export function edgeLabelSize(label: string): { w: number; h: number } {
 }
 
 function placeAnnotations(edges: RoutedEdge[], nodes: PlacedNode[], tiers: PlacedTier[], notes: string[]) {
-  const hard: Rect[] = [...nodes.map((n) => inflate(n.rect, 6)), ...tiers.map((t) => inflate(t.labelRect, 4))];
+  const hard: Rect[] = [...nodes.map((n) => inflate(n.rect, 6)), ...tiers.map((t) => inflate(t.labelRect, 4)), ...tiers.filter((t) => t.tagRect).map((t) => inflate(t.tagRect!, 4))];
   const placed: Rect[] = [];
   const otherSegs = (e: RoutedEdge, r: Rect) => {
     let n = 0;

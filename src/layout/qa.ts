@@ -6,6 +6,7 @@
 import type { QaIssue } from "../types.js";
 import { CARD_TEXT_X, FONTS } from "./grid.js";
 import { measureText } from "./text.js";
+import { SHAPE_FONTS } from "./shapes.js";
 import { sharesTrunk } from "./router.js";
 import { BADGE_R, type LayoutResult, type Point, type Rect } from "./types.js";
 
@@ -72,11 +73,16 @@ export function runArchitectureQa(layout: LayoutResult, opts: QaOptions = {}): Q
       const t = tierById.get(n.tierId);
       if (t && !contains(t.rect, n.rect, 8)) add("error", "card-outside-frame", `card ${n.id} spills out of tier ${t.id}`, [n.id, t.id]);
     }
-    const room = n.rect.w - (n.icon === "none" ? 16 : CARD_TEXT_X) - 10;
-    const lw = measureText(n.label.text, FONTS.cardLabel);
-    if (lw > room) add("error", "text-overflow", `label of ${n.id} (${Math.round(lw)}px) exceeds card text room (${Math.round(room)}px)`, [n.id]);
+    const room = (n.textRoom ?? n.rect.w - (n.icon === "none" ? 16 : CARD_TEXT_X) - 12) + 2;
+    const lf = n.shape === "system" ? SHAPE_FONTS.labelLg : FONTS.cardLabel;
+    for (const l of [n.label, n.label2]) {
+      if (!l) continue;
+      const lw = measureText(l.text, lf);
+      if (lw > room) add("error", "text-overflow", `label of ${n.id} (${Math.round(lw)}px) exceeds card text room (${Math.round(room)}px)`, [n.id]);
+    }
     if (n.subtitle && measureText(n.subtitle.text, FONTS.cardSub) > room) add("error", "text-overflow", `subtitle of ${n.id} overflows`, [n.id]);
-    if (n.label.truncated || n.subtitle?.truncated) add("warning", "text-truncated", `text of ${n.id} was truncated with an ellipsis — shorten it`, [n.id]);
+    for (const d of n.desc ?? []) if (measureText(d, SHAPE_FONTS.desc) > room) add("error", "text-overflow", `description of ${n.id} overflows`, [n.id]);
+    if (n.label.truncated || n.label2?.truncated || n.subtitle?.truncated || (n.desc ?? []).some((d) => d.endsWith("…"))) add("warning", "text-truncated", `text of ${n.id} was truncated with an ellipsis — shorten it`, [n.id]);
   }
 
   // 2. Frames
@@ -84,8 +90,9 @@ export function runArchitectureQa(layout: LayoutResult, opts: QaOptions = {}): Q
     if (!contains(canvas, t.rect, 4)) add("error", "out-of-bounds", `tier ${t.id} is outside the canvas`, [t.id]);
     if (t.labelRect.x + t.labelRect.w > t.rect.x + t.rect.w - 12) add("error", "tier-label-overflow", `tier label of ${t.id} is clipped by its frame`, [t.id]);
     for (const n of cards) {
-      if (hit(n.rect, t.labelRect, 3)) add("error", "label-collision", `tier label ${t.id} touches card ${n.id}`, [t.id, n.id]);
+      for (const lr of [t.labelRect, t.tagRect]) if (lr && hit(n.rect, lr, 3)) add("error", "label-collision", `tier label ${t.id} touches card ${n.id}`, [t.id, n.id]);
     }
+    if (t.tagRect && hit(t.tagRect, t.labelRect, 4)) add("error", "label-collision", `tier ${t.id} header chip overlaps its label`, [t.id]);
     if (t.parentId) {
       const p = tierById.get(t.parentId);
       if (p && !contains(p.rect, t.rect, 6)) add("error", "frame-overlap", `nested tier ${t.id} spills out of ${p.id}`, [t.id, p.id]);
@@ -136,7 +143,7 @@ export function runArchitectureQa(layout: LayoutResult, opts: QaOptions = {}): Q
         if (segHitsInterior(a, b, n.rect)) add("error", "edge-through-card", `edge ${e.from}→${e.to} passes through card ${n.id}`, [e.id, n.id]);
       }
       for (const t of tiers) {
-        if (segHitsInterior(a, b, t.labelRect, 0)) add("error", "edge-through-label", `edge ${e.from}→${e.to} crosses tier label ${t.id}`, [e.id, t.id]);
+        for (const lr of [t.labelRect, t.tagRect]) if (lr && segHitsInterior(a, b, lr, 0)) add("error", "edge-through-label", `edge ${e.from}→${e.to} crosses tier label ${t.id}`, [e.id, t.id]);
       }
       for (const an of annotations) {
         if (an.owner === e.id) continue;
@@ -187,7 +194,7 @@ export function runArchitectureQa(layout: LayoutResult, opts: QaOptions = {}): Q
   // Annotation collisions
   for (let i = 0; i < annotations.length; i++) {
     for (const n of cards) if (hit(annotations[i].r, n.rect, 2)) add("error", "label-collision", `${annotations[i].kind} of ${annotations[i].owner} overlaps card ${n.id}`, [annotations[i].owner, n.id]);
-    for (const t of tiers) if (hit(annotations[i].r, t.labelRect, 1)) add("error", "label-collision", `${annotations[i].kind} of ${annotations[i].owner} overlaps tier label ${t.id}`, [annotations[i].owner, t.id]);
+    for (const t of tiers) for (const lr of [t.labelRect, t.tagRect]) if (lr && hit(annotations[i].r, lr, 1)) add("error", "label-collision", `${annotations[i].kind} of ${annotations[i].owner} overlaps tier label ${t.id}`, [annotations[i].owner, t.id]);
     for (let j = i + 1; j < annotations.length; j++) {
       if (annotations[i].owner === annotations[j].owner) continue;
       if (hit(annotations[i].r, annotations[j].r, 1)) add("error", "label-collision", `${annotations[i].kind} of ${annotations[i].owner} overlaps ${annotations[j].kind} of ${annotations[j].owner}`, [annotations[i].owner, annotations[j].owner]);
@@ -258,7 +265,7 @@ export function runArchitectureQa(layout: LayoutResult, opts: QaOptions = {}): Q
   if (emptyCols > 0.16) add("warning", "whitespace", `diagram panel has an empty vertical band of ${(emptyCols * 100).toFixed(0)}% width`);
   for (const t of tiers) {
     const kids = cards.filter((n) => t.nodeIds.includes(n.id));
-    if (!kids.length) continue;
+    if (!kids.length || t.kind === "lane") continue;
     const used = kids.reduce((s, n) => s + n.rect.w * n.rect.h, 0);
     const fill = used / (t.rect.w * t.rect.h);
     if (fill < 0.12 && t.rect.w * t.rect.h > panel.w * panel.h * 0.06) {

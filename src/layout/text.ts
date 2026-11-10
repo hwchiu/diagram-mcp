@@ -90,3 +90,41 @@ export function wrapText(text: string, spec: FontSpec, max: number): string[] {
   // Hard-break words longer than max
   return lines.flatMap((l) => (measureText(l, spec) <= max ? [l] : [ellipsize(l, spec, max).text]));
 }
+
+/**
+ * Wrap into the same number of lines as a greedy wrap at `max`, but with the
+ * narrowest width that still fits — avoids a lone CJK glyph on the last line.
+ */
+export function wrapBalanced(text: string, spec: FontSpec, max: number): string[] {
+  const greedy = wrapText(text, spec, max);
+  if (greedy.length < 2) return greedy;
+  // candidates with the same line count; prefer breaks after punctuation / at
+  // word boundaries, then the most even line lengths (no lone trailing glyph)
+  const natural = /[；，、。：:;,.!?！？）)\]」』]$/;
+  const score = (ls: string[]) => {
+    let bad = 0;
+    for (let k = 0; k < ls.length - 1; k++) {
+      const a = ls[k];
+      const b = ls[k + 1];
+      const cjkSplit = /[\u3400-\u9fff]$/.test(a) && /^[\u3400-\u9fff]/.test(b);
+      if (cjkSplit && !natural.test(a)) bad += 1;
+      if (/^[；，、。：）」』!?！？]/.test(b)) bad += 3; // kinsoku: no line starts with closing punctuation
+    }
+    const ws = ls.map((l) => measureText(l, spec));
+    const imb = (Math.max(...ws) - Math.min(...ws)) / max;
+    return bad + imb * 0.6;
+  };
+  let best = greedy;
+  let bestS = score(greedy);
+  const step = Math.max(4, spec.size * 0.5);
+  for (let w = max - step; w >= max * 0.5; w -= step) {
+    const ls = wrapText(text, spec, w);
+    if (ls.length !== greedy.length || ls.some((l) => l.endsWith("…"))) continue;
+    const sc = score(ls);
+    if (sc < bestS - 1e-6) {
+      best = ls;
+      bestS = sc;
+    }
+  }
+  return best;
+}

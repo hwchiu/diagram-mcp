@@ -1,4 +1,4 @@
-import type { DiagramEdge, DiagramGroup, DiagramNode, DiagramStep, EdgeKind } from "../types.js";
+import type { DiagramEdge, DiagramGroup, DiagramNode, DiagramStep, EdgeKind, NodeShape } from "../types.js";
 import type { NodeRole } from "../design/themes.js";
 import type { MonoIcon } from "./icons.js";
 
@@ -10,7 +10,7 @@ export interface ArchitectureLayoutInput {
   groups?: DiagramGroup[];
   edges?: DiagramEdge[];
   steps?: DiagramStep[];
-  legend?: Array<{ label: string; role?: NodeRole; kind?: EdgeKind }>;
+  legend?: LegendItem[];
   /** Column stacks of tier (group) ids — or ungrouped node ids — each stacked top→bottom. */
   columns?: string[][];
   /** Tier ids laid out as one full-width band under the columns. */
@@ -25,6 +25,19 @@ export interface ArchitectureLayoutInput {
   reorder?: boolean;
   /** View metadata when this layout is one view of a split diagram */
   view?: ViewInfo;
+  /** Diagram kind presentation (footer caption, header nouns) */
+  profile?: DiagramProfile;
+}
+
+export type DiagramKind = "architecture" | "context" | "component" | "deployment" | "network" | "dfd" | "swimlane";
+
+export interface DiagramProfile {
+  kind: DiagramKind;
+  /** footer caption, e.g. "SYSTEM CONTEXT · C4 LEVEL 1" */
+  caption: string;
+  /** header meta nouns ("ELEMENTS", "RELATIONSHIPS") */
+  nodeNoun?: string;
+  edgeNoun?: string;
 }
 
 export interface ViewInfo {
@@ -70,6 +83,19 @@ export interface PlacedNode {
   tierId?: string;
   detail?: TextLine;
   stub?: boolean;
+  /** notation shape (defaults to the icon card) */
+  shape?: NodeShape;
+  /** wrapped description lines */
+  desc?: string[];
+  tag?: string;
+  replicas?: number;
+  /** usable text width inside the card (QA) */
+  textRoom?: number;
+  /** second label line (wrapped instead of truncated) */
+  label2?: TextLine;
+  centered?: boolean;
+  /** space reserved at the top by the shape */
+  top?: number;
 }
 
 export interface PlacedTier {
@@ -89,6 +115,12 @@ export interface PlacedTier {
   hidden: boolean;
   accentRole: NodeRole;
   nodeIds: string[];
+  /** header chip (CIDR, trust level) */
+  tag?: string;
+  /** header chip box (obstacle for routing / labels) */
+  tagRect?: Rect;
+  /** swimlane: header is a left column instead of a top bar */
+  laneHeader?: Rect;
 }
 
 export interface RoutedEdge {
@@ -114,6 +146,11 @@ export interface RoutedEdge {
   bundle: string;
   /** trunk keys: edges sharing any key may share track (intentional bundling) */
   trunks: string[];
+  tags?: string[];
+  highlight?: boolean;
+  bidirectional?: boolean;
+  /** points where the path crosses a trust boundary (DFD) */
+  crossings?: Point[];
 }
 
 export interface Junction {
@@ -128,10 +165,14 @@ export interface StepCard {
   rect: Rect;
 }
 
+export type LegendMark = "trust" | "cross" | "sensitive" | "boundary" | "decision" | "person" | "datastore" | "process" | "entity" | "replicas" | "lane";
+
 export interface LegendItem {
   label: string;
   role?: NodeRole;
   kind?: EdgeKind;
+  /** notation swatch */
+  mark?: LegendMark;
 }
 
 export interface LayoutResult {
@@ -162,6 +203,7 @@ export interface LayoutResult {
   /** Chosen wrap plan */
   plan?: { rows: string[][][]; variant: number; spacing: number; score: number };
   view?: ViewInfo;
+  profile?: DiagramProfile;
 }
 
 export const BADGE_R = 11;

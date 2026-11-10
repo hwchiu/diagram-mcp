@@ -7,6 +7,8 @@ import type { DiagramEdge, DiagramGroup, DiagramNode, EdgeKind } from "../types.
 import { resolveMonoIcon } from "./icons.js";
 import { ellipsize, measureText, wrapText, type FontSpec } from "./text.js";
 import { countCrossings, routeEdges } from "./router.js";
+import { cardMetrics, SHAPE_FONTS, type CardMetrics } from "./shapes.js";
+const TAG_FONT = SHAPE_FONTS.tag;
 import type {
   ArchitectureLayoutInput,
   LayoutResult,
@@ -71,6 +73,9 @@ interface Box {
   gapX: number;
   /** vertical gap between card rows (widened for labelled / stepped in-column edges) */
   gapY?: number;
+  /** per-column widths / per-row heights of the card block */
+  colWs?: number[];
+  rowHs?: number[];
   /** natural size */
   w: number;
   h: number;
@@ -123,6 +128,8 @@ export const READABLE_W = 1920;
 interface ColsVariant {
   id: number;
   cols: (n: number, ext: boolean) => number;
+  /** stack the child zones of auto-layout zones vertically */
+  flip?: boolean;
 }
 const VARIANTS: ColsVariant[] = [
   { id: 0, cols: (n, ext) => (ext ? Math.min(n, 5) : autoCols(n, false)) },
@@ -144,6 +151,14 @@ export interface GridPlan {
  * gutters when the router could not place every label / badge cleanly.
  */
 export function layoutArchitecture(input: ArchitectureLayoutInput): LayoutResult {
+  // Barycentre card order is tried automatically when the caller did not decide:
+  // keep it only when it removes crossings without costing a routing failure.
+  if (input.reorder === undefined && input.nodes.length >= 6 && (input.edges?.length ?? 0) >= 6) {
+    const plain = layoutOnce({ ...input, reorder: false }, 1, 0);
+    const bary = layoutOnce({ ...input, reorder: true }, 1, 0);
+    const cost = (r: LayoutResult) => layoutFailures(r) * 2 + countCrossings(r.edges) * 0.5;
+    input = { ...input, reorder: cost(bary) + 0.25 < cost(plain) };
+  }
   let best: { r: LayoutResult; f: number } | null = null;
   // regular spacing first; then wider gutters; then the runner-up wrap plans
   const attempts: Array<[number, number]> = [[1, 0], [1, 1], [1.3, 0], [1, 2], [1.3, 1], [1, 3], [1.65, 0], [1.3, 2]];
@@ -191,16 +206,19 @@ function layoutOnce(input: ArchitectureLayoutInput, sp: number, rank = 0): Layou
   for (const n of nodes) {
     textMax = Math.max(
       textMax,
-      measureText(n.label, FONTS.cardLabel),
-      n.subtitle ? measureText(n.subtitle, FONTS.cardSub) : 0,
-      n.detail ? measureText(n.detail, FONTS.cardSub) : 0,
+      Math.max(
+        measureText(n.label, FONTS.cardLabel),
+        n.subtitle ? measureText(n.subtitle, FONTS.cardSub) : 0,
+        n.detail ? measureText(n.detail, FONTS.cardSub) : 0,
+      ) + (n.replicas && n.replicas > 1 ? 8 : 0),
     );
   }
   const cardW = Math.round(Math.min(CARD_MAX_W, Math.max(CARD_MIN_W, CARD_TEXT_X + textMax + 16)));
-  const textRoom = cardW - CARD_TEXT_X - 12;
   const cardH = nodes.some((n) => n.detail) ? CARD_H_TALL : CARD_H;
-  const stubH = CARD_H_STUB;
-  const hOf = (n: DiagramNode) => (n.stub ? stubH : cardH);
+  const metrics = new Map<string, CardMetrics>();
+  for (const n of nodes) metrics.set(n.id, cardMetrics(n, { cardW, cardH, iconTextX: CARD_TEXT_X }));
+  const hOf = (n: DiagramNode) => metrics.get(n.id)!.h;
+  const wOf = (n: DiagramNode) => metrics.get(n.id)!.w;
 
   const planCandidate = (columnsIn: string[][] | undefined) => {
   // ── Column stacks (tier ids / free node ids) ─────────────────────────────
@@ -236,7 +254,7 @@ function layoutOnce(input: ArchitectureLayoutInput, sp: number, rank = 0): Layou
         nodes: own,
         children: kids,
         cols: Math.max(1, Math.min(own.length || 1, g.cols ?? auto)),
-        layout: g.layout ?? "row",
+        layout: g.layout ?? (variant.flip && kids.length >= 2 ? "column" : "row"),
         gapX: GAP_X,
         w: 0,
         h: 0,
@@ -282,10 +300,12 @@ function layoutOnce(input: ArchitectureLayoutInput, sp: number, rank = 0): Layou
       }
       if (n) {
         const rows = Math.ceil(n / b.cols);
-        const rowH = (r: number) => Math.max(...b.nodes.slice(r * b.cols, r * b.cols + b.cols).map(hOf));
-        b.blockW = b.cols * cardW + (b.cols - 1) * b.gapX;
-        b.blockH = 0;
-        for (let r = 0; r < rows; r++) b.blockH += rowH(r) + (r ? b.gapY : 0);
+        b.rowHs = [];
+        for (let r = 0; r < rows; r++) b.rowHs.push(Math.max(...b.nodes.slice(r * b.cols, r * b.cols + b.cols).map(hOf)));
+        b.colWs = [];
+        for (let c = 0; c < b.cols; c++) b.colWs.push(Math.max(cardW, ...b.nodes.filter((_, i) => i % b.cols === c).map(wOf)));
+        b.blockW = b.colWs.reduce((a, v) => a + v, 0) + (b.cols - 1) * b.gapX;
+        b.blockH = b.rowHs.reduce((a, v) => a + v, 0) + (rows - 1) * (b.gapY ?? GAP_Y);
       }
       const items: Array<{ w: number; h: number }> = [];
       if (n) items.push({ w: b.blockW, h: b.blockH });
@@ -305,7 +325,7 @@ function layoutOnce(input: ArchitectureLayoutInput, sp: number, rank = 0): Layou
         b.h = ih;
         return;
       }
-      const labelW = measureText(tierLabelText(b.group!.label, "00"), FONTS.tierLabel) + 56;
+      const labelW = measureText(tierLabelText(b.group!.label, "00"), FONTS.tierLabel) + 56 + (b.group!.tag ? measureText(b.group!.tag, TAG_FONT) + 40 : 0);
       b.w = Math.max(iw + b.pad * 2, labelW);
       b.h = b.header + ih + b.pad;
     };
@@ -441,7 +461,9 @@ function layoutOnce(input: ArchitectureLayoutInput, sp: number, rank = 0): Layou
       partitions.push(p.map((row, r) => (r % 2 === 1 ? [...row].reverse() : row)));
     }
   }
-  const variants = input.wrap === "never" && !explicitRows ? [VARIANTS[0]] : VARIANTS;
+  const flippable = groups.some((g) => !g.layout && groups.filter((c) => c.parent === g.id).length >= 2);
+  const baseVariants = input.wrap === "never" && !explicitRows ? [VARIANTS[0]] : VARIANTS;
+  const variants = flippable ? [...baseVariants, ...baseVariants.map((v) => ({ ...v, flip: true }))] : baseVariants;
 
   const rowGapFor = (rowOfStack: number[], r: number) => {
     // trunks that must cross the boundary between row r and r+1
@@ -533,11 +555,12 @@ function layoutOnce(input: ArchitectureLayoutInput, sp: number, rank = 0): Layou
       const g = geometry(model, part);
       const c = chrome(g.innerW + PANEL_PAD * 2, g.innerH + PANEL_PAD * 2);
       const a = c.W / c.H;
+      const vslack = part.reduce((s, row, r) => s + row.reduce((t, si) => t + (g.rowH[r] - g.colH[si]) * g.colW[si], 0), 0);
       const waste =
-        part.reduce((s, row, r) => s + (g.innerW - g.rowW[r]) * g.rowH[r], 0) / Math.max(1, g.innerW * g.innerH);
+        (part.reduce((s, row, r) => s + (g.innerW - g.rowW[r]) * g.rowH[r], 0) + (flippable ? vslack * 0.5 : 0)) / Math.max(1, g.innerW * g.innerH);
       const len = estimateLength(model, g, part) / Math.max(1, edges.length * (c.W + c.H) * 0.5);
       const score =
-        aspectPenalty(a) * 6 + widthPenalty(c.W) * 6 + waste * 1.2 + len * 1.0 + (part.length - 1) * 0.08 + v.id * 0.03;
+        aspectPenalty(a) * 6 + widthPenalty(c.W) * 6 + waste * 1.2 + len * 1.0 + (part.length - 1) * 0.08 + v.id * 0.03 + (v.flip ? 0.05 : 0);
       plans.push({ part, variant: v, score, model, geo: g });
       if (process.env.DBG_PLAN) console.log("plan", JSON.stringify(part), "v", v.id, "W", Math.round(c.W), "H", Math.round(c.H), "a", a.toFixed(2), "score", score.toFixed(3), "asp", aspectPenalty(a).toFixed(2), "wid", widthPenalty(c.W).toFixed(2), "waste", waste.toFixed(2), "len", len.toFixed(2));
     }
@@ -634,6 +657,35 @@ function layoutOnce(input: ArchitectureLayoutInput, sp: number, rank = 0): Layou
   const rightEdge = stepsPosition === "right" ? sidebar.x + sidebar.w : contentX + content.w;
   const width = Math.round(rightEdge + MARGIN);
 
+  // Short, wide posters (small linear flows): give the rows more height instead
+  // of shipping a > 2.2 banner. Zones stretch, cards stay centred.
+  {
+    const tailOf = () =>
+      stepsPosition === "bottom"
+        ? sidebar.y + sidebar.h + 18 + FOOTER_H - 12 + MARGIN / 2
+        : stepsPosition === "none"
+          ? legendRect.y + legendRect.h + 18 + FOOTER_H - 12 + MARGIN / 2
+          : content.y + content.h + 18 + FOOTER_H - 12 + MARGIN / 2;
+    const H0 = tailOf();
+    const maxA = 2.2;
+    if (width / H0 > maxA) {
+      const delta = Math.min(Math.round(width / (maxA - 0.1) - H0), Math.round(content.h * 0.7));
+      if (delta > 0) {
+        content = { ...content, h: content.h + delta };
+        if (stepsPosition === "right") {
+          sidebar = { ...sidebar, h: sidebar.h + delta };
+          legendRect = { ...legendRect, y: legendRect.y + delta };
+        } else if (stepsPosition === "bottom") {
+          sidebar = { ...sidebar, y: sidebar.y + delta };
+          for (const c of stepCards) c.rect = { ...c.rect, y: c.rect.y + delta };
+          legendRect = { ...legendRect, y: legendRect.y + delta };
+        } else {
+          legendRect = { ...legendRect, y: legendRect.y + delta };
+        }
+      }
+    }
+  }
+
   // ── Place frames ─────────────────────────────────────────────────────────
   const placedTiers: PlacedTier[] = [];
   const placedNodes: PlacedNode[] = [];
@@ -668,6 +720,8 @@ function layoutOnce(input: ArchitectureLayoutInput, sp: number, rank = 0): Layou
         hidden: false,
         accentRole: dominantRole(descendants),
         nodeIds: descendants.map((n) => n.id),
+        tag: g.tag,
+        tagRect: g.tag ? (() => { const tw = measureText(g.tag!, TAG_FONT) + 12; return { x: r.x + r.w - 14 - tw, y: r.y + 11, w: tw, h: 15 }; })() : undefined,
       });
       inner = { x: r.x + b.pad, y: r.y + b.header, w: r.w - b.pad * 2, h: r.h - b.header - b.pad };
     } else {
@@ -710,37 +764,26 @@ function layoutOnce(input: ArchitectureLayoutInput, sp: number, rank = 0): Layou
     const x0 = slot.x + (slot.w - b.blockW) / 2;
     const y0 = slot.y + (slot.h - b.blockH) / 2;
     const tierId = b.hidden ? undefined : b.id;
-    const rows = Math.ceil(b.nodes.length / b.cols);
-    const rowHs: number[] = [];
-    for (let r = 0; r < rows; r++) rowHs.push(Math.max(...b.nodes.slice(r * b.cols, r * b.cols + b.cols).map(hOf)));
+    const rowHs = b.rowHs!;
+    const colWs = b.colWs!;
+    const colX = (c: number) => colWs.slice(0, c).reduce((a, v) => a + v, 0) + c * b.gapX;
     b.nodes.forEach((n, i) => {
       const col = i % b.cols;
       const row = Math.floor(i / b.cols);
       const lastRowCount = b.nodes.length - row * b.cols;
-      const rowShift = lastRowCount < b.cols ? ((b.cols - lastRowCount) * (cardW + b.gapX)) / 2 : 0;
+      const rowShift = lastRowCount < b.cols ? (b.blockW - (colX(lastRowCount) - b.gapX)) / 2 : 0;
       let ry = y0;
       for (let r = 0; r < row; r++) ry += rowHs[r] + (b.gapY ?? GAP_Y);
-      const h = hOf(n);
+      const m = metrics.get(n.id)!;
+      const h = m.h;
+      const cw = lastRowCount < b.cols ? m.w : colWs[col];
       const rect = {
-        x: Math.round(x0 + rowShift + col * (cardW + b.gapX)),
+        x: Math.round(x0 + rowShift + colX(col) + (cw - m.w) / 2),
         y: Math.round(ry + (rowHs[row] - h) / 2),
-        w: cardW,
+        w: m.w,
         h,
       };
-      const role = (n.role ?? "default") as NodeRole;
-      placedNodes.push({
-        id: n.id,
-        label: line(n.label, FONTS.cardLabel, textRoom),
-        subtitle: n.subtitle ? line(n.subtitle, FONTS.cardSub, textRoom) : undefined,
-        detail: n.detail ? line(n.detail, FONTS.cardSub, textRoom) : undefined,
-        rawLabel: n.label,
-        rawSubtitle: n.subtitle,
-        role,
-        icon: resolveMonoIcon(n.icon, role, n.shape),
-        rect,
-        tierId,
-        stub: !!n.stub,
-      });
+      placedNodes.push(placeNode(n, rect, tierId, m));
     });
   };
 
@@ -797,6 +840,7 @@ function layoutOnce(input: ArchitectureLayoutInput, sp: number, rank = 0): Layou
   });
 
   const anchors = placeAnchorBadges(steps, routed.edges, placedNodes, placedTiers);
+  markBoundaryCrossings(routed.edges, placedTiers);
 
   return {
     width,
@@ -825,7 +869,35 @@ function layoutOnce(input: ArchitectureLayoutInput, sp: number, rank = 0): Layou
       score: plan.score,
     },
     view: input.view,
+    profile: input.profile,
   };
+}
+
+/**
+ * Trust boundaries (tier kind "trust"): record where each edge path crosses a
+ * boundary frame whose inside holds exactly one endpoint.
+ */
+export function markBoundaryCrossings(edges: LayoutResult["edges"], tiers: PlacedTier[]): void {
+  const trust = tiers.filter((t) => t.kind === "trust");
+  if (!trust.length) return;
+  const inside = (t: PlacedTier, id: string) => t.nodeIds.includes(id) || id === t.id;
+  for (const e of edges) {
+    const pts: Array<{ x: number; y: number }> = [];
+    for (const t of trust) {
+      if (inside(t, e.from) === inside(t, e.to)) continue;
+      const r = t.rect;
+      for (let i = 0; i < e.points.length - 1; i++) {
+        const a = e.points[i];
+        const b = e.points[i + 1];
+        if (a.y === b.y) {
+          for (const X of [r.x, r.x + r.w]) if (a.y > r.y && a.y < r.y + r.h && Math.min(a.x, b.x) < X && Math.max(a.x, b.x) > X) pts.push({ x: X, y: a.y });
+        } else if (a.x === b.x) {
+          for (const Y of [r.y, r.y + r.h]) if (a.x > r.x && a.x < r.x + r.w && Math.min(a.y, b.y) < Y && Math.max(a.y, b.y) > Y) pts.push({ x: a.x, y: Y });
+        }
+      }
+    }
+    if (pts.length) e.crossings = pts;
+  }
 }
 
 /**
@@ -1028,10 +1100,39 @@ function avoidLabelCorridors(tiers: PlacedTier[], nodes: PlacedNode[], edges: Ar
       if (x < t.rect.x + 12 || x + w > t.rect.x + t.rect.w - 12) continue;
       if (blocked(r)) continue;
       if (nodes.some((n) => rectsOverlap(n.rect, r, 4))) continue;
+      if (t.tagRect && rectsOverlap(t.tagRect, r, 8)) continue;
       t.labelRect = r;
       break;
     }
   }
+}
+
+/** PlacedNode from a model node + its rect / metrics (shared with the swimlane layout). */
+export function placeNode(n: DiagramNode, rect: Rect, tierId: string | undefined, m: CardMetrics): PlacedNode {
+  const role = (n.role ?? "default") as NodeRole;
+  const room = m.textRoom;
+  const first: TextLine = { text: m.label[0], truncated: m.labelTruncated && m.label.length === 1, width: measureText(m.label[0], FONTS.cardLabel) };
+  return {
+    id: n.id,
+    label: first,
+    label2: m.label[1] != null ? { text: m.label[1], truncated: m.labelTruncated, width: measureText(m.label[1], FONTS.cardLabel) } : undefined,
+    subtitle: n.subtitle ? line(n.subtitle, FONTS.cardSub, room) : undefined,
+    detail: n.detail ? line(n.detail, FONTS.cardSub, room) : undefined,
+    rawLabel: n.label,
+    rawSubtitle: n.subtitle,
+    role,
+    icon: resolveMonoIcon(n.icon, role, n.shape),
+    rect,
+    tierId,
+    stub: !!n.stub,
+    shape: n.shape,
+    desc: m.desc.length ? m.desc : undefined,
+    tag: n.tag,
+    replicas: n.replicas,
+    textRoom: room,
+    centered: m.centered,
+    top: m.top,
+  };
 }
 
 function collectNodes(b: Box): DiagramNode[] {

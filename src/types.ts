@@ -17,6 +17,33 @@ export interface DiagramMeta {
   outputDir?: string;
 }
 
+/**
+ * Card shapes. Architecture cards default to "rounded" (icon + text).
+ * Notation shapes: person (C4 actor), system (C4 software system, large),
+ * process (DFD process, stadium), datastore (DFD open-ended store),
+ * entity (DFD external entity, square double frame), decision (diamond),
+ * terminator (start / end pill), component (UML component), interface (provided port pill),
+ * pod (k8s workload), cylinder (database).
+ */
+export type NodeShape =
+  | "rectangle"
+  | "rounded"
+  | "cylinder"
+  | "diamond"
+  | "hexagon"
+  | "person"
+  | "queue"
+  | "cloud"
+  | "system"
+  | "process"
+  | "datastore"
+  | "entity"
+  | "decision"
+  | "terminator"
+  | "component"
+  | "interface"
+  | "pod";
+
 export interface DiagramNode {
   id: string;
   label: string;
@@ -28,12 +55,40 @@ export interface DiagramNode {
   /** Parent group id */
   group?: string;
   /** Shape hint for compilers that support it */
-  shape?: "rectangle" | "rounded" | "cylinder" | "diamond" | "hexagon" | "person" | "queue" | "cloud";
+  shape?: NodeShape;
+  /** Wrapped body text (≤3 lines) under the label — responsibilities, C4 descriptions */
+  description?: string;
+  /** Small type chip in the card's top-right corner ("[Person]", "P1", "D2", "×3") */
+  tag?: string;
+  /** Replica count: draws stacked shadow cards behind the card (deployments) */
+  replicas?: number;
   /** @internal third text line (overview blocks list their members) */
   detail?: string;
   /** @internal dimmed stub for an endpoint that lives in another view */
   stub?: boolean;
 }
+
+export type GroupKind =
+  | "region"
+  | "vpc"
+  | "subnet"
+  | "cluster"
+  | "namespace"
+  | "zone"
+  | "lane"
+  | "security"
+  | "external"
+  | "other"
+  /** C4 system / container boundary */
+  | "boundary"
+  /** DFD trust boundary (dashed red) */
+  | "trust"
+  /** k8s node pool / host */
+  | "pool"
+  /** network: public internet / DMZ / on-prem site */
+  | "internet"
+  | "dmz"
+  | "site";
 
 export interface DiagramGroup {
   id: string;
@@ -41,7 +96,9 @@ export interface DiagramGroup {
   /** Nesting parent */
   parent?: string;
   /** Semantic kind for styling depth / color */
-  kind?: "region" | "vpc" | "subnet" | "cluster" | "namespace" | "zone" | "lane" | "security" | "external" | "other";
+  kind?: GroupKind;
+  /** Chip on the frame header's right end (CIDR, trust level, "C4 · SYSTEM BOUNDARY") */
+  tag?: string;
   /** Cards per row inside this container (architecture grid). Auto when omitted. */
   cols?: number;
   /** How child containers are arranged inside this one (default "row"). */
@@ -57,6 +114,12 @@ export interface DiagramEdge {
   kind?: EdgeKind;
   /** Optional step number badge shown on this edge */
   step?: number;
+  /** Data classification chips drawn next to the label (DFD: "PII", "密碼") — rendered in the alert color */
+  tags?: string[];
+  /** Emphasise this flow (DFD: crosses a trust boundary) */
+  highlight?: boolean;
+  /** Draw arrowheads on both ends */
+  bidirectional?: boolean;
 }
 
 /** Numbered architecture walkthrough (AWS reference-style side panel). */

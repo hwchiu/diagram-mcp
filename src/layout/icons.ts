@@ -47,6 +47,19 @@ export const MONO_PATHS = {
   key: "M15 7a4 4 0 1 1-3.9 4.9L3 20v-3h3v-3h3l2.1-2.1A4 4 0 0 1 15 7z M16 9.5h.01",
   layers: "M12 2L2 7l10 5 10-5-10-5z M2 12l10 5 10-5 M2 17l10 5 10-5",
   replica: "M8 8h12v12H8z M4 16V4h12",
+  router: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M7.5 12h9 M14 9.5l2.5 2.5-2.5 2.5 M10 9.5L7.5 12l2.5 2.5",
+  switch: "M3 7h18v10H3z M7 11h.01 M10 11h.01 M13 11h.01 M16 11h.01 M7 14h10",
+  vpn: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z M9 11h6v5H9z M10 11V9a2 2 0 0 1 4 0v2",
+  monitor: "M3 4h18v12H3z M8 20h8 M12 16v4",
+  factory: "M2 20V9l6 4V9l6 4V5h4l2 15z M2 20h20 M6 17h2 M11 17h2",
+  building: "M4 21V3h11v18 M15 9h5v12 M8 7h3 M8 11h3 M8 15h3 M2 21h20",
+  component: "M8 3h12v18H8z M4 7h7v3H4z M4 14h7v3H4z",
+  check: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z M8.5 12l2.5 2.5 4.5-5",
+  mask: "M3 3l18 18 M10.6 10.6a2 2 0 0 0 2.8 2.8 M9.9 5.1A10 10 0 0 1 22 12a17 17 0 0 1-2.2 3.2 M6.6 6.6A17 17 0 0 0 2 12s3.6 7 10 7a9.7 9.7 0 0 0 5.4-1.6",
+  file: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M8 13h8 M8 17h5",
+  plug: "M9 2v6 M15 2v6 M6 8h12v4a6 6 0 0 1-12 0z M12 18v4",
+  approve: "M22 11.1V12a10 10 0 1 1-5.9-9.1 M22 4L12 14l-3-3",
+  namespace: "M4 4h16v16H4z M4 9h16 M8 6.5h.01",
   none: "",
 } as const;
 
@@ -87,6 +100,12 @@ const ALIAS: Record<string, MonoIcon> = {
   loki: "logs", logging: "logs", elk: "logs",
   auth: "key", oidc: "key", oauth: "key", jwt: "key", cognito: "key", iam: "key", identity: "key",
   vault: "lock", secrets: "lock", kms: "lock",
+  vpngw: "vpn", ipsec: "vpn", tunnel: "vpn", nat: "router", gw: "router", igw: "router", tgw: "router", "transit-gateway": "router",
+  l3: "router", core: "switch", tor: "switch", workstation: "monitor", desktop: "monitor", pc: "monitor", host: "server", node: "server",
+  plant: "factory", fab: "factory", mes: "factory", office: "building", hq: "building", company: "building", org: "building",
+  module: "component", authz: "check", rbac: "check", policy: "check", masking: "mask", mask: "mask", redact: "mask",
+  doc: "file", document: "file", form: "file", report: "file", api: "plug", endpoint: "plug", review: "approve", approval: "approve",
+  ns: "namespace", statefulset: "container", daemonset: "container", job: "cpu", cronjob: "cpu", mariadb: "database", oracle: "database",
   replication: "replica", replica: "replica",
 };
 
@@ -99,6 +118,10 @@ export function resolveMonoIcon(icon?: string, role?: NodeRole, shape?: string):
   if (shape === "cylinder") return "database";
   if (shape === "queue") return "queue";
   if (shape === "cloud") return "cloud";
+  if (shape === "component") return "component";
+  if (shape === "pod") return "container";
+  if (shape === "datastore") return "database";
+  if (shape === "interface") return "plug";
   switch (role) {
     case "client":
       return "browser";

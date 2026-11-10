@@ -86,9 +86,38 @@ export function renderArchitectureDrawio(layout: LayoutResult, themeId?: string)
     const parent = tier.parentId ? tierCell.get(tier.parentId) : undefined;
     const base = t.id === "dark" ? "#0a1124" : "#ffffff";
     const fill = tier.depth === 0 ? blend(t.id === "dark" ? "#0f172a" : "#f1f5f9", 0.6, base) : blend(accent, 0.05, parent ? blend("#0f172a", 0.6, base) : base);
+    const tagHtml = tier.tag ? `&nbsp;&nbsp;<font color="${tier.kind === "trust" ? t.alert : t.muted}">[${htmlEsc(tier.tag)}]</font>` : "";
+    if (tier.laneHeader) {
+      // swimlane: native draw.io pool lane, header cell on the left
+      vertex(
+        id,
+        `<b>${htmlEsc(tier.label)}</b>${tier.tag ? `<br><font color="${t.muted}" style="font-size:11px">${htmlEsc(tier.tag)}</font>` : ""}`,
+        style({
+          swimlane: "",
+          horizontal: 0,
+          startSize: Math.round(tier.laneHeader.w),
+          container: 1,
+          collapsible: 0,
+          html: 1,
+          whiteSpace: "wrap",
+          fillColor: blend(accent, 0.1, base),
+          swimlaneFillColor: blend("#0f172a", 0.5, base),
+          strokeColor: blend(accent, 0.55, base),
+          fontFamily: mono,
+          fontSize: 13,
+          fontColor: t.ink,
+        }),
+        tier.rect,
+        parent?.id ?? "1",
+        parent?.rect,
+      );
+      tierCell.set(tier.id, { id, rect: tier.rect });
+      continue;
+    }
+    const trust = tier.kind === "trust";
     vertex(
       id,
-      tierLabelText(tier.label, tier.index),
+      (trust ? "🔒 " : "") + tierLabelText(tier.label, tier.index) + tagHtml,
       style({
         rounded: 1,
         arcSize: tier.depth ? 10 : 12,
@@ -98,11 +127,11 @@ export function renderArchitectureDrawio(layout: LayoutResult, themeId?: string)
         recursiveResize: 0,
         html: 1,
         whiteSpace: "wrap",
-        fillColor: fill,
-        strokeColor: blend(accent, 0.55, base),
-        strokeWidth: 1.1,
-        dashed: tier.external ? 0 : 1,
-        dashPattern: tier.kind === "region" ? "10 5" : "5 5",
+        fillColor: trust ? blend(t.alert, 0.04, base) : fill,
+        strokeColor: trust ? t.alert : blend(accent, 0.55, base),
+        strokeWidth: trust ? 1.6 : 1.1,
+        dashed: tier.external && !trust ? 0 : 1,
+        dashPattern: trust ? "8 5" : tier.kind === "region" ? "10 5" : "5 5",
         verticalAlign: "top",
         align: "left",
         spacingLeft: 28,
@@ -127,8 +156,19 @@ export function renderArchitectureDrawio(layout: LayoutResult, themeId?: string)
     const color = t.roles[n.role] ?? t.roles.default;
     const id = `node-${safe(n.id)}`;
     const hasIcon = n.icon !== "none";
+    const shape = n.shape ?? "card";
     const sub = (txt?: string) => (txt ? `<br><font style="font-size:11px" color="${t.muted}">${htmlEsc(txt)}</font>` : "");
-    const value = `<b>${htmlEsc(n.rawLabel)}</b>${sub(n.rawSubtitle)}${sub(n.detail?.text)}`;
+    const desc = n.desc?.length ? `<br><font style="font-size:11px" face="Inter" color="${t.muted}">${n.desc.map(htmlEsc).join(" ")}</font>` : "";
+    const tag = n.tag ? `<font style="font-size:10px" color="${shape === "process" || shape === "datastore" ? t.muted : color}">${htmlEsc(n.tag)}</font><br>` : "";
+    const value = `${tag}<b>${htmlEsc(n.rawLabel)}</b>${sub(n.rawSubtitle)}${sub(n.detail?.text)}${desc}`;
+    const shapeStyle = drawioShape(shape);
+    const centered = shapeStyle.align === "center";
+    if (n.replicas && n.replicas > 1) {
+      // replica stack: offset ghost cards behind the workload
+      for (const k of [2, 1]) {
+        vertex(nid("replica"), "", style({ rounded: 1, arcSize: 8, absoluteArcSize: 1, fillColor: blend(color, t.fillAlpha * 0.6, t.cardBase), strokeColor: blend(color, 0.5, t.cardBase), strokeWidth: 1, connectable: 0, movable: 0 }), { x: n.rect.x + 4 * k, y: n.rect.y - 4 * k, w: n.rect.w, h: n.rect.h }, parent?.id ?? "1", parent?.rect);
+      }
+    }
     vertex(
       id,
       value,
@@ -136,6 +176,7 @@ export function renderArchitectureDrawio(layout: LayoutResult, themeId?: string)
         rounded: 1,
         arcSize: 8,
         absoluteArcSize: 1,
+        ...shapeStyle,
         whiteSpace: "wrap",
         html: 1,
         fillColor: blend(color, t.fillAlpha, t.cardBase),
@@ -147,9 +188,10 @@ export function renderArchitectureDrawio(layout: LayoutResult, themeId?: string)
         fontFamily: mono,
         fontSize: 13,
         fontColor: t.ink,
-        align: "left",
+        align: centered ? "center" : "left",
         verticalAlign: "middle",
-        spacingLeft: hasIcon ? CARD_PAD_X + ICON_BOX + 8 : 12,
+        spacingLeft: centered ? 8 : hasIcon ? CARD_PAD_X + ICON_BOX + 8 : 12,
+        spacingTop: shape === "person" ? 26 : 0,
         shadow: 0,
       }),
       n.rect,
@@ -157,7 +199,11 @@ export function renderArchitectureDrawio(layout: LayoutResult, themeId?: string)
       parent?.rect,
     );
     nodeCell.set(n.id, { id, rect: n.rect });
-    if (hasIcon) {
+    if (shape === "person") {
+      // C4 person: head above the body card
+      vertex(nid("head"), "", style({ ellipse: "", fillColor: blend(color, t.fillAlpha, t.cardBase), strokeColor: color, strokeWidth: 1.3, connectable: 0, movable: 0 }), { x: n.rect.x + n.rect.w / 2 - 13, y: n.rect.y - 14, w: 26, h: 26 }, parent?.id ?? "1", parent?.rect);
+    }
+    if (hasIcon && !centered) {
       vertex(
         `${id}-icon`,
         "",
@@ -187,11 +233,13 @@ export function renderArchitectureDrawio(layout: LayoutResult, themeId?: string)
       jettySize: "auto",
       html: 1,
       strokeColor: color,
-      strokeWidth: 1.6,
+      strokeWidth: e.highlight ? 2.4 : 1.6,
       endArrow: "block",
       endFill: 1,
       endSize: 6,
-      startArrow: "none",
+      startArrow: e.bidirectional ? "block" : "none",
+      startFill: e.bidirectional ? 1 : undefined,
+      startSize: e.bidirectional ? 6 : undefined,
       dashed: e.kind === "async" || e.kind === "auth" ? 1 : 0,
       dashPattern: e.kind === "async" ? "7 5" : e.kind === "auth" ? "2 4" : undefined,
       exitX: round3(ex.x),
@@ -208,7 +256,7 @@ export function renderArchitectureDrawio(layout: LayoutResult, themeId?: string)
       fontSize: 12,
       fontColor: t.ink,
       labelBackgroundColor: t.pillFill,
-      labelBorderColor: color,
+      labelBorderColor: e.tags?.length ? t.alert : color,
       spacing: 4,
     });
     const way = e.points.slice(1, -1).map((p) => `<mxPoint x="${round(p.x)}" y="${round(p.y)}"/>`).join("");
@@ -291,6 +339,33 @@ export function renderArchitectureDrawio(layout: LayoutResult, themeId?: string)
   </diagram>
 </mxfile>
 `;
+}
+
+/** draw.io style fragment per card notation (person, DFD, flowchart, UML…). */
+function drawioShape(shape: string): Record<string, string | number | undefined> {
+  switch (shape) {
+    case "system":
+      return { arcSize: 12, align: "center", fontSize: 15, strokeWidth: 2 };
+    case "person":
+      return { arcSize: 22, align: "center" };
+    case "decision":
+      return { rhombus: "", rounded: 0, align: "center" };
+    case "terminator":
+    case "interface":
+      return { arcSize: 50, absoluteArcSize: 0, align: "center" };
+    case "process":
+      return { arcSize: 18, align: "center" };
+    case "entity":
+      return { rounded: 0, align: "center" };
+    case "datastore":
+      return { shape: "partialRectangle", top: 1, bottom: 1, left: 1, right: 0, rounded: 0, align: "center" };
+    case "cylinder":
+      return { shape: "cylinder3", boundedLbl: 1, size: 10, rounded: 0 };
+    case "component":
+      return { shape: "module", jettyWidth: 12, jettyHeight: 6, rounded: 0 };
+    default:
+      return {};
+  }
 }
 
 function safe(s: string): string {
