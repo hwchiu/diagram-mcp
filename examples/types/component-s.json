@@ -1,0 +1,81 @@
+{
+  "tool": "create_component_diagram",
+  "input": {
+    "title": "公司查詢 API 元件圖",
+    "subtitle": "C4 L3 · 查詢 API 內含權限檢查與結果遮罩",
+    "container": {
+      "id": "api",
+      "label": "公司查詢 API",
+      "technology": "Spring Boot"
+    },
+    "interfaces": [
+      {
+        "id": "ep",
+        "label": "GET /companies",
+        "protocol": "REST"
+      }
+    ],
+    "components": [
+      {
+        "id": "authz",
+        "label": "權限檢查",
+        "responsibility": "依角色與資料等級判斷可否查詢",
+        "type": "policy"
+      },
+      {
+        "id": "query",
+        "label": "查詢服務",
+        "responsibility": "組合條件並查詢公司主檔",
+        "technology": "JPA"
+      },
+      {
+        "id": "mask",
+        "label": "結果遮罩",
+        "responsibility": "遮蔽統編、負責人等敏感欄位",
+        "type": "policy"
+      }
+    ],
+    "externals": [
+      {
+        "id": "biz",
+        "label": "BIZ 前端",
+        "type": "person"
+      },
+      {
+        "id": "db",
+        "label": "MariaDB",
+        "description": "公司主檔",
+        "type": "database"
+      }
+    ],
+    "relationships": [
+      {
+        "from": "biz",
+        "to": "ep",
+        "label": "查詢",
+        "technology": "HTTPS"
+      },
+      {
+        "from": "ep",
+        "to": "authz",
+        "label": "驗證權限"
+      },
+      {
+        "from": "authz",
+        "to": "query",
+        "label": "允許"
+      },
+      {
+        "from": "query",
+        "to": "db",
+        "label": "SELECT",
+        "kind": "data"
+      },
+      {
+        "from": "query",
+        "to": "mask",
+        "label": "原始結果"
+      }
+    ]
+  }
+}

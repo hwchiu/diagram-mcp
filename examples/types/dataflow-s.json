@@ -1,0 +1,91 @@
+{
+  "tool": "create_dataflow_trust_boundary",
+  "input": {
+    "title": "公司查詢資料流與信任邊界",
+    "subtitle": "使用者區 → 受限查詢區 → 回傳遮罩結果",
+    "boundaries": [
+      {
+        "id": "userz",
+        "label": "使用者區",
+        "trust": "untrusted"
+      },
+      {
+        "id": "restricted",
+        "label": "受限查詢區",
+        "trust": "restricted"
+      }
+    ],
+    "externalEntities": [
+      {
+        "id": "biz",
+        "label": "BIZ 使用者",
+        "boundary": "userz"
+      }
+    ],
+    "processes": [
+      {
+        "id": "query",
+        "label": "查詢處理",
+        "boundary": "restricted",
+        "number": "1"
+      },
+      {
+        "id": "mask",
+        "label": "結果遮罩",
+        "boundary": "restricted",
+        "number": "2"
+      }
+    ],
+    "dataStores": [
+      {
+        "id": "db",
+        "label": "公司主檔",
+        "boundary": "restricted",
+        "number": "D1"
+      }
+    ],
+    "flows": [
+      {
+        "from": "biz",
+        "to": "query",
+        "label": "查詢條件",
+        "protocol": "HTTPS",
+        "step": 1
+      },
+      {
+        "from": "query",
+        "to": "db",
+        "label": "讀取",
+        "data": [
+          "統編"
+        ]
+      },
+      {
+        "from": "query",
+        "to": "mask",
+        "label": "原始結果",
+        "data": [
+          "PII"
+        ]
+      },
+      {
+        "from": "mask",
+        "to": "biz",
+        "label": "遮罩結果",
+        "step": 2
+      }
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "label": "跨越邊界",
+        "description": "查詢條件由不受信任區進入受限區"
+      },
+      {
+        "n": 2,
+        "label": "回傳",
+        "description": "只回傳遮罩後的結果"
+      }
+    ]
+  }
+}

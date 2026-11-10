@@ -1,0 +1,238 @@
+{
+  "tool": "create_component_diagram",
+  "input": {
+    "title": "公司查詢 API · 內部元件",
+    "subtitle": "C4 L3 · 介面、應用層、領域層與基礎設施轉接器",
+    "container": {
+      "id": "api",
+      "label": "公司查詢 API",
+      "technology": "Spring Boot 3 · Java 21"
+    },
+    "interfaces": [
+      {
+        "id": "rest",
+        "label": "GET /companies",
+        "protocol": "REST"
+      },
+      {
+        "id": "rpt",
+        "label": "POST /reports",
+        "protocol": "REST"
+      },
+      {
+        "id": "evt",
+        "label": "company.updated",
+        "protocol": "Kafka"
+      }
+    ],
+    "layers": [
+      "應用層",
+      "領域層",
+      "基礎設施"
+    ],
+    "components": [
+      {
+        "id": "ctl",
+        "label": "Query Controller",
+        "responsibility": "參數驗證與分頁",
+        "layer": "應用層"
+      },
+      {
+        "id": "authz",
+        "label": "權限檢查",
+        "responsibility": "RBAC + 資料等級政策",
+        "layer": "應用層",
+        "type": "policy"
+      },
+      {
+        "id": "mask",
+        "label": "結果遮罩",
+        "responsibility": "依角色遮蔽敏感欄位",
+        "layer": "應用層",
+        "type": "policy"
+      },
+      {
+        "id": "rptsvc",
+        "label": "報告產生器",
+        "responsibility": "組裝 PDF 報告",
+        "layer": "應用層"
+      },
+      {
+        "id": "qsvc",
+        "label": "公司查詢服務",
+        "responsibility": "查詢主檔並合併外部資料",
+        "layer": "領域層"
+      },
+      {
+        "id": "risk",
+        "label": "風險評分",
+        "responsibility": "計算風險指標",
+        "layer": "領域層"
+      },
+      {
+        "id": "cache",
+        "label": "結果快取",
+        "responsibility": "熱門查詢快取 10 分鐘",
+        "layer": "基礎設施",
+        "type": "adapter"
+      },
+      {
+        "id": "repo",
+        "label": "Company Repository",
+        "responsibility": "MariaDB 存取",
+        "layer": "基礎設施",
+        "type": "adapter"
+      },
+      {
+        "id": "vendorc",
+        "label": "供應商 Client",
+        "responsibility": "呼叫資料供應商 API",
+        "layer": "基礎設施",
+        "type": "adapter"
+      },
+      {
+        "id": "auditp",
+        "label": "稽核發佈器",
+        "responsibility": "送出查詢稽核事件",
+        "layer": "基礎設施",
+        "type": "adapter"
+      }
+    ],
+    "externals": [
+      {
+        "id": "web",
+        "label": "Insight Web",
+        "type": "person"
+      },
+      {
+        "id": "db",
+        "label": "MariaDB",
+        "type": "database"
+      },
+      {
+        "id": "redis",
+        "label": "Redis",
+        "type": "cache"
+      },
+      {
+        "id": "vendor",
+        "label": "資料供應商",
+        "type": "system"
+      },
+      {
+        "id": "kafka",
+        "label": "Kafka",
+        "type": "queue"
+      }
+    ],
+    "relationships": [
+      {
+        "from": "web",
+        "to": "rest",
+        "label": "查詢",
+        "technology": "HTTPS",
+        "step": 1
+      },
+      {
+        "from": "web",
+        "to": "rpt",
+        "label": "下載報告"
+      },
+      {
+        "from": "rest",
+        "to": "ctl"
+      },
+      {
+        "from": "rpt",
+        "to": "rptsvc"
+      },
+      {
+        "from": "ctl",
+        "to": "authz",
+        "label": "檢查",
+        "step": 2
+      },
+      {
+        "from": "ctl",
+        "to": "qsvc",
+        "label": "查詢"
+      },
+      {
+        "from": "qsvc",
+        "to": "mask",
+        "label": "結果",
+        "step": 3
+      },
+      {
+        "from": "rptsvc",
+        "to": "qsvc"
+      },
+      {
+        "from": "qsvc",
+        "to": "risk"
+      },
+      {
+        "from": "qsvc",
+        "to": "cache",
+        "kind": "data"
+      },
+      {
+        "from": "qsvc",
+        "to": "repo",
+        "kind": "data"
+      },
+      {
+        "from": "qsvc",
+        "to": "vendorc"
+      },
+      {
+        "from": "ctl",
+        "to": "auditp",
+        "kind": "async"
+      },
+      {
+        "from": "cache",
+        "to": "redis",
+        "kind": "data"
+      },
+      {
+        "from": "repo",
+        "to": "db",
+        "label": "JDBC",
+        "kind": "data"
+      },
+      {
+        "from": "vendorc",
+        "to": "vendor",
+        "label": "REST"
+      },
+      {
+        "from": "auditp",
+        "to": "kafka",
+        "kind": "async"
+      },
+      {
+        "from": "kafka",
+        "to": "evt",
+        "kind": "async"
+      }
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "label": "呼叫 API",
+        "description": "前端帶 JWT 呼叫查詢端點"
+      },
+      {
+        "n": 2,
+        "label": "權限檢查",
+        "description": "依角色與資料等級決定可見欄位"
+      },
+      {
+        "n": 3,
+        "label": "遮罩輸出",
+        "description": "敏感欄位遮罩後回傳"
+      }
+    ]
+  }
+}

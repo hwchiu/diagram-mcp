@@ -1,0 +1,190 @@
+{
+  "tool": "create_swimlane",
+  "input": {
+    "title": "敏感資料存取申請 · 跨部門流程",
+    "subtitle": "從申請、驗證、審核到開通與稽核的完整流程",
+    "lanes": [
+      {
+        "id": "biz",
+        "label": "BIZ 業務",
+        "description": "申請人"
+      },
+      {
+        "id": "sys",
+        "label": "Insight 系統"
+      },
+      {
+        "id": "mgr",
+        "label": "部門主管"
+      },
+      {
+        "id": "owner",
+        "label": "Data Owner"
+      },
+      {
+        "id": "sec",
+        "label": "資安稽核"
+      }
+    ],
+    "steps": [
+      {
+        "id": "s",
+        "label": "開始",
+        "lane": "biz",
+        "type": "start"
+      },
+      {
+        "id": "fill",
+        "label": "填寫申請單",
+        "lane": "biz",
+        "type": "document"
+      },
+      {
+        "id": "submit",
+        "label": "提交申請",
+        "lane": "biz"
+      },
+      {
+        "id": "check",
+        "label": "格式與權限驗證",
+        "lane": "sys",
+        "type": "system"
+      },
+      {
+        "id": "valid",
+        "label": "資料完整?",
+        "lane": "sys",
+        "type": "decision"
+      },
+      {
+        "id": "fix",
+        "label": "補件",
+        "lane": "biz"
+      },
+      {
+        "id": "mgrok",
+        "label": "主管簽核",
+        "lane": "mgr"
+      },
+      {
+        "id": "review",
+        "label": "審核用途與範圍",
+        "lane": "owner"
+      },
+      {
+        "id": "dec",
+        "label": "核准?",
+        "lane": "owner",
+        "type": "decision"
+      },
+      {
+        "id": "grant",
+        "label": "開通遮罩查詢",
+        "lane": "sys",
+        "type": "system"
+      },
+      {
+        "id": "notify",
+        "label": "通知申請人",
+        "lane": "sys",
+        "type": "system"
+      },
+      {
+        "id": "use",
+        "label": "執行查詢",
+        "lane": "biz"
+      },
+      {
+        "id": "log",
+        "label": "記錄稽核軌跡",
+        "lane": "sec"
+      },
+      {
+        "id": "monthly",
+        "label": "月度抽查",
+        "lane": "sec",
+        "type": "wait"
+      },
+      {
+        "id": "e",
+        "label": "結束",
+        "lane": "biz",
+        "type": "end"
+      }
+    ],
+    "flows": [
+      {
+        "from": "s",
+        "to": "fill"
+      },
+      {
+        "from": "fill",
+        "to": "submit"
+      },
+      {
+        "from": "submit",
+        "to": "check"
+      },
+      {
+        "from": "check",
+        "to": "valid"
+      },
+      {
+        "from": "valid",
+        "to": "fix",
+        "label": "否",
+        "kind": "auth"
+      },
+      {
+        "from": "fix",
+        "to": "submit"
+      },
+      {
+        "from": "valid",
+        "to": "mgrok",
+        "label": "是"
+      },
+      {
+        "from": "mgrok",
+        "to": "review",
+        "label": "簽核"
+      },
+      {
+        "from": "review",
+        "to": "dec"
+      },
+      {
+        "from": "dec",
+        "to": "grant",
+        "label": "核准"
+      },
+      {
+        "from": "dec",
+        "to": "notify",
+        "label": "駁回",
+        "kind": "auth"
+      },
+      {
+        "from": "grant",
+        "to": "notify"
+      },
+      {
+        "from": "notify",
+        "to": "use"
+      },
+      {
+        "from": "use",
+        "to": "log",
+        "kind": "async"
+      },
+      {
+        "from": "log",
+        "to": "monthly"
+      },
+      {
+        "from": "use",
+        "to": "e"
+      }
+    ]
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "tool": "create_swimlane",
+  "input": {
+    "title": "敏感資料查詢申請流程",
+    "subtitle": "BIZ 提交 → 系統驗證 → Data Owner 審核",
+    "lanes": [
+      {
+        "id": "biz",
+        "label": "BIZ"
+      },
+      {
+        "id": "sys",
+        "label": "Insight 系統"
+      },
+      {
+        "id": "owner",
+        "label": "Data Owner"
+      }
+    ],
+    "steps": [
+      {
+        "id": "start",
+        "label": "開始",
+        "lane": "biz",
+        "type": "start"
+      },
+      {
+        "id": "submit",
+        "label": "提交查詢申請",
+        "lane": "biz"
+      },
+      {
+        "id": "validate",
+        "label": "驗證申請資料",
+        "lane": "sys",
+        "type": "system"
+      },
+      {
+        "id": "review",
+        "label": "審核申請",
+        "lane": "owner"
+      },
+      {
+        "id": "ok",
+        "label": "核准?",
+        "lane": "owner",
+        "type": "decision"
+      },
+      {
+        "id": "grant",
+        "label": "開通查詢權限",
+        "lane": "sys",
+        "type": "system"
+      },
+      {
+        "id": "end",
+        "label": "完成",
+        "lane": "biz",
+        "type": "end"
+      }
+    ],
+    "flows": [
+      {
+        "from": "start",
+        "to": "submit"
+      },
+      {
+        "from": "submit",
+        "to": "validate"
+      },
+      {
+        "from": "validate",
+        "to": "review",
+        "label": "送審"
+      },
+      {
+        "from": "review",
+        "to": "ok"
+      },
+      {
+        "from": "ok",
+        "to": "grant",
+        "label": "通過"
+      },
+      {
+        "from": "ok",
+        "to": "submit",
+        "label": "退回",
+        "kind": "auth"
+      },
+      {
+        "from": "grant",
+        "to": "end",
+        "label": "通知"
+      }
+    ]
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "tool": "create_system_context",
+  "input": {
+    "title": "Insight Workspace 系統情境圖",
+    "subtitle": "C4 L1 · 誰在使用 Insight，以及它和哪些外部系統往來",
+    "system": {
+      "id": "insight",
+      "label": "Insight Workspace",
+      "description": "企業徵信工作台：查詢公司資料、產生報告並控管存取權限"
+    },
+    "actors": [
+      {
+        "id": "biz",
+        "label": "BIZ 業務人員",
+        "description": "查詢客戶公司資料、下載報告"
+      }
+    ],
+    "externalSystems": [
+      {
+        "id": "vendor",
+        "label": "資料供應商",
+        "description": "提供公司登記與財務資料",
+        "type": "provider"
+      }
+    ],
+    "relationships": [
+      {
+        "from": "biz",
+        "to": "insight",
+        "label": "提交查詢",
+        "technology": "HTTPS",
+        "step": 1
+      },
+      {
+        "from": "insight",
+        "to": "vendor",
+        "label": "取得公司資料",
+        "technology": "REST API",
+        "step": 2
+      }
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "label": "提交查詢",
+        "description": "BIZ 在 Workspace 輸入統編或公司名稱"
+      },
+      {
+        "n": 2,
+        "label": "資料取得",
+        "description": "Insight 向資料供應商取得最新登記與財務資料"
+      }
+    ]
+  }
+}

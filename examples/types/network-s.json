@@ -1,0 +1,58 @@
+{
+  "tool": "create_network_topology",
+  "input": {
+    "title": "廠區至雲端網路拓撲",
+    "subtitle": "廠區網段經防火牆連至雲端 VPC",
+    "zones": [
+      {
+        "id": "fab",
+        "label": "廠區網段",
+        "type": "onprem",
+        "cidr": "10.10.0.0/16"
+      },
+      {
+        "id": "vpc",
+        "label": "雲端 VPC",
+        "type": "vpc",
+        "cidr": "10.20.0.0/16"
+      }
+    ],
+    "devices": [
+      {
+        "id": "mes",
+        "label": "MES 主機",
+        "type": "server",
+        "zone": "fab",
+        "ip": "10.10.5.21"
+      },
+      {
+        "id": "fw",
+        "label": "防火牆",
+        "type": "firewall",
+        "ip": "FortiGate 600E"
+      },
+      {
+        "id": "api",
+        "label": "API 服務",
+        "type": "server",
+        "zone": "vpc",
+        "ip": "10.20.1.10"
+      }
+    ],
+    "links": [
+      {
+        "from": "mes",
+        "to": "fw",
+        "protocol": "HTTPS",
+        "port": 443
+      },
+      {
+        "from": "fw",
+        "to": "api",
+        "protocol": "IPsec",
+        "type": "vpn",
+        "label": "Site-to-Site"
+      }
+    ]
+  }
+}

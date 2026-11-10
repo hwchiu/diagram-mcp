@@ -1,0 +1,223 @@
+{
+  "tool": "create_deployment_topology",
+  "input": {
+    "title": "Insight 生產環境部署拓撲",
+    "subtitle": "EKS 叢集內三個 Namespace，資料庫與物件儲存在叢集外",
+    "clusters": [
+      {
+        "id": "eks",
+        "label": "Insight Prod Cluster",
+        "provider": "EKS",
+        "version": "1.29",
+        "region": "ap-northeast-1",
+        "namespaces": [
+          {
+            "id": "edge",
+            "label": "ingress-nginx",
+            "workloads": [
+              {
+                "id": "ing",
+                "label": "Ingress Controller",
+                "type": "ingress",
+                "replicas": 2
+              }
+            ]
+          },
+          {
+            "id": "prod",
+            "label": "Prod Namespace",
+            "workloads": [
+              {
+                "id": "web",
+                "label": "Web Frontend",
+                "type": "deployment",
+                "replicas": 2,
+                "image": "insight-web:5.1"
+              },
+              {
+                "id": "api",
+                "label": "API Pod",
+                "type": "deployment",
+                "replicas": 3,
+                "image": "company-api:2.4"
+              },
+              {
+                "id": "rpt",
+                "label": "Report Worker",
+                "type": "deployment",
+                "replicas": 2,
+                "image": "report:1.8"
+              },
+              {
+                "id": "sync",
+                "label": "供應商同步",
+                "type": "cronjob",
+                "image": "每小時"
+              },
+              {
+                "id": "redis",
+                "label": "Redis",
+                "type": "statefulset",
+                "replicas": 3
+              }
+            ]
+          },
+          {
+            "id": "obs",
+            "label": "Observability",
+            "workloads": [
+              {
+                "id": "prom",
+                "label": "Prometheus",
+                "type": "statefulset"
+              },
+              {
+                "id": "fluent",
+                "label": "Fluent Bit",
+                "type": "daemonset"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "outside": [
+      {
+        "id": "user",
+        "label": "BIZ 使用者",
+        "type": "user"
+      },
+      {
+        "id": "dns",
+        "label": "Route 53",
+        "type": "dns",
+        "side": "left"
+      },
+      {
+        "id": "db",
+        "label": "MariaDB",
+        "type": "database",
+        "location": "RDS Multi-AZ"
+      },
+      {
+        "id": "s3",
+        "label": "報告儲存",
+        "type": "storage",
+        "location": "S3"
+      },
+      {
+        "id": "vendor",
+        "label": "資料供應商",
+        "type": "saas"
+      },
+      {
+        "id": "ecr",
+        "label": "ECR",
+        "type": "registry"
+      },
+      {
+        "id": "logs",
+        "label": "CloudWatch Logs",
+        "type": "saas"
+      }
+    ],
+    "connections": [
+      {
+        "from": "user",
+        "to": "dns",
+        "protocol": "DNS"
+      },
+      {
+        "from": "dns",
+        "to": "ing",
+        "protocol": "HTTPS",
+        "port": 443,
+        "step": 1
+      },
+      {
+        "from": "ing",
+        "to": "web",
+        "protocol": "HTTP",
+        "port": 3000
+      },
+      {
+        "from": "ing",
+        "to": "api",
+        "protocol": "HTTP",
+        "port": 8080,
+        "step": 2
+      },
+      {
+        "from": "api",
+        "to": "redis",
+        "protocol": "TCP",
+        "port": 6379,
+        "kind": "data"
+      },
+      {
+        "from": "api",
+        "to": "db",
+        "protocol": "TCP",
+        "port": 3306,
+        "kind": "data",
+        "step": 3
+      },
+      {
+        "from": "rpt",
+        "to": "s3",
+        "protocol": "HTTPS",
+        "kind": "data"
+      },
+      {
+        "from": "api",
+        "to": "rpt",
+        "kind": "async",
+        "label": "報告任務"
+      },
+      {
+        "from": "sync",
+        "to": "vendor",
+        "protocol": "HTTPS"
+      },
+      {
+        "from": "sync",
+        "to": "db",
+        "kind": "data"
+      },
+      {
+        "from": "prom",
+        "to": "api",
+        "label": "scrape",
+        "kind": "async"
+      },
+      {
+        "from": "fluent",
+        "to": "logs",
+        "kind": "async"
+      },
+      {
+        "from": "ecr",
+        "to": "api",
+        "label": "image pull",
+        "kind": "async"
+      }
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "label": "DNS + TLS",
+        "description": "Route 53 指向 Ingress，TLS 在 Ingress 終結"
+      },
+      {
+        "n": 2,
+        "label": "API",
+        "description": "3 個 API Pod 處理查詢"
+      },
+      {
+        "n": 3,
+        "label": "資料庫",
+        "description": "RDS MariaDB 位於叢集外"
+      }
+    ]
+  }
+}

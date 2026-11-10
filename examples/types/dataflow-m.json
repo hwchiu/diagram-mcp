@@ -1,0 +1,208 @@
+{
+  "tool": "create_dataflow_trust_boundary",
+  "input": {
+    "title": "Insight 查詢資料流 · 威脅建模",
+    "subtitle": "STRIDE 前置 DFD：網際網路、DMZ、內部服務、受限資料區",
+    "boundaries": [
+      {
+        "id": "inet",
+        "label": "網際網路",
+        "trust": "untrusted"
+      },
+      {
+        "id": "dmz",
+        "label": "DMZ",
+        "trust": "low"
+      },
+      {
+        "id": "internal",
+        "label": "內部服務區",
+        "trust": "medium"
+      },
+      {
+        "id": "restricted",
+        "label": "受限資料區",
+        "trust": "restricted",
+        "parent": "internal"
+      }
+    ],
+    "externalEntities": [
+      {
+        "id": "biz",
+        "label": "BIZ 使用者",
+        "boundary": "inet"
+      },
+      {
+        "id": "owner",
+        "label": "Data Owner",
+        "boundary": "inet"
+      },
+      {
+        "id": "vendor",
+        "label": "資料供應商"
+      },
+      {
+        "id": "idp",
+        "label": "企業 SSO"
+      }
+    ],
+    "processes": [
+      {
+        "id": "gw",
+        "label": "API Gateway",
+        "boundary": "dmz"
+      },
+      {
+        "id": "auth",
+        "label": "身分驗證",
+        "boundary": "dmz"
+      },
+      {
+        "id": "query",
+        "label": "查詢處理",
+        "boundary": "internal"
+      },
+      {
+        "id": "approve",
+        "label": "存取審核",
+        "boundary": "internal"
+      },
+      {
+        "id": "mask",
+        "label": "結果遮罩",
+        "boundary": "restricted"
+      },
+      {
+        "id": "sync",
+        "label": "供應商同步",
+        "boundary": "internal"
+      }
+    ],
+    "dataStores": [
+      {
+        "id": "cdb",
+        "label": "公司主檔",
+        "boundary": "restricted"
+      },
+      {
+        "id": "acl",
+        "label": "權限設定",
+        "boundary": "restricted"
+      },
+      {
+        "id": "audit",
+        "label": "稽核紀錄",
+        "boundary": "internal"
+      },
+      {
+        "id": "cache",
+        "label": "查詢快取",
+        "boundary": "internal"
+      }
+    ],
+    "flows": [
+      {
+        "from": "biz",
+        "to": "gw",
+        "label": "查詢請求",
+        "protocol": "HTTPS",
+        "step": 1
+      },
+      {
+        "from": "gw",
+        "to": "auth",
+        "label": "Token"
+      },
+      {
+        "from": "auth",
+        "to": "idp",
+        "label": "OIDC 驗證"
+      },
+      {
+        "from": "gw",
+        "to": "query",
+        "label": "查詢條件",
+        "step": 2
+      },
+      {
+        "from": "query",
+        "to": "acl",
+        "label": "讀取權限"
+      },
+      {
+        "from": "query",
+        "to": "cdb",
+        "label": "公司資料",
+        "data": [
+          "PII",
+          "統編"
+        ]
+      },
+      {
+        "from": "query",
+        "to": "cache",
+        "label": "快取"
+      },
+      {
+        "from": "query",
+        "to": "mask",
+        "label": "原始結果",
+        "data": [
+          "PII"
+        ],
+        "step": 3
+      },
+      {
+        "from": "mask",
+        "to": "gw",
+        "label": "遮罩結果"
+      },
+      {
+        "from": "query",
+        "to": "audit",
+        "label": "查詢軌跡"
+      },
+      {
+        "from": "owner",
+        "to": "approve",
+        "label": "核准申請"
+      },
+      {
+        "from": "approve",
+        "to": "acl",
+        "label": "更新權限"
+      },
+      {
+        "from": "sync",
+        "to": "vendor",
+        "label": "增量下載",
+        "protocol": "SFTP"
+      },
+      {
+        "from": "sync",
+        "to": "cdb",
+        "label": "寫入",
+        "data": [
+          "PII"
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "label": "入口",
+        "description": "所有外部請求經 DMZ 的 Gateway"
+      },
+      {
+        "n": 2,
+        "label": "內部查詢",
+        "description": "Gateway 轉送已驗證的查詢條件"
+      },
+      {
+        "n": 3,
+        "label": "遮罩",
+        "description": "PII 在離開受限區前遮罩"
+      }
+    ]
+  }
+}

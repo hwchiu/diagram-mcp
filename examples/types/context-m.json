@@ -1,0 +1,190 @@
+{
+  "tool": "create_system_context",
+  "input": {
+    "title": "Insight 平台系統情境",
+    "subtitle": "C4 L1 · 平台、使用角色與外部系統",
+    "system": {
+      "id": "insight",
+      "label": "Insight Workspace",
+      "description": "徵信查詢、報告產生、權限與稽核的單一入口",
+      "technology": "Web + API"
+    },
+    "boundary": {
+      "label": "Insight 平台範圍"
+    },
+    "internalSystems": [
+      {
+        "id": "report",
+        "label": "報告服務",
+        "description": "產生 PDF 徵信報告"
+      },
+      {
+        "id": "audit",
+        "label": "稽核中心",
+        "description": "保存查詢軌跡"
+      }
+    ],
+    "actors": [
+      {
+        "id": "biz",
+        "label": "BIZ 業務人員",
+        "description": "查詢客戶公司資料"
+      },
+      {
+        "id": "risk",
+        "label": "風控分析師",
+        "description": "審閱風險指標與報告"
+      },
+      {
+        "id": "owner",
+        "label": "Data Owner",
+        "description": "核准敏感欄位存取"
+      },
+      {
+        "id": "admin",
+        "label": "平台管理員",
+        "description": "管理帳號與權限"
+      },
+      {
+        "id": "auditor",
+        "label": "外部稽核",
+        "description": "抽查查詢紀錄",
+        "external": true
+      }
+    ],
+    "externalSystems": [
+      {
+        "id": "vendor",
+        "label": "資料供應商",
+        "description": "公司登記與財務資料",
+        "type": "provider"
+      },
+      {
+        "id": "credit",
+        "label": "信用評等機構",
+        "description": "信用分數與違約紀錄",
+        "type": "partner"
+      },
+      {
+        "id": "sso",
+        "label": "企業 SSO",
+        "description": "Azure AD 身分驗證",
+        "type": "saas"
+      },
+      {
+        "id": "crm",
+        "label": "CRM 系統",
+        "description": "客戶主檔與商機",
+        "type": "system"
+      },
+      {
+        "id": "mail",
+        "label": "郵件服務",
+        "description": "寄送通知與報告",
+        "type": "saas"
+      },
+      {
+        "id": "dwh",
+        "label": "資料倉儲",
+        "description": "每日彙整查詢統計",
+        "type": "database"
+      }
+    ],
+    "relationships": [
+      {
+        "from": "biz",
+        "to": "insight",
+        "label": "查詢公司",
+        "technology": "HTTPS",
+        "step": 1
+      },
+      {
+        "from": "risk",
+        "to": "insight",
+        "label": "檢視風險"
+      },
+      {
+        "from": "owner",
+        "to": "insight",
+        "label": "核准存取"
+      },
+      {
+        "from": "admin",
+        "to": "insight",
+        "label": "管理權限"
+      },
+      {
+        "from": "auditor",
+        "to": "audit",
+        "label": "抽查紀錄"
+      },
+      {
+        "from": "insight",
+        "to": "vendor",
+        "label": "取得資料",
+        "technology": "REST",
+        "step": 2
+      },
+      {
+        "from": "insight",
+        "to": "credit",
+        "label": "查詢評等",
+        "technology": "SOAP"
+      },
+      {
+        "from": "insight",
+        "to": "sso",
+        "label": "驗證身分",
+        "technology": "OIDC",
+        "kind": "auth"
+      },
+      {
+        "from": "insight",
+        "to": "crm",
+        "label": "同步客戶",
+        "kind": "async"
+      },
+      {
+        "from": "insight",
+        "to": "report",
+        "label": "產生報告",
+        "step": 3
+      },
+      {
+        "from": "insight",
+        "to": "audit",
+        "label": "寫入軌跡",
+        "kind": "async"
+      },
+      {
+        "from": "report",
+        "to": "mail",
+        "label": "寄送報告",
+        "technology": "SMTP"
+      },
+      {
+        "from": "audit",
+        "to": "dwh",
+        "label": "每日匯出",
+        "kind": "data"
+      }
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "label": "查詢",
+        "description": "業務以 SSO 登入後查詢公司"
+      },
+      {
+        "n": 2,
+        "label": "取得資料",
+        "description": "平台向供應商取得最新資料"
+      },
+      {
+        "n": 3,
+        "label": "產生報告",
+        "description": "報告服務輸出 PDF 並寄送"
+      }
+    ]
+  }
+}

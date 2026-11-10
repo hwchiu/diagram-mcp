@@ -17,6 +17,9 @@ import {
   renderSchema,
 } from "./tools/schemas.js";
 import type { EngineKind, QaIssue, RenderResult } from "./types.js";
+import { componentSchema, dataflowSchema, deploymentSchema, networkSchema, swimlaneSchema, systemContextSchema } from "./tools/kindSchemas.js";
+import { compileComponent, compileDataflow, compileDeployment, compileNetwork, compileSystemContext } from "./compilers/kinds/grid-kinds.js";
+import { compileSwimlane } from "./compilers/kinds/swimlane.js";
 import { summarizeQa } from "./layout/qa.js";
 import type { z } from "zod";
 
@@ -158,6 +161,81 @@ export function createServer(): McpServer {
     async (args: z.infer<typeof microserviceSchema>) => {
       return runArchitecture(compileMicroservice(args), args);
     },
+  );
+
+  const COMMON =
+    " Same dark Cocoon tech style as the architecture tools (light theme optional); labels may be 繁體中文 / English / mixed (CJK measured at full width). Returns SVG + 2× PNG + editable .drawio (on by default), structural QA (overlaps, text overflow, edges through cards) and a compact PNG preview — inspect it and re-render if QA lists issues.";
+
+  server.registerTool(
+    "create_system_context",
+    {
+      title: "Create system context diagram (C4 L1)",
+      description:
+        "C4 Level-1 system context: the system in scope as ONE large central box inside a dashed boundary, people / roles (person shapes) on the left, external systems on the right, labelled relationships (verb + [technology]). Use for 'who uses the system and what does it talk to'. Example: actors=[BIZ 業務], system=Insight Workspace, externalSystems=[資料供應商], relationships=[BIZ→Insight 提交查詢, Insight→資料供應商 取得公司資料 [SFTP]]." +
+        COMMON,
+      inputSchema: systemContextSchema.shape,
+    },
+    async (args: z.infer<typeof systemContextSchema>) => runArchitecture(compileSystemContext(args), args),
+  );
+
+  server.registerTool(
+    "create_component_diagram",
+    {
+      title: "Create component diagram (C4 L3)",
+      description:
+        "Inside ONE service / container: its provided interfaces (port pills), components / modules with responsibilities (UML component cards, optional layers), and the callers / dependencies outside the container boundary. Use for 'what is inside this API and how do the parts collaborate'. Example: container=公司查詢 API, interfaces=[GET /companies], components=[權限檢查 (policy), 查詢服務, 結果遮罩 (policy)], externals=[MariaDB (database)]." +
+        COMMON,
+      inputSchema: componentSchema.shape,
+    },
+    async (args: z.infer<typeof componentSchema>) => runArchitecture(compileComponent(args), args),
+  );
+
+  server.registerTool(
+    "create_deployment_topology",
+    {
+      title: "Create deployment topology",
+      description:
+        "Where workloads run: cluster → namespace → workloads (Deployment / StatefulSet / Job / Service / Ingress chips, stacked cards for replicas), plus things outside the cluster (managed DBs as cylinders, users, LBs, registries) and connections labelled with protocol / port. Multiple clusters are ranked by traffic flow. Example: API Pod (×3) in Prod Namespace → MariaDB (outside, TCP 3306)." +
+        COMMON,
+      inputSchema: deploymentSchema.shape,
+    },
+    async (args: z.infer<typeof deploymentSchema>) => runArchitecture(compileDeployment(args), args),
+  );
+
+  server.registerTool(
+    "create_network_topology",
+    {
+      title: "Create network topology",
+      description:
+        "Network zones / segments / VPCs / subnets (nested, CIDR chips), devices (firewall, router, switch, VPN, LB, servers, PLCs …) and links labelled protocol + port, typed allow / deny / vpn / route / mgmt. Devices without a zone sit between zones (edge firewalls); zones are ordered left → right by traffic. Example: 廠區網段 10.10.0.0/16 → 防火牆 → 雲端 VPC 10.20.0.0/16 (HTTPS 443, IPsec)." +
+        COMMON,
+      inputSchema: networkSchema.shape,
+    },
+    async (args: z.infer<typeof networkSchema>) => runArchitecture(compileNetwork(args), args),
+  );
+
+  server.registerTool(
+    "create_dataflow_trust_boundary",
+    {
+      title: "Create data-flow diagram with trust boundaries",
+      description:
+        "Threat-model style DFD: external entities (double-framed squares), numbered processes (P1…), data stores (open-ended D1… rails), data flows; trust boundaries are dashed red frames with trust levels, flows that cross a boundary are highlighted with ⊗ crossing markers, and sensitive data classes (data: [\"PII\"]) appear as red chips on the flow label. Example: 使用者區 (untrusted) → 受限查詢區 (restricted): 查詢條件 → 查詢處理 → 回傳遮罩結果 [PII]." +
+        COMMON,
+      inputSchema: dataflowSchema.shape,
+    },
+    async (args: z.infer<typeof dataflowSchema>) => runArchitecture(compileDataflow(args), args),
+  );
+
+  server.registerTool(
+    "create_swimlane",
+    {
+      title: "Create swimlane (cross-functional) diagram",
+      description:
+        "Cross-functional process: one horizontal lane per team / role / system, steps placed left → right in flow order (time columns from the flow graph, override with column), handoffs crossing lanes, decision diamonds with branch labels, start / end pills, auto-numbered task cards; long processes wrap into stacked bands to stay near 16:9. Example: lanes=[BIZ, 系統, Data Owner]; BIZ 提交申請 → 系統 驗證 → Data Owner 審核 →(通過/退回)." +
+        COMMON,
+      inputSchema: swimlaneSchema.shape,
+    },
+    async (args: z.infer<typeof swimlaneSchema>) => runArchitecture(compileSwimlane(args), args),
   );
 
   server.registerTool(

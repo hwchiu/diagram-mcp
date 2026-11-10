@@ -1,0 +1,71 @@
+{
+  "tool": "create_deployment_topology",
+  "input": {
+    "title": "公司查詢 API 部署拓撲",
+    "subtitle": "API Pod 位於 Prod Namespace，連至 MariaDB",
+    "clusters": [
+      {
+        "id": "k8s",
+        "label": "Prod Cluster",
+        "provider": "EKS",
+        "version": "1.29",
+        "namespaces": [
+          {
+            "id": "prod",
+            "label": "Prod Namespace",
+            "workloads": [
+              {
+                "id": "ing",
+                "label": "Ingress",
+                "type": "ingress",
+                "image": "nginx"
+              },
+              {
+                "id": "api",
+                "label": "API Pod",
+                "type": "deployment",
+                "replicas": 3,
+                "image": "company-api:2.4",
+                "port": 8080
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "outside": [
+      {
+        "id": "user",
+        "label": "BIZ 使用者",
+        "type": "user"
+      },
+      {
+        "id": "db",
+        "label": "MariaDB",
+        "type": "database",
+        "location": "RDS · Multi-AZ"
+      }
+    ],
+    "connections": [
+      {
+        "from": "user",
+        "to": "ing",
+        "protocol": "HTTPS",
+        "port": 443
+      },
+      {
+        "from": "ing",
+        "to": "api",
+        "protocol": "HTTP",
+        "port": 8080
+      },
+      {
+        "from": "api",
+        "to": "db",
+        "protocol": "TCP",
+        "port": 3306,
+        "kind": "data"
+      }
+    ]
+  }
+}

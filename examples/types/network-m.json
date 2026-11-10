@@ -1,0 +1,242 @@
+{
+  "tool": "create_network_topology",
+  "input": {
+    "title": "Insight 混合雲網路拓撲",
+    "subtitle": "兩座廠區、總部與 AWS VPC；DMZ 與內部子網分離",
+    "zones": [
+      {
+        "id": "inet",
+        "label": "Internet",
+        "type": "internet"
+      },
+      {
+        "id": "fab",
+        "label": "新竹廠區",
+        "type": "onprem",
+        "cidr": "10.10.0.0/16"
+      },
+      {
+        "id": "ot",
+        "label": "OT 產線網段",
+        "type": "segment",
+        "cidr": "10.10.50.0/24",
+        "parent": "fab"
+      },
+      {
+        "id": "hq",
+        "label": "台北總部",
+        "type": "site",
+        "cidr": "10.30.0.0/16"
+      },
+      {
+        "id": "vpc",
+        "label": "AWS VPC",
+        "type": "vpc",
+        "cidr": "10.20.0.0/16"
+      },
+      {
+        "id": "pub",
+        "label": "Public Subnet",
+        "type": "subnet",
+        "cidr": "10.20.0.0/24",
+        "parent": "vpc"
+      },
+      {
+        "id": "priv",
+        "label": "Private Subnet",
+        "type": "subnet",
+        "cidr": "10.20.10.0/24",
+        "parent": "vpc"
+      },
+      {
+        "id": "data",
+        "label": "DB Subnet",
+        "type": "subnet",
+        "cidr": "10.20.20.0/24",
+        "parent": "vpc"
+      }
+    ],
+    "devices": [
+      {
+        "id": "plc",
+        "label": "PLC / SCADA",
+        "type": "plc",
+        "zone": "ot",
+        "ip": "10.10.50.0/24"
+      },
+      {
+        "id": "mes",
+        "label": "MES 主機",
+        "type": "server",
+        "zone": "fab",
+        "ip": "10.10.5.21"
+      },
+      {
+        "id": "fabfw",
+        "label": "廠區防火牆",
+        "type": "firewall",
+        "zone": "fab"
+      },
+      {
+        "id": "user",
+        "label": "總部使用者",
+        "type": "workstation",
+        "zone": "hq"
+      },
+      {
+        "id": "hqfw",
+        "label": "總部防火牆",
+        "type": "firewall",
+        "zone": "hq"
+      },
+      {
+        "id": "vgw",
+        "label": "VPN Gateway",
+        "type": "vpn"
+      },
+      {
+        "id": "cdn",
+        "label": "外部使用者",
+        "type": "internet",
+        "zone": "inet"
+      },
+      {
+        "id": "alb",
+        "label": "ALB",
+        "type": "loadbalancer",
+        "zone": "pub"
+      },
+      {
+        "id": "nat",
+        "label": "NAT Gateway",
+        "type": "nat",
+        "zone": "pub"
+      },
+      {
+        "id": "api",
+        "label": "API 服務",
+        "type": "server",
+        "zone": "priv",
+        "ip": "10.20.10.15"
+      },
+      {
+        "id": "worker",
+        "label": "Report Worker",
+        "type": "server",
+        "zone": "priv"
+      },
+      {
+        "id": "db",
+        "label": "MariaDB",
+        "type": "database",
+        "zone": "data",
+        "ip": "10.20.20.5"
+      },
+      {
+        "id": "vendor",
+        "label": "資料供應商",
+        "type": "cloud",
+        "zone": "inet"
+      }
+    ],
+    "links": [
+      {
+        "from": "plc",
+        "to": "mes",
+        "protocol": "OPC UA",
+        "port": 4840
+      },
+      {
+        "from": "plc",
+        "to": "fabfw",
+        "type": "deny",
+        "label": "禁止外連"
+      },
+      {
+        "from": "mes",
+        "to": "fabfw",
+        "protocol": "HTTPS",
+        "port": 443
+      },
+      {
+        "from": "fabfw",
+        "to": "vgw",
+        "protocol": "IPsec",
+        "type": "vpn",
+        "step": 1
+      },
+      {
+        "from": "user",
+        "to": "hqfw",
+        "protocol": "HTTPS",
+        "port": 443
+      },
+      {
+        "from": "hqfw",
+        "to": "vgw",
+        "protocol": "IPsec",
+        "type": "vpn"
+      },
+      {
+        "from": "vgw",
+        "to": "api",
+        "protocol": "HTTPS",
+        "port": 443,
+        "step": 2
+      },
+      {
+        "from": "cdn",
+        "to": "alb",
+        "protocol": "HTTPS",
+        "port": 443
+      },
+      {
+        "from": "alb",
+        "to": "api",
+        "protocol": "HTTP",
+        "port": 8080
+      },
+      {
+        "from": "api",
+        "to": "db",
+        "protocol": "TCP",
+        "port": 3306,
+        "step": 3
+      },
+      {
+        "from": "worker",
+        "to": "db",
+        "protocol": "TCP",
+        "port": 3306
+      },
+      {
+        "from": "worker",
+        "to": "nat",
+        "type": "route"
+      },
+      {
+        "from": "nat",
+        "to": "vendor",
+        "protocol": "HTTPS",
+        "port": 443
+      }
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "label": "Site-to-Site",
+        "description": "廠區防火牆以 IPsec 連到 VPN Gateway"
+      },
+      {
+        "n": 2,
+        "label": "內部 API",
+        "description": "VPN 流量直接進 Private Subnet"
+      },
+      {
+        "n": 3,
+        "label": "資料層",
+        "description": "只有應用子網可連 DB 3306"
+      }
+    ]
+  }
+}
