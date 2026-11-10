@@ -94,11 +94,18 @@ node dist/index.js
   ],
   steps: [{ n: 1, label: "Global edge", description: "…" }],
   stepsPosition: "auto",            // "right" | "bottom" | "auto"（依長寬比自動選）
-  outputs: ["svg", "png", "drawio"] // 加上 "drawio" 會多輸出可編輯的 .drawio
+  wrap: "auto",                     // 預設：自動把欄位折成 1–3 列，貼近 16:9；"never" 維持單列
+  // rows: [[["users"], ["global"]], [["east", "west"]]],  // 可選：手動指定每一列的欄位（關閉自動折列）
+  split: "auto",                    // "auto"（> splitThreshold 個節點時拆圖）| "never" | "always"
+  splitThreshold: 25,
+  outputs: ["svg", "png", "drawio"] // draw.io 預設輸出；outputs 不含 "drawio" 即可關閉
 }
 ```
 
 - `columns` / `bottomRow`：決定性排版；沒有隨機的 auto-layout
+- **自動 16:9**：`wrap: "auto"` 時 planner 會枚舉「欄位折成 1–3 列」× 每個 tier 的欄數，依長寬比（目標 1.4–2.0）、
+  1600px 寬下的可讀性（最小字級 ≥ ~10px）、空白、預估邊長與交叉評分，挑出最佳排法；巢狀 region 保持完整。
+  `columns`、`rows`、`bottomRow`、`groups.cols` 一律尊重呼叫端設定
 - `groups.parent`：巢狀 tier（region → cluster → namespace…）；`cols` 指定欄數、`layout: "row" | "column"` 指定子 tier 排列
 - `groups.kind`：`region` / `vpc` / `cluster` / `namespace` / `subnet` / `security` / `external`（決定外框色）
 - `edges.from/to`：可為 **node id 或 group id**（指向 tier 時箭頭停在 tier 外框，QA 視為刻意）
@@ -106,11 +113,25 @@ node dist/index.js
 - `role`：`client` / `network` / `gateway` / `security` / `compute` / `data` / `queue` / `storage` / `observability` / `external`
 - `icon`：monoline key（`server`、`database`、`gateway`、`stream`…；`list_diagram_icons` 可查），勿用品牌 logo
 
-### 路由
+### 路由與主幹（trunk）
 
 邊線由 `src/layout/router.ts` 的正交 A* 路由產生：在稀疏可視格網上搜尋，**卡片是硬障礙**（間距 14px），
-轉彎、穿越其他 tier、與其他邊重疊或交叉都有成本；同側多條邊會均分 port、同目的地的邊會共用主幹，
-標籤 pill 放在直線段上並避開卡片 / 徽章 / tier 標籤。
+轉彎、穿越其他 tier、與其他邊重疊或交叉都有成本；同側多條邊會均分 port。
+
+- **Edge bundling**：指向同一個 tier / region（或從同一來源出發）的同種類邊線會在 gutter 合併成一條主幹再扇出，
+  匯流 / 分岔點畫上圓點（junction）；不同主幹之間會保持間距。QA 把同主幹共線視為刻意，只對「意外重疊」發 warning。
+- **標籤**：先放 label 再放徽章；pill 只放在自己的分支直線段上，不壓其他線；真的放不下時改用虛線 leader 把 pill 停在旁邊的空位。
+
+### 自動拆圖（split）
+
+節點數 > `splitThreshold`（預設 25）時，同一份輸入會產生多張圖：
+
+| 檔案 | 內容 |
+|---|---|
+| `<name>.overview.{png,svg,drawio}` | 每個 tier / region 收成一個區塊（「N components」＋成員摘要），跨 tier 的邊彙總去重並標上「×5」；walkthrough 保留 |
+| `<name>.<tier>.{png,svg,drawio}` | 每個 region / 頂層 tier 一張細節圖；外部端點以淡化的 stub 卡片呈現並標示所屬 tier（上游在左、下游在右），只帶入相關的 steps |
+
+工具回應會列出每張圖的路徑、尺寸與 QA；預覽圖是 overview。`split: "never"` 可強制單張，`"always"` 可強制拆圖。
 
 ### 結構 QA（自動）
 
@@ -126,16 +147,17 @@ node dist/index.js
 | `label-collision` | pill / 徽章 / tier 標籤彼此或與卡片重疊 |
 | `edge-dangling` | 邊線端點沒落在宣告的 node 上，或「停在 tier 外框」但目標其實是 node |
 | `edge-diagonal` / `edge-jog` / `edge-unrouted` | 非正交線段、< 10px 的小抖動、路由失敗 |
-| `edge-overlap` / `edge-crossings` | 不同 bundle 的邊線重疊；交叉數超過預算（max(4, 30% 邊數)） |
+| `edge-overlap` / `edge-crossings` | 不屬於同一主幹的邊線意外重疊；交叉數超過預算（max(4, 30% 邊數)） |
 | `label-missing` / `badge-floating` / `badge-ambiguous` | 有 label 卻放不下、步驟徽章離線、徽章無法判斷屬於哪條線 |
-| `canvas-aspect` / `whitespace` | 長寬比超出 1.1–2.6、大片空白帶（> 16%）或 tier 覆蓋率過低 |
+| `canvas-aspect` / `whitespace` | 長寬比超出 1.3–2.3、大片空白帶（> 16%）或 tier 覆蓋率過低 |
+| `readability` | 以 1600px 寬檢視時最小字級 < 9px（warning；< 10px 為 info）——請拆圖或折列 |
 | `step-unanchored` / `step-undocumented` | steps 與邊上的 step 編號不一致 |
 
 `npm test` 會確保所有內建範例 **0 error、0 warning**，並以合成缺陷驗證每條規則能抓到問題。
 
 ### draw.io 輸出
 
-`outputs` 含 `"drawio"` 時會在 PNG 旁輸出 `<name>.drawio`（mxGraph XML）：位置與 SVG 完全一致、
+預設會在 PNG 旁輸出 `<name>.drawio`（mxGraph XML；拆圖時每張 view 各一份）：位置與 SVG 完全一致、
 深色樣式、tier 為可拖曳的巢狀 container、卡片內嵌 monoline icon、邊線為 orthogonal + waypoint、
 步驟徽章 / 圖例 / walkthrough 皆為可編輯 cell。可直接用 draw.io / diagrams.net 開啟。
 

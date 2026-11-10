@@ -60,8 +60,36 @@ groups[].parent / cols / layout ("row" | "column") / kind
 steps?: { n, label, description?, anchor? }[]
 stepsPosition?: "auto" | "right" | "bottom"
 edges?: { from, to, label?, kind?: "sync"|"async"|"data"|"auth", step? }   // from/to may be group ids
-outputs?: ("svg" | "png" | "drawio")[]
+rows?: string[][][]        // explicit rows of column stacks (disables auto-wrap)
+wrap?: "auto" | "never"
+split?: "auto" | "never" | "always"; splitThreshold?: number   // default 25 nodes
+outputs?: ("svg" | "png" | "drawio")[]                         // drawio on by default
 ```
+
+### Auto-wrap planner (`grid.ts`)
+
+The planner treats the spec as a list of *column stacks* (zones / tiers). It enumerates every partition of the stacks
+into 1–3 rows (order preserved), every per-zone column-count variant, and every `columnCandidates` entry, and scores each by
+`6·aspectPenalty + 6·widthPenalty + 1.2·waste + estimatedEdgeLength + 0.08·(rows−1) + 0.03·variant`. Aspect target is
+1.4–2.0 (ideal 1.72); the width penalty keeps the canvas ≤ ~1920px so the smallest font (12px) stays ≥ ~10px at 1600px.
+A retry ladder then tries (spacing × plan-rank) — `[1,0] [1,1] [1.3,0] [1,2] …` — and keeps the attempt with the fewest
+unplaced labels/badges (a leader-parked label costs 0.1), penalising width > 2040 and aspect outside 1.4–2.2.
+Explicit `rows`, `columns`, `bottomRow` and `groups.cols` are always respected. Generated detail views may also reorder
+cards inside a zone by neighbour barycentre to cut crossings (`reorder: true`).
+
+### Split views (`split.ts`)
+
+Pure model → model transform, independent of the diagram domain: it only knows zones (groups with `parent`), nodes,
+edges and steps, so future diagram types (deployment, network zones, DFD, swimlanes…) can reuse it.
+
+- `shouldSplit`: `split` mode, ≥ 2 root zones, `nodes > splitThreshold`.
+- Overview: each leaf root zone → one block `blk:<id>` ("N components", members listed); zones with children keep
+  their frame with one block per child. Edges are aggregated per block pair (dominant kind, `×N` label, step kept).
+- Detail units: regions / zones with children / zones with ≥ 6 nodes stand alone; small neighbours are merged up to 12
+  nodes. Each detail view keeps the focus zone(s) intact and adds dimmed stub cards (`stub: true`) grouped by their home
+  zone — upstream stubs to the left, downstream to the right; > 5 stubs from one zone collapse into a single zone stub.
+- Steps are distributed: overview keeps all; a detail view keeps steps whose edge or anchor lives in it.
+- Files: `<name>.overview.*`, `<name>.<zone-slug>.*`; the MCP preview is the overview.
 
 Rules: 8px-based tokens (`grid.ts`), uniform card size, column heights equalized, gutters widened only where a labelled
 edge needs room for its pill, tier labels shifted out of straight vertical edge corridors. Text width is *measured*
@@ -71,9 +99,14 @@ edge needs room for its pill, tier labels shifted out of straight vertical edge 
 
 `router.ts` — sparse orthogonal visibility grid (lanes 14px from cards, 10px from frames, 6px from labels) and A* over
 (point × heading). Costs: bend 70, travelling through a foreign tier 2.5×length, overlapping another edge 400+4×length,
-crossing 45; edges of the same bundle (same endpoint+side+kind) get a trunk-sharing discount. Pass 1 picks sides,
+crossing 45. Edges carry *trunk keys* (same target zone, same source, same port bundle; labelled and intra-zone edges get
+none); edges that share a key and a kind get a 0.7× discount for running on each other's track, so fan-in/fan-out
+collapses into one trunk in the gutter. `computeJunctions` walks every path and drops a dot wherever it joins or leaves
+shared track. Distinct trunks are kept apart by the overlap cost; QA ignores overlaps between trunk mates only. Pass 1 picks sides,
 ports are then spread per side, pass 2 routes for real, two rip-up rounds re-route the worst offenders, and tiny jogs
-are snapped away. Cards are hard obstacles. Badges are placed first, then pills, both collision-checked.
+are snapped away. Cards are hard obstacles. Labels are placed first (on the edge's own straight segments, never over
+another edge), then badges; a stepped label carries its badge inside the pill. If no on-line slot exists, the pill is
+parked in the nearest free spot with a dotted leader to the line.
 
 ## Structural QA
 

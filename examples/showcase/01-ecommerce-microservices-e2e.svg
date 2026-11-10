@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="2303" height="1080" viewBox="0 0 2303 1080" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace">
+<svg xmlns="http://www.w3.org/2000/svg" width="1803" height="1258" viewBox="0 0 1803 1258" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace">
   <defs>
     <marker id="arrow-sync" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto"><path d="M 0 0.5 L 10 5 L 0 9.5 z" fill="#22d3ee"/></marker>
     <marker id="arrow-async" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto"><path d="M 0 0.5 L 10 5 L 0 9.5 z" fill="#c084fc"/></marker>
@@ -11,322 +11,323 @@
     <filter id="glow" x="-20%" y="-30%" width="140%" height="160%"><feGaussianBlur in="SourceAlpha" stdDeviation="0"/><feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#38bdf8" flood-opacity="0.10"/></filter>
     <filter id="shadow" x="-10%" y="-20%" width="120%" height="150%"><feDropShadow dx="0" dy="1.5" stdDeviation="2.5" flood-color="#0f172a" flood-opacity="0.10"/></filter>
   </defs>
-  <g id="background"><rect width="2303" height="1080" fill="#020617"/><rect width="2303" height="1080" fill="url(#grid)"/><rect width="2303" height="1080" fill="url(#vignette)"/></g>
+  <g id="background"><rect width="1803" height="1258" fill="#020617"/><rect width="1803" height="1258" fill="url(#grid)"/><rect width="1803" height="1258" fill="url(#vignette)"/></g>
   <g class="title">
   <circle cx="55" cy="67" r="9" fill="rgba(52,211,153,0.18)"/>
   <circle cx="55" cy="67" r="4.5" fill="#34d399"/>
   <text x="74" y="76" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="26" font-weight="700">E-Commerce Microservices Platform</text>
   <text x="74" y="102" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="13">Clients → edge → gateway / BFF → domain services → owned data · Kafka fan-out · third-party</text>
-  <text x="2255" y="74" text-anchor="end" fill="#64748b" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11" letter-spacing="0.12em">23 COMPONENTS · 13 FLOWS</text>
+  <text x="1755" y="74" text-anchor="end" fill="#64748b" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11" letter-spacing="0.12em">23 COMPONENTS · 13 FLOWS</text>
 </g>
-  <g id="containers"><rect x="48" y="132" width="2207" height="572" rx="16" fill="rgba(15,23,42,0.55)" stroke="rgba(148,163,184,0.16)"/>
+  <g id="containers"><rect x="48" y="132" width="1339" height="1056" rx="16" fill="rgba(15,23,42,0.55)" stroke="rgba(148,163,184,0.16)"/>
   <g class="tier" id="tier-clients" data-depth="0">
-  <rect x="84" y="168" width="255" height="322" rx="12" fill="rgba(15,23,42,0.45)" stroke="rgba(34,211,238,0.55)" stroke-width="1.1" stroke-dasharray="5 5"/>
-  <path d="M 84 180 V 172 Q 84 168 88 168 H 96" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"/><path d="M 327 168 H 335 Q 339 168 339 172 V 180" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"/><path d="M 84 478 V 486 Q 84 490 88 490 H 96" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"/><path d="M 327 490 H 335 Q 339 490 339 486 V 478" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"/>
+  <rect x="84" y="168" width="567" height="322" rx="12" fill="rgba(15,23,42,0.45)" stroke="rgba(34,211,238,0.55)" stroke-width="1.1" stroke-dasharray="5 5"/>
+  <path d="M 84 180 V 172 Q 84 168 88 168 H 96" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"/><path d="M 639 168 H 647 Q 651 168 651 172 V 180" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"/><path d="M 84 478 V 486 Q 84 490 88 490 H 96" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"/><path d="M 639 490 H 647 Q 651 490 651 486 V 478" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"/>
   <circle cx="105" cy="188" r="3" fill="#22d3ee"/>
-  <text x="114" y="192" fill="#22d3ee" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11" font-weight="600" letter-spacing="0.14em">01 / CLIENTS</text>
+  <text x="114" y="192" fill="#22d3ee" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="600" letter-spacing="0.14em">01 / CLIENTS</text>
 </g>
 <g class="tier" id="tier-edge" data-depth="0">
-  <rect x="445" y="168" width="255" height="322" rx="12" fill="rgba(15,23,42,0.45)" stroke="rgba(251,113,133,0.55)" stroke-width="1.1" stroke-dasharray="5 5"/>
-  <path d="M 445 180 V 172 Q 445 168 449 168 H 457" fill="none" stroke="#fb7185" stroke-width="2" stroke-linecap="round"/><path d="M 688 168 H 696 Q 700 168 700 172 V 180" fill="none" stroke="#fb7185" stroke-width="2" stroke-linecap="round"/><path d="M 445 478 V 486 Q 445 490 449 490 H 457" fill="none" stroke="#fb7185" stroke-width="2" stroke-linecap="round"/><path d="M 688 490 H 696 Q 700 490 700 486 V 478" fill="none" stroke="#fb7185" stroke-width="2" stroke-linecap="round"/>
-  <circle cx="466" cy="188" r="3" fill="#fb7185"/>
-  <text x="475" y="192" fill="#fb7185" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11" font-weight="600" letter-spacing="0.14em">02 / EDGE</text>
+  <rect x="785" y="168" width="567" height="322" rx="12" fill="rgba(15,23,42,0.45)" stroke="rgba(251,113,133,0.55)" stroke-width="1.1" stroke-dasharray="5 5"/>
+  <path d="M 785 180 V 172 Q 785 168 789 168 H 797" fill="none" stroke="#fb7185" stroke-width="2" stroke-linecap="round"/><path d="M 1340 168 H 1348 Q 1352 168 1352 172 V 180" fill="none" stroke="#fb7185" stroke-width="2" stroke-linecap="round"/><path d="M 785 478 V 486 Q 785 490 789 490 H 797" fill="none" stroke="#fb7185" stroke-width="2" stroke-linecap="round"/><path d="M 1340 490 H 1348 Q 1352 490 1352 486 V 478" fill="none" stroke="#fb7185" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="806" cy="188" r="3" fill="#fb7185"/>
+  <text x="815" y="192" fill="#fb7185" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="600" letter-spacing="0.14em">02 / EDGE</text>
 </g>
 <g class="tier" id="tier-bff" data-depth="0">
-  <rect x="772" y="168" width="255" height="322" rx="12" fill="rgba(15,23,42,0.45)" stroke="rgba(129,140,248,0.55)" stroke-width="1.1" stroke-dasharray="5 5"/>
-  <path d="M 772 180 V 172 Q 772 168 776 168 H 784" fill="none" stroke="#818cf8" stroke-width="2" stroke-linecap="round"/><path d="M 1015 168 H 1023 Q 1027 168 1027 172 V 180" fill="none" stroke="#818cf8" stroke-width="2" stroke-linecap="round"/><path d="M 772 478 V 486 Q 772 490 776 490 H 784" fill="none" stroke="#818cf8" stroke-width="2" stroke-linecap="round"/><path d="M 1015 490 H 1023 Q 1027 490 1027 486 V 478" fill="none" stroke="#818cf8" stroke-width="2" stroke-linecap="round"/>
-  <circle cx="793" cy="188" r="3" fill="#818cf8"/>
-  <text x="802" y="192" fill="#818cf8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11" font-weight="600" letter-spacing="0.14em">03 / GATEWAY &amp; BFF</text>
+  <rect x="84" y="554" width="267" height="420" rx="12" fill="rgba(15,23,42,0.45)" stroke="rgba(129,140,248,0.55)" stroke-width="1.1" stroke-dasharray="5 5"/>
+  <path d="M 84 566 V 558 Q 84 554 88 554 H 96" fill="none" stroke="#818cf8" stroke-width="2" stroke-linecap="round"/><path d="M 339 554 H 347 Q 351 554 351 558 V 566" fill="none" stroke="#818cf8" stroke-width="2" stroke-linecap="round"/><path d="M 84 962 V 970 Q 84 974 88 974 H 96" fill="none" stroke="#818cf8" stroke-width="2" stroke-linecap="round"/><path d="M 339 974 H 347 Q 351 974 351 970 V 962" fill="none" stroke="#818cf8" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="105" cy="574" r="3" fill="#818cf8"/>
+  <text x="114" y="578" fill="#818cf8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="600" letter-spacing="0.14em">03 / GATEWAY &amp; BFF</text>
 </g>
 <g class="tier" id="tier-domain" data-depth="0">
-  <rect x="1127" y="168" width="510" height="322" rx="12" fill="rgba(15,23,42,0.45)" stroke="rgba(34,211,238,0.55)" stroke-width="1.1" stroke-dasharray="5 5"/>
-  <path d="M 1127 180 V 172 Q 1127 168 1131 168 H 1139" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"/><path d="M 1625 168 H 1633 Q 1637 168 1637 172 V 180" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"/><path d="M 1127 478 V 486 Q 1127 490 1131 490 H 1139" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"/><path d="M 1625 490 H 1633 Q 1637 490 1637 486 V 478" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"/>
-  <circle cx="1148" cy="188" r="3" fill="#22d3ee"/>
-  <text x="1157" y="192" fill="#22d3ee" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11" font-weight="600" letter-spacing="0.14em">04 / DOMAIN SERVICES</text>
+  <rect x="478" y="554" width="534" height="420" rx="12" fill="rgba(15,23,42,0.45)" stroke="rgba(34,211,238,0.55)" stroke-width="1.1" stroke-dasharray="5 5"/>
+  <path d="M 478 566 V 558 Q 478 554 482 554 H 490" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"/><path d="M 1000 554 H 1008 Q 1012 554 1012 558 V 566" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"/><path d="M 478 962 V 970 Q 478 974 482 974 H 490" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"/><path d="M 1000 974 H 1008 Q 1012 974 1012 970 V 962" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="499" cy="574" r="3" fill="#22d3ee"/>
+  <text x="508" y="578" fill="#22d3ee" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="600" letter-spacing="0.14em">04 / DOMAIN SERVICES</text>
 </g>
 <g class="tier" id="tier-data" data-depth="0">
-  <rect x="1709" y="168" width="510" height="322" rx="12" fill="rgba(15,23,42,0.45)" stroke="rgba(167,139,250,0.55)" stroke-width="1.1" stroke-dasharray="5 5"/>
-  <path d="M 1709 180 V 172 Q 1709 168 1713 168 H 1721" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"/><path d="M 2207 168 H 2215 Q 2219 168 2219 172 V 180" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"/><path d="M 1709 478 V 486 Q 1709 490 1713 490 H 1721" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"/><path d="M 2207 490 H 2215 Q 2219 490 2219 486 V 478" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"/>
-  <circle cx="1730" cy="188" r="3" fill="#a78bfa"/>
-  <text x="1739" y="192" fill="#a78bfa" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11" font-weight="600" letter-spacing="0.14em">05 / OWNED DATA</text>
+  <rect x="1084" y="554" width="267" height="420" rx="12" fill="rgba(15,23,42,0.45)" stroke="rgba(167,139,250,0.55)" stroke-width="1.1" stroke-dasharray="5 5"/>
+  <path d="M 1084 566 V 558 Q 1084 554 1088 554 H 1096" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"/><path d="M 1339 554 H 1347 Q 1351 554 1351 558 V 566" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"/><path d="M 1084 962 V 970 Q 1084 974 1088 974 H 1096" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"/><path d="M 1339 974 H 1347 Q 1351 974 1351 970 V 962" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="1105" cy="574" r="3" fill="#a78bfa"/>
+  <text x="1114" y="578" fill="#a78bfa" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="600" letter-spacing="0.14em">05 / OWNED DATA</text>
 </g>
 <g class="tier" id="tier-events" data-depth="0">
-  <rect x="84" y="542" width="1032" height="126" rx="12" fill="rgba(15,23,42,0.45)" stroke="rgba(251,146,60,0.55)" stroke-width="1.1" stroke-dasharray="5 5"/>
-  <path d="M 84 554 V 546 Q 84 542 88 542 H 96" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round"/><path d="M 1104 542 H 1112 Q 1116 542 1116 546 V 554" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round"/><path d="M 84 656 V 664 Q 84 668 88 668 H 96" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round"/><path d="M 1104 668 H 1112 Q 1116 668 1116 664 V 656" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round"/>
-  <circle cx="105" cy="562" r="3" fill="#fb923c"/>
-  <text x="114" y="566" fill="#fb923c" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11" font-weight="600" letter-spacing="0.14em">06 / EVENT BACKBONE</text>
+  <rect x="84" y="1026" width="598" height="126" rx="12" fill="rgba(15,23,42,0.45)" stroke="rgba(251,146,60,0.55)" stroke-width="1.1" stroke-dasharray="5 5"/>
+  <path d="M 84 1038 V 1030 Q 84 1026 88 1026 H 96" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round"/><path d="M 670 1026 H 678 Q 682 1026 682 1030 V 1038" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round"/><path d="M 84 1140 V 1148 Q 84 1152 88 1152 H 96" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round"/><path d="M 670 1152 H 678 Q 682 1152 682 1148 V 1140" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="105" cy="1046" r="3" fill="#fb923c"/>
+  <text x="114" y="1050" fill="#fb923c" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="600" letter-spacing="0.14em">06 / EVENT BACKBONE</text>
 </g>
 <g class="tier" id="tier-ext" data-depth="0">
-  <rect x="1188" y="542" width="1032" height="126" rx="12" fill="rgba(15,23,42,0.45)" stroke="rgba(148,163,184,0.55)" stroke-width="1.1"/>
-  <path d="M 1188 554 V 546 Q 1188 542 1192 542 H 1200" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/><path d="M 2208 542 H 2216 Q 2220 542 2220 546 V 554" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/><path d="M 1188 656 V 664 Q 1188 668 1192 668 H 1200" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/><path d="M 2208 668 H 2216 Q 2220 668 2220 664 V 656" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
-  <circle cx="1209" cy="562" r="3" fill="#94a3b8"/>
-  <text x="1218" y="566" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11" font-weight="600" letter-spacing="0.14em">07 / THIRD-PARTY</text>
+  <rect x="754" y="1026" width="598" height="126" rx="12" fill="rgba(15,23,42,0.45)" stroke="rgba(148,163,184,0.55)" stroke-width="1.1"/>
+  <path d="M 754 1038 V 1030 Q 754 1026 758 1026 H 766" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/><path d="M 1340 1026 H 1348 Q 1352 1026 1352 1030 V 1038" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/><path d="M 754 1140 V 1148 Q 754 1152 758 1152 H 766" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/><path d="M 1340 1152 H 1348 Q 1352 1152 1352 1148 V 1140" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="1182.6" cy="1046" r="3" fill="#94a3b8"/>
+  <text x="1191.6" y="1050" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="600" letter-spacing="0.14em">07 / THIRD-PARTY</text>
 </g></g>
   <g id="nodes"><g class="node" id="node-web" data-role="client">
-  <rect x="108" y="208" width="207" height="62" rx="8" fill="#0a1020"/>
-  <rect x="108" y="208" width="207" height="62" rx="8" fill="rgba(34,211,238,0.13)" stroke="#22d3ee" stroke-width="1.3" filter="url(#glow)"/>
-  <rect x="121" y="222" width="34" height="34" rx="7" fill="rgba(34,211,238,0.16)" stroke="rgba(34,211,238,0.45)" stroke-width="1"/>
-  <g transform="translate(128 229) scale(0.8332999999999999)" fill="none" stroke="#22d3ee" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z M2 9h20 M5 7h.01 M8 7h.01"/></g>
-  <text x="167" y="235" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Web SPA</text>
-  <text x="167" y="252" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">Next.js · HTTPS</text>
+  <rect x="258" y="208" width="219" height="62" rx="8" fill="#0a1020"/>
+  <rect x="258" y="208" width="219" height="62" rx="8" fill="rgba(34,211,238,0.13)" stroke="#22d3ee" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="271" y="222" width="34" height="34" rx="7" fill="rgba(34,211,238,0.16)" stroke="rgba(34,211,238,0.45)" stroke-width="1"/>
+  <g transform="translate(278 229) scale(0.8332999999999999)" fill="none" stroke="#22d3ee" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z M2 9h20 M5 7h.01 M8 7h.01"/></g>
+  <text x="317" y="235.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Web SPA</text>
+  <text x="317" y="252.5" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">Next.js · HTTPS</text>
 </g>
 <g class="node" id="node-mobile" data-role="client">
-  <rect x="108" y="306" width="207" height="62" rx="8" fill="#0a1020"/>
-  <rect x="108" y="306" width="207" height="62" rx="8" fill="rgba(34,211,238,0.13)" stroke="#22d3ee" stroke-width="1.3" filter="url(#glow)"/>
-  <rect x="121" y="320" width="34" height="34" rx="7" fill="rgba(34,211,238,0.16)" stroke="rgba(34,211,238,0.45)" stroke-width="1"/>
-  <g transform="translate(128 327) scale(0.8332999999999999)" fill="none" stroke="#22d3ee" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z M11 18h2"/></g>
-  <text x="167" y="333" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Mobile App</text>
-  <text x="167" y="350" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">iOS / Android</text>
+  <rect x="258" y="306" width="219" height="62" rx="8" fill="#0a1020"/>
+  <rect x="258" y="306" width="219" height="62" rx="8" fill="rgba(34,211,238,0.13)" stroke="#22d3ee" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="271" y="320" width="34" height="34" rx="7" fill="rgba(34,211,238,0.16)" stroke="rgba(34,211,238,0.45)" stroke-width="1"/>
+  <g transform="translate(278 327) scale(0.8332999999999999)" fill="none" stroke="#22d3ee" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z M11 18h2"/></g>
+  <text x="317" y="333.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Mobile App</text>
+  <text x="317" y="350.5" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">iOS / Android</text>
 </g>
 <g class="node" id="node-admin" data-role="client">
-  <rect x="108" y="404" width="207" height="62" rx="8" fill="#0a1020"/>
-  <rect x="108" y="404" width="207" height="62" rx="8" fill="rgba(34,211,238,0.13)" stroke="#22d3ee" stroke-width="1.3" filter="url(#glow)"/>
-  <rect x="121" y="418" width="34" height="34" rx="7" fill="rgba(34,211,238,0.16)" stroke="rgba(34,211,238,0.45)" stroke-width="1"/>
-  <g transform="translate(128 425) scale(0.8332999999999999)" fill="none" stroke="#22d3ee" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18v16H3z M7 9l3 3-3 3 M12 15h5"/></g>
-  <text x="167" y="431" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Admin Console</text>
-  <text x="167" y="448" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">ops · RBAC</text>
+  <rect x="258" y="404" width="219" height="62" rx="8" fill="#0a1020"/>
+  <rect x="258" y="404" width="219" height="62" rx="8" fill="rgba(34,211,238,0.13)" stroke="#22d3ee" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="271" y="418" width="34" height="34" rx="7" fill="rgba(34,211,238,0.16)" stroke="rgba(34,211,238,0.45)" stroke-width="1"/>
+  <g transform="translate(278 425) scale(0.8332999999999999)" fill="none" stroke="#22d3ee" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18v16H3z M7 9l3 3-3 3 M12 15h5"/></g>
+  <text x="317" y="431.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Admin Console</text>
+  <text x="317" y="448.5" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">ops · RBAC</text>
 </g>
 <g class="node" id="node-cdn" data-role="network">
-  <rect x="469" y="208" width="207" height="62" rx="8" fill="#0a1020"/>
-  <rect x="469" y="208" width="207" height="62" rx="8" fill="rgba(56,189,248,0.13)" stroke="#38bdf8" stroke-width="1.3" filter="url(#glow)"/>
-  <rect x="482" y="222" width="34" height="34" rx="7" fill="rgba(56,189,248,0.16)" stroke="rgba(56,189,248,0.45)" stroke-width="1"/>
-  <g transform="translate(489 229) scale(0.8332999999999999)" fill="none" stroke="#38bdf8" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M2 12h20 M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></g>
-  <text x="528" y="235" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">CDN</text>
-  <text x="528" y="252" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">static · edge cache</text>
+  <rect x="959" y="208" width="219" height="62" rx="8" fill="#0a1020"/>
+  <rect x="959" y="208" width="219" height="62" rx="8" fill="rgba(56,189,248,0.13)" stroke="#38bdf8" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="972" y="222" width="34" height="34" rx="7" fill="rgba(56,189,248,0.16)" stroke="rgba(56,189,248,0.45)" stroke-width="1"/>
+  <g transform="translate(979 229) scale(0.8332999999999999)" fill="none" stroke="#38bdf8" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M2 12h20 M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></g>
+  <text x="1018" y="235.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">CDN</text>
+  <text x="1018" y="252.5" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">static · edge cache</text>
 </g>
 <g class="node" id="node-waf" data-role="security">
-  <rect x="469" y="306" width="207" height="62" rx="8" fill="#0a1020"/>
-  <rect x="469" y="306" width="207" height="62" rx="8" fill="rgba(251,113,133,0.13)" stroke="#fb7185" stroke-width="1.3" filter="url(#glow)"/>
-  <rect x="482" y="320" width="34" height="34" rx="7" fill="rgba(251,113,133,0.16)" stroke="rgba(251,113,133,0.45)" stroke-width="1"/>
-  <g transform="translate(489 327) scale(0.8332999999999999)" fill="none" stroke="#fb7185" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18v16H3z M3 9.3h18 M3 14.6h18 M9 4v5.3 M15 9.3v5.3 M9 14.6V20"/></g>
-  <text x="528" y="333" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">WAF</text>
-  <text x="528" y="350" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">OWASP · bot rules</text>
+  <rect x="959" y="306" width="219" height="62" rx="8" fill="#0a1020"/>
+  <rect x="959" y="306" width="219" height="62" rx="8" fill="rgba(251,113,133,0.13)" stroke="#fb7185" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="972" y="320" width="34" height="34" rx="7" fill="rgba(251,113,133,0.16)" stroke="rgba(251,113,133,0.45)" stroke-width="1"/>
+  <g transform="translate(979 327) scale(0.8332999999999999)" fill="none" stroke="#fb7185" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18v16H3z M3 9.3h18 M3 14.6h18 M9 4v5.3 M15 9.3v5.3 M9 14.6V20"/></g>
+  <text x="1018" y="333.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">WAF</text>
+  <text x="1018" y="350.5" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">OWASP · bot rules</text>
 </g>
 <g class="node" id="node-lb" data-role="network">
-  <rect x="469" y="404" width="207" height="62" rx="8" fill="#0a1020"/>
-  <rect x="469" y="404" width="207" height="62" rx="8" fill="rgba(56,189,248,0.13)" stroke="#38bdf8" stroke-width="1.3" filter="url(#glow)"/>
-  <rect x="482" y="418" width="34" height="34" rx="7" fill="rgba(56,189,248,0.16)" stroke="rgba(56,189,248,0.45)" stroke-width="1"/>
-  <g transform="translate(489 425) scale(0.8332999999999999)" fill="none" stroke="#38bdf8" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2h4v4h-4z M12 6v4 M5 14v-2h14v2 M12 10v4 M3 14h4v4H3z M10 14h4v4h-4z M17 14h4v4h-4z"/></g>
-  <text x="528" y="431" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Load Balancer</text>
-  <text x="528" y="448" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">L7 · TLS</text>
+  <rect x="959" y="404" width="219" height="62" rx="8" fill="#0a1020"/>
+  <rect x="959" y="404" width="219" height="62" rx="8" fill="rgba(56,189,248,0.13)" stroke="#38bdf8" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="972" y="418" width="34" height="34" rx="7" fill="rgba(56,189,248,0.16)" stroke="rgba(56,189,248,0.45)" stroke-width="1"/>
+  <g transform="translate(979 425) scale(0.8332999999999999)" fill="none" stroke="#38bdf8" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2h4v4h-4z M12 6v4 M5 14v-2h14v2 M12 10v4 M3 14h4v4H3z M10 14h4v4h-4z M17 14h4v4h-4z"/></g>
+  <text x="1018" y="431.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Load Balancer</text>
+  <text x="1018" y="448.5" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">L7 · TLS</text>
 </g>
 <g class="node" id="node-apigw" data-role="gateway">
-  <rect x="796" y="208" width="207" height="62" rx="8" fill="#0a1020"/>
-  <rect x="796" y="208" width="207" height="62" rx="8" fill="rgba(129,140,248,0.13)" stroke="#818cf8" stroke-width="1.3" filter="url(#glow)"/>
-  <rect x="809" y="222" width="34" height="34" rx="7" fill="rgba(129,140,248,0.16)" stroke="rgba(129,140,248,0.45)" stroke-width="1"/>
-  <g transform="translate(816 229) scale(0.8332999999999999)" fill="none" stroke="#818cf8" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9h6v6H9z M12 2v7 M12 15v7 M2 12h7 M15 12h7 M5 9l-3 3 3 3 M19 9l3 3-3 3"/></g>
-  <text x="855" y="235" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">API Gateway</text>
-  <text x="855" y="252" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">rate limit · routing</text>
+  <rect x="108" y="619" width="219" height="62" rx="8" fill="#0a1020"/>
+  <rect x="108" y="619" width="219" height="62" rx="8" fill="rgba(129,140,248,0.13)" stroke="#818cf8" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="121" y="633" width="34" height="34" rx="7" fill="rgba(129,140,248,0.16)" stroke="rgba(129,140,248,0.45)" stroke-width="1"/>
+  <g transform="translate(128 640) scale(0.8332999999999999)" fill="none" stroke="#818cf8" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9h6v6H9z M12 2v7 M12 15v7 M2 12h7 M15 12h7 M5 9l-3 3 3 3 M19 9l3 3-3 3"/></g>
+  <text x="167" y="646.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">API Gateway</text>
+  <text x="167" y="663.5" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">rate limit · routing</text>
 </g>
 <g class="node" id="node-auth" data-role="security">
-  <rect x="796" y="306" width="207" height="62" rx="8" fill="#0a1020"/>
-  <rect x="796" y="306" width="207" height="62" rx="8" fill="rgba(251,113,133,0.13)" stroke="#fb7185" stroke-width="1.3" filter="url(#glow)"/>
-  <rect x="809" y="320" width="34" height="34" rx="7" fill="rgba(251,113,133,0.16)" stroke="rgba(251,113,133,0.45)" stroke-width="1"/>
-  <g transform="translate(816 327) scale(0.8332999999999999)" fill="none" stroke="#fb7185" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7a4 4 0 1 1-3.9 4.9L3 20v-3h3v-3h3l2.1-2.1A4 4 0 0 1 15 7z M16 9.5h.01"/></g>
-  <text x="855" y="333" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Auth Service</text>
-  <text x="855" y="350" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">OIDC · JWT</text>
+  <rect x="108" y="741" width="219" height="62" rx="8" fill="#0a1020"/>
+  <rect x="108" y="741" width="219" height="62" rx="8" fill="rgba(251,113,133,0.13)" stroke="#fb7185" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="121" y="755" width="34" height="34" rx="7" fill="rgba(251,113,133,0.16)" stroke="rgba(251,113,133,0.45)" stroke-width="1"/>
+  <g transform="translate(128 762) scale(0.8332999999999999)" fill="none" stroke="#fb7185" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7a4 4 0 1 1-3.9 4.9L3 20v-3h3v-3h3l2.1-2.1A4 4 0 0 1 15 7z M16 9.5h.01"/></g>
+  <text x="167" y="768.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Auth Service</text>
+  <text x="167" y="785.5" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">OIDC · JWT</text>
 </g>
 <g class="node" id="node-bff_web" data-role="gateway">
-  <rect x="796" y="404" width="207" height="62" rx="8" fill="#0a1020"/>
-  <rect x="796" y="404" width="207" height="62" rx="8" fill="rgba(129,140,248,0.13)" stroke="#818cf8" stroke-width="1.3" filter="url(#glow)"/>
-  <rect x="809" y="418" width="34" height="34" rx="7" fill="rgba(129,140,248,0.16)" stroke="rgba(129,140,248,0.45)" stroke-width="1"/>
-  <g transform="translate(816 425) scale(0.8332999999999999)" fill="none" stroke="#818cf8" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z M2 12l10 5 10-5 M2 17l10 5 10-5"/></g>
-  <text x="855" y="431" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Web BFF</text>
-  <text x="855" y="448" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">GraphQL</text>
+  <rect x="108" y="863" width="219" height="62" rx="8" fill="#0a1020"/>
+  <rect x="108" y="863" width="219" height="62" rx="8" fill="rgba(129,140,248,0.13)" stroke="#818cf8" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="121" y="877" width="34" height="34" rx="7" fill="rgba(129,140,248,0.16)" stroke="rgba(129,140,248,0.45)" stroke-width="1"/>
+  <g transform="translate(128 884) scale(0.8332999999999999)" fill="none" stroke="#818cf8" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z M2 12l10 5 10-5 M2 17l10 5 10-5"/></g>
+  <text x="167" y="890.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Web BFF</text>
+  <text x="167" y="907.5" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">GraphQL</text>
 </g>
 <g class="node" id="node-catalog" data-role="compute">
-  <rect x="1151" y="208" width="207" height="62" rx="8" fill="#0a1020"/>
-  <rect x="1151" y="208" width="207" height="62" rx="8" fill="rgba(52,211,153,0.13)" stroke="#34d399" stroke-width="1.3" filter="url(#glow)"/>
-  <rect x="1164" y="222" width="34" height="34" rx="7" fill="rgba(52,211,153,0.16)" stroke="rgba(52,211,153,0.45)" stroke-width="1"/>
-  <g transform="translate(1171 229) scale(0.8332999999999999)" fill="none" stroke="#34d399" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z M7 7h.01"/></g>
-  <text x="1210" y="235" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Catalog</text>
-  <text x="1210" y="252" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">gRPC · read-heavy</text>
+  <rect x="502" y="643" width="219" height="62" rx="8" fill="#0a1020"/>
+  <rect x="502" y="643" width="219" height="62" rx="8" fill="rgba(52,211,153,0.13)" stroke="#34d399" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="515" y="657" width="34" height="34" rx="7" fill="rgba(52,211,153,0.16)" stroke="rgba(52,211,153,0.45)" stroke-width="1"/>
+  <g transform="translate(522 664) scale(0.8332999999999999)" fill="none" stroke="#34d399" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z M7 7h.01"/></g>
+  <text x="561" y="670.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Catalog</text>
+  <text x="561" y="687.5" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">gRPC · read-heavy</text>
 </g>
 <g class="node" id="node-cart" data-role="compute">
-  <rect x="1406" y="208" width="207" height="62" rx="8" fill="#0a1020"/>
-  <rect x="1406" y="208" width="207" height="62" rx="8" fill="rgba(52,211,153,0.13)" stroke="#34d399" stroke-width="1.3" filter="url(#glow)"/>
-  <rect x="1419" y="222" width="34" height="34" rx="7" fill="rgba(52,211,153,0.16)" stroke="rgba(52,211,153,0.45)" stroke-width="1"/>
-  <g transform="translate(1426 229) scale(0.8332999999999999)" fill="none" stroke="#34d399" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21 7H6 M9 21h.01 M18 21h.01"/></g>
-  <text x="1465" y="235" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Cart</text>
-  <text x="1465" y="252" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">gRPC · session</text>
+  <rect x="769" y="643" width="219" height="62" rx="8" fill="#0a1020"/>
+  <rect x="769" y="643" width="219" height="62" rx="8" fill="rgba(52,211,153,0.13)" stroke="#34d399" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="782" y="657" width="34" height="34" rx="7" fill="rgba(52,211,153,0.16)" stroke="rgba(52,211,153,0.45)" stroke-width="1"/>
+  <g transform="translate(789 664) scale(0.8332999999999999)" fill="none" stroke="#34d399" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21 7H6 M9 21h.01 M18 21h.01"/></g>
+  <text x="828" y="670.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Cart</text>
+  <text x="828" y="687.5" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">gRPC · session</text>
 </g>
 <g class="node" id="node-order" data-role="compute">
-  <rect x="1151" y="306" width="207" height="62" rx="8" fill="#0a1020"/>
-  <rect x="1151" y="306" width="207" height="62" rx="8" fill="rgba(52,211,153,0.13)" stroke="#34d399" stroke-width="1.3" filter="url(#glow)"/>
-  <rect x="1164" y="320" width="34" height="34" rx="7" fill="rgba(52,211,153,0.16)" stroke="rgba(52,211,153,0.45)" stroke-width="1"/>
-  <g transform="translate(1171 327) scale(0.8332999999999999)" fill="none" stroke="#34d399" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2v20l2.3-1.5 2.3 1.5 2.4-1.5 2.3 1.5 2.4-1.5L19 22V2l-2.3 1.5L14.4 2 12 3.5 9.6 2 7.3 3.5z M8.5 8h7 M8.5 12h7 M8.5 16h4"/></g>
-  <text x="1210" y="333" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Order</text>
-  <text x="1210" y="350" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">saga orchestrator</text>
+  <rect x="502" y="741" width="219" height="62" rx="8" fill="#0a1020"/>
+  <rect x="502" y="741" width="219" height="62" rx="8" fill="rgba(52,211,153,0.13)" stroke="#34d399" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="515" y="755" width="34" height="34" rx="7" fill="rgba(52,211,153,0.16)" stroke="rgba(52,211,153,0.45)" stroke-width="1"/>
+  <g transform="translate(522 762) scale(0.8332999999999999)" fill="none" stroke="#34d399" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2v20l2.3-1.5 2.3 1.5 2.4-1.5 2.3 1.5 2.4-1.5L19 22V2l-2.3 1.5L14.4 2 12 3.5 9.6 2 7.3 3.5z M8.5 8h7 M8.5 12h7 M8.5 16h4"/></g>
+  <text x="561" y="768.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Order</text>
+  <text x="561" y="785.5" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">saga orchestrator</text>
 </g>
 <g class="node" id="node-payment" data-role="compute">
-  <rect x="1406" y="306" width="207" height="62" rx="8" fill="#0a1020"/>
-  <rect x="1406" y="306" width="207" height="62" rx="8" fill="rgba(52,211,153,0.13)" stroke="#34d399" stroke-width="1.3" filter="url(#glow)"/>
-  <rect x="1419" y="320" width="34" height="34" rx="7" fill="rgba(52,211,153,0.16)" stroke="rgba(52,211,153,0.45)" stroke-width="1"/>
-  <g transform="translate(1426 327) scale(0.8332999999999999)" fill="none" stroke="#34d399" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z M2 10h20 M6 15h4"/></g>
-  <text x="1465" y="333" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Payment</text>
-  <text x="1465" y="350" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">authorize · capture</text>
+  <rect x="769" y="741" width="219" height="62" rx="8" fill="#0a1020"/>
+  <rect x="769" y="741" width="219" height="62" rx="8" fill="rgba(52,211,153,0.13)" stroke="#34d399" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="782" y="755" width="34" height="34" rx="7" fill="rgba(52,211,153,0.16)" stroke="rgba(52,211,153,0.45)" stroke-width="1"/>
+  <g transform="translate(789 762) scale(0.8332999999999999)" fill="none" stroke="#34d399" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z M2 10h20 M6 15h4"/></g>
+  <text x="828" y="768.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Payment</text>
+  <text x="828" y="785.5" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">authorize · capture</text>
 </g>
 <g class="node" id="node-inventory" data-role="compute">
-  <rect x="1151" y="404" width="207" height="62" rx="8" fill="#0a1020"/>
-  <rect x="1151" y="404" width="207" height="62" rx="8" fill="rgba(52,211,153,0.13)" stroke="#34d399" stroke-width="1.3" filter="url(#glow)"/>
-  <rect x="1164" y="418" width="34" height="34" rx="7" fill="rgba(52,211,153,0.16)" stroke="rgba(52,211,153,0.45)" stroke-width="1"/>
-  <g transform="translate(1171 425) scale(0.8332999999999999)" fill="none" stroke="#34d399" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4v10l-9 4-9-4z M3 7l9 4 9-4 M12 11v10"/></g>
-  <text x="1210" y="431" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Inventory</text>
-  <text x="1210" y="448" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">reserve stock</text>
+  <rect x="502" y="839" width="219" height="62" rx="8" fill="#0a1020"/>
+  <rect x="502" y="839" width="219" height="62" rx="8" fill="rgba(52,211,153,0.13)" stroke="#34d399" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="515" y="853" width="34" height="34" rx="7" fill="rgba(52,211,153,0.16)" stroke="rgba(52,211,153,0.45)" stroke-width="1"/>
+  <g transform="translate(522 860) scale(0.8332999999999999)" fill="none" stroke="#34d399" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4v10l-9 4-9-4z M3 7l9 4 9-4 M12 11v10"/></g>
+  <text x="561" y="866.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Inventory</text>
+  <text x="561" y="883.5" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">reserve stock</text>
 </g>
 <g class="node" id="node-shipping" data-role="compute">
-  <rect x="1406" y="404" width="207" height="62" rx="8" fill="#0a1020"/>
-  <rect x="1406" y="404" width="207" height="62" rx="8" fill="rgba(52,211,153,0.13)" stroke="#34d399" stroke-width="1.3" filter="url(#glow)"/>
-  <rect x="1419" y="418" width="34" height="34" rx="7" fill="rgba(52,211,153,0.16)" stroke="rgba(52,211,153,0.45)" stroke-width="1"/>
-  <g transform="translate(1426 425) scale(0.8332999999999999)" fill="none" stroke="#34d399" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4h14v12H1z M15 8h4l3 3v5h-7z M5.5 21a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z M18.5 21a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/></g>
-  <text x="1465" y="431" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Shipping</text>
-  <text x="1465" y="448" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">labels · tracking</text>
+  <rect x="769" y="839" width="219" height="62" rx="8" fill="#0a1020"/>
+  <rect x="769" y="839" width="219" height="62" rx="8" fill="rgba(52,211,153,0.13)" stroke="#34d399" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="782" y="853" width="34" height="34" rx="7" fill="rgba(52,211,153,0.16)" stroke="rgba(52,211,153,0.45)" stroke-width="1"/>
+  <g transform="translate(789 860) scale(0.8332999999999999)" fill="none" stroke="#34d399" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4h14v12H1z M15 8h4l3 3v5h-7z M5.5 21a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z M18.5 21a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/></g>
+  <text x="828" y="866.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Shipping</text>
+  <text x="828" y="883.5" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">labels · tracking</text>
 </g>
 <g class="node" id="node-pg" data-role="data">
-  <rect x="1733" y="257" width="207" height="62" rx="8" fill="#0a1020"/>
-  <rect x="1733" y="257" width="207" height="62" rx="8" fill="rgba(167,139,250,0.13)" stroke="#a78bfa" stroke-width="1.3" filter="url(#glow)"/>
-  <rect x="1746" y="271" width="34" height="34" rx="7" fill="rgba(167,139,250,0.16)" stroke="rgba(167,139,250,0.45)" stroke-width="1"/>
-  <g transform="translate(1753 278) scale(0.8332999999999999)" fill="none" stroke="#a78bfa" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C7 2 3 3.8 3 6v12c0 2.2 4 4 9 4s9-1.8 9-4V6c0-2.2-4-4-9-4z M3 6c0 2.2 4 4 9 4s9-1.8 9-4 M3 12c0 2.2 4 4 9 4s9-1.8 9-4"/></g>
-  <text x="1792" y="284" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">PostgreSQL</text>
-  <text x="1792" y="301" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">orders · payments</text>
+  <rect x="1108" y="594" width="219" height="62" rx="8" fill="#0a1020"/>
+  <rect x="1108" y="594" width="219" height="62" rx="8" fill="rgba(167,139,250,0.13)" stroke="#a78bfa" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="1121" y="608" width="34" height="34" rx="7" fill="rgba(167,139,250,0.16)" stroke="rgba(167,139,250,0.45)" stroke-width="1"/>
+  <g transform="translate(1128 615) scale(0.8332999999999999)" fill="none" stroke="#a78bfa" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C7 2 3 3.8 3 6v12c0 2.2 4 4 9 4s9-1.8 9-4V6c0-2.2-4-4-9-4z M3 6c0 2.2 4 4 9 4s9-1.8 9-4 M3 12c0 2.2 4 4 9 4s9-1.8 9-4"/></g>
+  <text x="1167" y="621.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">PostgreSQL</text>
+  <text x="1167" y="638.5" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">orders · payments</text>
 </g>
 <g class="node" id="node-redis" data-role="data">
-  <rect x="1988" y="257" width="207" height="62" rx="8" fill="#0a1020"/>
-  <rect x="1988" y="257" width="207" height="62" rx="8" fill="rgba(167,139,250,0.13)" stroke="#a78bfa" stroke-width="1.3" filter="url(#glow)"/>
-  <rect x="2001" y="271" width="34" height="34" rx="7" fill="rgba(167,139,250,0.16)" stroke="rgba(167,139,250,0.45)" stroke-width="1"/>
-  <g transform="translate(2008 278) scale(0.8332999999999999)" fill="none" stroke="#a78bfa" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></g>
-  <text x="2047" y="284" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Redis</text>
-  <text x="2047" y="301" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">cart · sessions</text>
+  <rect x="1108" y="692" width="219" height="62" rx="8" fill="#0a1020"/>
+  <rect x="1108" y="692" width="219" height="62" rx="8" fill="rgba(167,139,250,0.13)" stroke="#a78bfa" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="1121" y="706" width="34" height="34" rx="7" fill="rgba(167,139,250,0.16)" stroke="rgba(167,139,250,0.45)" stroke-width="1"/>
+  <g transform="translate(1128 713) scale(0.8332999999999999)" fill="none" stroke="#a78bfa" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></g>
+  <text x="1167" y="719.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Redis</text>
+  <text x="1167" y="736.5" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">cart · sessions</text>
 </g>
 <g class="node" id="node-docdb" data-role="data">
-  <rect x="1733" y="355" width="207" height="62" rx="8" fill="#0a1020"/>
-  <rect x="1733" y="355" width="207" height="62" rx="8" fill="rgba(167,139,250,0.13)" stroke="#a78bfa" stroke-width="1.3" filter="url(#glow)"/>
-  <rect x="1746" y="369" width="34" height="34" rx="7" fill="rgba(167,139,250,0.16)" stroke="rgba(167,139,250,0.45)" stroke-width="1"/>
-  <g transform="translate(1753 376) scale(0.8332999999999999)" fill="none" stroke="#a78bfa" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C7 2 3 3.8 3 6v12c0 2.2 4 4 9 4s9-1.8 9-4V6c0-2.2-4-4-9-4z M3 6c0 2.2 4 4 9 4s9-1.8 9-4 M3 12c0 2.2 4 4 9 4s9-1.8 9-4"/></g>
-  <text x="1792" y="382" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Document DB</text>
-  <text x="1792" y="399" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">catalog</text>
+  <rect x="1108" y="790" width="219" height="62" rx="8" fill="#0a1020"/>
+  <rect x="1108" y="790" width="219" height="62" rx="8" fill="rgba(167,139,250,0.13)" stroke="#a78bfa" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="1121" y="804" width="34" height="34" rx="7" fill="rgba(167,139,250,0.16)" stroke="rgba(167,139,250,0.45)" stroke-width="1"/>
+  <g transform="translate(1128 811) scale(0.8332999999999999)" fill="none" stroke="#a78bfa" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C7 2 3 3.8 3 6v12c0 2.2 4 4 9 4s9-1.8 9-4V6c0-2.2-4-4-9-4z M3 6c0 2.2 4 4 9 4s9-1.8 9-4 M3 12c0 2.2 4 4 9 4s9-1.8 9-4"/></g>
+  <text x="1167" y="817.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Document DB</text>
+  <text x="1167" y="834.5" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">catalog</text>
 </g>
 <g class="node" id="node-s3" data-role="storage">
-  <rect x="1988" y="355" width="207" height="62" rx="8" fill="#0a1020"/>
-  <rect x="1988" y="355" width="207" height="62" rx="8" fill="rgba(251,191,36,0.13)" stroke="#fbbf24" stroke-width="1.3" filter="url(#glow)"/>
-  <rect x="2001" y="369" width="34" height="34" rx="7" fill="rgba(251,191,36,0.16)" stroke="rgba(251,191,36,0.45)" stroke-width="1"/>
-  <g transform="translate(2008 376) scale(0.8332999999999999)" fill="none" stroke="#fbbf24" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16l-1.8 13.2a2 2 0 0 1-2 1.8H7.8a2 2 0 0 1-2-1.8z M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3 M4 6c0 1.7 3.6 3 8 3s8-1.3 8-3"/></g>
-  <text x="2047" y="382" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Object Store</text>
-  <text x="2047" y="399" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">media · invoices</text>
+  <rect x="1108" y="888" width="219" height="62" rx="8" fill="#0a1020"/>
+  <rect x="1108" y="888" width="219" height="62" rx="8" fill="rgba(251,191,36,0.13)" stroke="#fbbf24" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="1121" y="902" width="34" height="34" rx="7" fill="rgba(251,191,36,0.16)" stroke="rgba(251,191,36,0.45)" stroke-width="1"/>
+  <g transform="translate(1128 909) scale(0.8332999999999999)" fill="none" stroke="#fbbf24" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16l-1.8 13.2a2 2 0 0 1-2 1.8H7.8a2 2 0 0 1-2-1.8z M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3 M4 6c0 1.7 3.6 3 8 3s8-1.3 8-3"/></g>
+  <text x="1167" y="915.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Object Store</text>
+  <text x="1167" y="932.5" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">media · invoices</text>
 </g>
 <g class="node" id="node-kafka" data-role="queue">
-  <rect x="369" y="582" width="207" height="62" rx="8" fill="#0a1020"/>
-  <rect x="369" y="582" width="207" height="62" rx="8" fill="rgba(251,146,60,0.13)" stroke="#fb923c" stroke-width="1.3" filter="url(#glow)"/>
-  <rect x="382" y="596" width="34" height="34" rx="7" fill="rgba(251,146,60,0.16)" stroke="rgba(251,146,60,0.45)" stroke-width="1"/>
-  <g transform="translate(389 603) scale(0.8332999999999999)" fill="none" stroke="#fb923c" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8c2.5-3.3 5-3.3 7.5 0s5 3.3 7.5 0 3.5-3.3 5 0 M2 16c2.5-3.3 5-3.3 7.5 0s5 3.3 7.5 0 3.5-3.3 5 0"/></g>
-  <text x="428" y="609" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Kafka</text>
-  <text x="428" y="626" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">order.* · payment.*</text>
+  <rect x="140" y="1066" width="219" height="62" rx="8" fill="#0a1020"/>
+  <rect x="140" y="1066" width="219" height="62" rx="8" fill="rgba(251,146,60,0.13)" stroke="#fb923c" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="153" y="1080" width="34" height="34" rx="7" fill="rgba(251,146,60,0.16)" stroke="rgba(251,146,60,0.45)" stroke-width="1"/>
+  <g transform="translate(160 1087) scale(0.8332999999999999)" fill="none" stroke="#fb923c" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8c2.5-3.3 5-3.3 7.5 0s5 3.3 7.5 0 3.5-3.3 5 0 M2 16c2.5-3.3 5-3.3 7.5 0s5 3.3 7.5 0 3.5-3.3 5 0"/></g>
+  <text x="199" y="1093.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Kafka</text>
+  <text x="199" y="1110.5" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">order.* · payment.*</text>
 </g>
 <g class="node" id="node-notify" data-role="compute">
-  <rect x="624" y="582" width="207" height="62" rx="8" fill="#0a1020"/>
-  <rect x="624" y="582" width="207" height="62" rx="8" fill="rgba(52,211,153,0.13)" stroke="#34d399" stroke-width="1.3" filter="url(#glow)"/>
-  <rect x="637" y="596" width="34" height="34" rx="7" fill="rgba(52,211,153,0.16)" stroke="rgba(52,211,153,0.45)" stroke-width="1"/>
-  <g transform="translate(644 603) scale(0.8332999999999999)" fill="none" stroke="#34d399" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9 M13.7 21a2 2 0 0 1-3.4 0"/></g>
-  <text x="683" y="609" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Notification</text>
-  <text x="683" y="626" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">email · push</text>
+  <rect x="407" y="1066" width="219" height="62" rx="8" fill="#0a1020"/>
+  <rect x="407" y="1066" width="219" height="62" rx="8" fill="rgba(52,211,153,0.13)" stroke="#34d399" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="420" y="1080" width="34" height="34" rx="7" fill="rgba(52,211,153,0.16)" stroke="rgba(52,211,153,0.45)" stroke-width="1"/>
+  <g transform="translate(427 1087) scale(0.8332999999999999)" fill="none" stroke="#34d399" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9 M13.7 21a2 2 0 0 1-3.4 0"/></g>
+  <text x="466" y="1093.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Notification</text>
+  <text x="466" y="1110.5" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">email · push</text>
 </g>
 <g class="node" id="node-stripe" data-role="external">
-  <rect x="1473" y="582" width="207" height="62" rx="8" fill="#0a1020"/>
-  <rect x="1473" y="582" width="207" height="62" rx="8" fill="rgba(148,163,184,0.13)" stroke="#94a3b8" stroke-width="1.3" filter="url(#glow)"/>
-  <rect x="1486" y="596" width="34" height="34" rx="7" fill="rgba(148,163,184,0.16)" stroke="rgba(148,163,184,0.45)" stroke-width="1"/>
-  <g transform="translate(1493 603) scale(0.8332999999999999)" fill="none" stroke="#94a3b8" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z M2 10h20 M6 15h4"/></g>
-  <text x="1532" y="609" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Payment PSP</text>
-  <text x="1532" y="626" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">card network</text>
+  <rect x="810" y="1066" width="219" height="62" rx="8" fill="#0a1020"/>
+  <rect x="810" y="1066" width="219" height="62" rx="8" fill="rgba(148,163,184,0.13)" stroke="#94a3b8" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="823" y="1080" width="34" height="34" rx="7" fill="rgba(148,163,184,0.16)" stroke="rgba(148,163,184,0.45)" stroke-width="1"/>
+  <g transform="translate(830 1087) scale(0.8332999999999999)" fill="none" stroke="#94a3b8" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z M2 10h20 M6 15h4"/></g>
+  <text x="869" y="1093.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Payment PSP</text>
+  <text x="869" y="1110.5" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">card network</text>
 </g>
 <g class="node" id="node-twilio" data-role="external">
-  <rect x="1728" y="582" width="207" height="62" rx="8" fill="#0a1020"/>
-  <rect x="1728" y="582" width="207" height="62" rx="8" fill="rgba(148,163,184,0.13)" stroke="#94a3b8" stroke-width="1.3" filter="url(#glow)"/>
-  <rect x="1741" y="596" width="34" height="34" rx="7" fill="rgba(148,163,184,0.16)" stroke="rgba(148,163,184,0.45)" stroke-width="1"/>
-  <g transform="translate(1748 603) scale(0.8332999999999999)" fill="none" stroke="#94a3b8" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M22 6l-10 7L2 6"/></g>
-  <text x="1787" y="609" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Email / SMS</text>
-  <text x="1787" y="626" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">SendGrid · Twilio</text>
+  <rect x="1077" y="1066" width="219" height="62" rx="8" fill="#0a1020"/>
+  <rect x="1077" y="1066" width="219" height="62" rx="8" fill="rgba(148,163,184,0.13)" stroke="#94a3b8" stroke-width="1.3" filter="url(#glow)"/>
+  <rect x="1090" y="1080" width="34" height="34" rx="7" fill="rgba(148,163,184,0.16)" stroke="rgba(148,163,184,0.45)" stroke-width="1"/>
+  <g transform="translate(1097 1087) scale(0.8332999999999999)" fill="none" stroke="#94a3b8" stroke-width="2.04" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M22 6l-10 7L2 6"/></g>
+  <text x="1136" y="1093.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="14" font-weight="600">Email / SMS</text>
+  <text x="1136" y="1110.5" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">SendGrid · Twilio</text>
 </g></g>
   <g id="connections"><g class="edge" id="edge-e0" data-from="clients" data-to="edge" data-kind="sync">
-  <path d="M 339 351 L 445 351" fill="none" stroke="#22d3ee" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 339 351 L 445 351" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-sync)"/>
+  <path d="M 651 351 L 785 351" fill="none" stroke="#22d3ee" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 651 351 L 785 351" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-sync)"/>
 </g>
 <g class="edge" id="edge-e1" data-from="edge" data-to="apigw" data-kind="sync">
-  <path d="M 700 239 L 796 239" fill="none" stroke="#22d3ee" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 700 239 L 796 239" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-sync)"/>
+  <path d="M 813 490 L 813 534 Q 813 544 803 544 L 376 544 Q 366 544 366 554 L 366 640 Q 366 650 356 650 L 327 650" fill="none" stroke="#22d3ee" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 813 490 L 813 534 Q 813 544 803 544 L 376 544 Q 366 544 366 554 L 366 640 Q 366 650 356 650 L 327 650" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-sync)"/>
 </g>
 <g class="edge" id="edge-e2" data-from="apigw" data-to="auth" data-kind="auth">
-  <path d="M 900 270 L 900 306" fill="none" stroke="#fb7185" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 900 270 L 900 306" fill="none" stroke="#fb7185" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="2 4" marker-end="url(#arrow-auth)"/>
+  <path d="M 218 681 L 218 741" fill="none" stroke="#fb7185" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 218 681 L 218 741" fill="none" stroke="#fb7185" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="2 4" marker-end="url(#arrow-auth)"/>
 </g>
 <g class="edge" id="edge-e3" data-from="apigw" data-to="bff_web" data-kind="sync">
-  <path d="M 885 270 L 885 279 Q 885 288 876 288 L 792 288 Q 782 288 782 298 L 782 428 Q 782 435 789 435 L 796 435" fill="none" stroke="#22d3ee" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 885 270 L 885 279 Q 885 288 876 288 L 792 288 Q 782 288 782 298 L 782 428 Q 782 435 789 435 L 796 435" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-sync)"/>
+  <path d="M 108 650 L 101 650 Q 94 650 94 657 L 94 887 Q 94 894 101 894 L 108 894" fill="none" stroke="#22d3ee" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 108 650 L 101 650 Q 94 650 94 657 L 94 887 Q 94 894 101 894 L 108 894" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-sync)"/>
 </g>
 <g class="edge" id="edge-e4" data-from="bff" data-to="domain" data-kind="sync">
-  <path d="M 1027 351 L 1127 351" fill="none" stroke="#22d3ee" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 1027 351 L 1127 351" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-sync)"/>
+  <path d="M 351 786 L 478 786" fill="none" stroke="#22d3ee" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 351 786 L 478 786" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-sync)"/>
 </g>
 <g class="edge" id="edge-e5" data-from="order" data-to="payment" data-kind="sync">
-  <path d="M 1358 328 L 1406 328" fill="none" stroke="#22d3ee" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 1358 328 L 1406 328" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-sync)"/>
+  <path d="M 721 763 L 769 763" fill="none" stroke="#22d3ee" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 721 763 L 769 763" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-sync)"/>
 </g>
 <g class="edge" id="edge-e6" data-from="order" data-to="inventory" data-kind="sync">
-  <path d="M 1255 368 L 1255 404" fill="none" stroke="#22d3ee" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 1255 368 L 1255 404" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-sync)"/>
+  <path d="M 612 803 L 612 839" fill="none" stroke="#22d3ee" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 612 803 L 612 839" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-sync)"/>
 </g>
 <g class="edge" id="edge-e7" data-from="payment" data-to="stripe" data-kind="sync">
-  <path d="M 1406 346 L 1399 346 Q 1392 346 1392 353 L 1392 603 Q 1392 613 1402 613 L 1473 613" fill="none" stroke="#22d3ee" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 1406 346 L 1399 346 Q 1392 346 1392 353 L 1392 603 Q 1392 613 1402 613 L 1473 613" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-sync)"/>
+  <path d="M 769 781 L 749.5 781 Q 739.5 781 739.5 791 L 739.5 1087 Q 739.5 1097 749.5 1097 L 810 1097" fill="none" stroke="#22d3ee" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 769 781 L 749.5 781 Q 739.5 781 739.5 791 L 739.5 1087 Q 739.5 1097 749.5 1097 L 810 1097" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-sync)"/>
 </g>
 <g class="edge" id="edge-e8" data-from="domain" data-to="data" data-kind="data">
-  <path d="M 1637 351 L 1709 351" fill="none" stroke="#34d399" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 1637 351 L 1709 351" fill="none" stroke="#34d399" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-data)"/>
+  <path d="M 1012 786 L 1084 786" fill="none" stroke="#34d399" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 1012 786 L 1084 786" fill="none" stroke="#34d399" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-data)"/>
 </g>
 <g class="edge" id="edge-e9" data-from="order" data-to="kafka" data-kind="async">
-  <path d="M 1151 337 L 1144 337 Q 1137 337 1137 344 L 1137 551.5 Q 1137 561.5 1127 561.5 L 620 561.5 Q 610 561.5 610 571.5 L 610 594 Q 610 604 600 604 L 576 604" fill="none" stroke="#c084fc" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 1151 337 L 1144 337 Q 1137 337 1137 344 L 1137 551.5 Q 1137 561.5 1127 561.5 L 620 561.5 Q 610 561.5 610 571.5 L 610 594 Q 610 604 600 604 L 576 604" fill="none" stroke="#c084fc" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow-async)"/>
+  <path d="M 502 772 L 383 772 Q 373 772 373 782 L 373 1081 Q 373 1088 366 1088 L 359 1088" fill="none" stroke="#c084fc" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 502 772 L 383 772 Q 373 772 373 782 L 373 1081 Q 373 1088 366 1088 L 359 1088" fill="none" stroke="#c084fc" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow-async)"/>
 </g>
 <g class="edge" id="edge-e10" data-from="kafka" data-to="shipping" data-kind="async">
-  <path d="M 473 582 L 473 510 Q 473 500 483 500 L 1362 500 Q 1372 500 1372 490 L 1372 445 Q 1372 435 1382 435 L 1406 435" fill="none" stroke="#c084fc" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 473 582 L 473 510 Q 473 500 483 500 L 1362 500 Q 1372 500 1372 490 L 1372 445 Q 1372 435 1382 435 L 1406 435" fill="none" stroke="#c084fc" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow-async)"/>
+  <path d="M 359 1106 L 383 1106 Q 393 1106 393 1096 L 393 947 Q 393 937 403 937 L 869 937 Q 879 937 879 927 L 879 901" fill="none" stroke="#c084fc" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 359 1106 L 383 1106 Q 393 1106 393 1096 L 393 947 Q 393 937 403 937 L 869 937 Q 879 937 879 927 L 879 901" fill="none" stroke="#c084fc" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow-async)"/>
 </g>
 <g class="edge" id="edge-e11" data-from="kafka" data-to="notify" data-kind="async">
-  <path d="M 576 622 L 624 622" fill="none" stroke="#c084fc" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 576 622 L 624 622" fill="none" stroke="#c084fc" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow-async)"/>
+  <path d="M 359 1106 L 407 1106" fill="none" stroke="#c084fc" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 359 1106 L 407 1106" fill="none" stroke="#c084fc" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow-async)"/>
 </g>
 <g class="edge" id="edge-e12" data-from="notify" data-to="twilio" data-kind="sync">
-  <path d="M 831 613 L 1362 613 Q 1372 613 1372 623 L 1372 668 Q 1372 678 1382 678 L 1686.5 678 Q 1696.5 678 1696.5 668 L 1696.5 623 Q 1696.5 613 1706.5 613 L 1728 613" fill="none" stroke="#22d3ee" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 831 613 L 1362 613 Q 1372 613 1372 623 L 1372 668 Q 1372 678 1382 678 L 1686.5 678 Q 1696.5 678 1696.5 668 L 1696.5 623 Q 1696.5 613 1706.5 613 L 1728 613" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-sync)"/>
-</g></g>
+  <path d="M 626 1097 L 729.5 1097 Q 739.5 1097 739.5 1087 L 739.5 1055.5 Q 739.5 1045.5 749.5 1045.5 L 1053 1045.5 Q 1063 1045.5 1063 1055.5 L 1063 1090 Q 1063 1097 1070 1097 L 1077 1097" fill="none" stroke="#22d3ee" stroke-opacity="0.16" stroke-width="5" stroke-linejoin="round"/><path d="M 626 1097 L 729.5 1097 Q 739.5 1097 739.5 1087 L 739.5 1055.5 Q 739.5 1045.5 749.5 1045.5 L 1053 1045.5 Q 1063 1045.5 1063 1055.5 L 1063 1090 Q 1063 1097 1070 1097 L 1077 1097" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linejoin="round" marker-end="url(#arrow-sync)"/>
+</g><g id="junctions"><circle class="junction" cx="739.5" cy="1045.5" r="3.6" fill="#22d3ee" stroke="#020617" stroke-width="1.5"/><circle class="junction" cx="739.5" cy="1097" r="3.6" fill="#22d3ee" stroke="#020617" stroke-width="1.5"/><circle class="junction" cx="393" cy="1106" r="3.6" fill="#c084fc" stroke="#020617" stroke-width="1.5"/></g></g>
   <g id="labels"><g class="edge-label" data-edge="e0">
-  <rect x="383" y="341" width="50" height="20" rx="10" fill="#020617" stroke="#22d3ee" stroke-width="1"/>
-  <text x="408" y="354.6" text-anchor="middle" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="10.5" font-weight="500">HTTPS</text>
-</g><g class="badge" data-edge="e0"><circle cx="360" cy="351" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="360" cy="351" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
-  <text x="360" y="355.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">1</text></g>
-<g class="badge" data-edge="e1"><circle cx="721" cy="239" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="721" cy="239" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
-  <text x="721" y="243.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">2</text></g>
+  <rect x="679" y="339" width="78" height="24" rx="12" fill="#020617" stroke="#22d3ee" stroke-width="1"/>
+  <text x="730" y="355.2" text-anchor="middle" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="500">HTTPS</text>
+</g><g class="badge" data-edge="e0"><circle cx="691" cy="351" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="691" y="355.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">1</text></g>
+<g class="badge" data-edge="e1"><circle cx="813" cy="511" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="813" cy="511" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="813" y="515.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">2</text></g>
 <g class="edge-label" data-edge="e2">
-  <rect x="905" y="278" width="37" height="20" rx="10" fill="#020617" stroke="#fb7185" stroke-width="1"/>
-  <text x="923.5" y="291.6" text-anchor="middle" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="10.5" font-weight="500">JWT</text>
+  <rect x="198" y="700" width="40" height="22" rx="11" fill="#020617" stroke="#fb7185" stroke-width="1"/>
+  <text x="218" y="715.2" text-anchor="middle" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="500">JWT</text>
 </g>
 
 <g class="edge-label" data-edge="e4">
-  <rect x="1070" y="341" width="44" height="20" rx="10" fill="#020617" stroke="#22d3ee" stroke-width="1"/>
-  <text x="1092" y="354.6" text-anchor="middle" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="10.5" font-weight="500">gRPC</text>
-</g><g class="badge" data-edge="e4"><circle cx="1048" cy="351" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="1048" cy="351" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
-  <text x="1048" y="355.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">3</text></g>
-<g class="badge" data-edge="e5"><circle cx="1379" cy="328" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="1379" cy="328" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
-  <text x="1379" y="332.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">4</text></g>
+  <rect x="379" y="790" width="71" height="24" rx="12" fill="#020617" stroke="#22d3ee" stroke-width="1"/>
+  <text x="426.5" y="806.2" text-anchor="middle" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="500">gRPC</text>
+</g><g class="badge" data-edge="e4"><circle cx="391" cy="802" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="391" y="806.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">3</text></g>
+<g class="badge" data-edge="e5"><circle cx="742" cy="763" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="742" cy="763" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="742" y="767.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">4</text></g>
 
-<g class="badge" data-edge="e7"><circle cx="1392" cy="489" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="1392" cy="489" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
-  <text x="1392" y="493.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">5</text></g>
-<g class="badge" data-edge="e8"><circle cx="1658" cy="351" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="1658" cy="351" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
-  <text x="1658" y="355.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">6</text></g>
+<g class="badge" data-edge="e7"><circle cx="739.5" cy="952.5" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="739.5" cy="952.5" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="739.5" y="956.7" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">5</text></g>
+<g class="badge" data-edge="e8"><circle cx="1033" cy="786" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="1033" cy="786" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="1033" y="790.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">6</text></g>
 <g class="edge-label" data-edge="e9">
-  <rect x="830" y="552" width="88" height="20" rx="10" fill="#020617" stroke="#c084fc" stroke-width="1"/>
-  <text x="874" y="565.6" text-anchor="middle" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="10.5" font-weight="500">OrderPlaced</text>
-</g><g class="badge" data-edge="e9"><circle cx="1137" cy="516" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="1137" cy="516" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
-  <text x="1137" y="520.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">7</text></g>
+  <rect x="373" y="744" width="122" height="24" rx="12" fill="#020617" stroke="#c084fc" stroke-width="1"/>
+  <text x="446" y="760.2" text-anchor="middle" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="500">OrderPlaced</text>
+</g><g class="badge" data-edge="e9"><circle cx="385" cy="756" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="385" y="760.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">7</text></g>
 
 
 </g>
-  <g class="steps"><circle cx="54" cy="745" r="3" fill="#fbbf24"/>
-  <text x="64" y="749" fill="#64748b" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11" font-weight="600" letter-spacing="0.16em">WALKTHROUGH</text><rect x="48" y="772" width="536.75" height="77" rx="12" fill="rgba(15,23,42,0.55)" stroke="rgba(148,163,184,0.16)"/><g class="badge" ><circle cx="74" cy="796" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="74" cy="796" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
-  <text x="74" y="800.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">1</text></g><text x="96" y="800.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12.5" font-weight="600">Clients → Edge</text><text x="96" y="820" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">Web, mobile and admin traffic enters through CDN, WAF and the L7 load balancer.</text><rect x="604.75" y="772" width="536.75" height="77" rx="12" fill="rgba(15,23,42,0.55)" stroke="rgba(148,163,184,0.16)"/><g class="badge" ><circle cx="630.75" cy="796" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="630.75" cy="796" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
-  <text x="630.75" y="800.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">2</text></g><text x="652.75" y="800.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12.5" font-weight="600">Gateway</text><text x="652.75" y="820" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">API Gateway rate-limits, routes, and validates JWTs with the Auth service.</text><rect x="1161.5" y="772" width="536.75" height="77" rx="12" fill="rgba(15,23,42,0.55)" stroke="rgba(148,163,184,0.16)"/><g class="badge" ><circle cx="1187.5" cy="796" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="1187.5" cy="796" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
-  <text x="1187.5" y="800.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">3</text></g><text x="1209.5" y="800.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12.5" font-weight="600">BFF → services</text><text x="1209.5" y="820" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">The Web BFF aggregates domain services over gRPC.</text><rect x="1718.25" y="772" width="536.75" height="77" rx="12" fill="rgba(15,23,42,0.55)" stroke="rgba(148,163,184,0.16)"/><g class="badge" ><circle cx="1744.25" cy="796" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="1744.25" cy="796" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
-  <text x="1744.25" y="800.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">4</text></g><text x="1766.25" y="800.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12.5" font-weight="600">Order saga</text><text x="1766.25" y="820" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">Order reserves inventory and asks Payment to authorize.</text><rect x="48" y="869" width="536.75" height="77" rx="12" fill="rgba(15,23,42,0.55)" stroke="rgba(148,163,184,0.16)"/><g class="badge" ><circle cx="74" cy="893" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="74" cy="893" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
-  <text x="74" y="897.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">5</text></g><text x="96" y="897.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12.5" font-weight="600">Card network</text><text x="96" y="917" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">Payment calls the external PSP; webhooks confirm capture.</text><rect x="604.75" y="869" width="536.75" height="77" rx="12" fill="rgba(15,23,42,0.55)" stroke="rgba(148,163,184,0.16)"/><g class="badge" ><circle cx="630.75" cy="893" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="630.75" cy="893" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
-  <text x="630.75" y="897.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">6</text></g><text x="652.75" y="897.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12.5" font-weight="600">Owned data</text><text x="652.75" y="917" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">Each service writes only to its own store (database-per-service).</text><rect x="1161.5" y="869" width="536.75" height="77" rx="12" fill="rgba(15,23,42,0.55)" stroke="rgba(148,163,184,0.16)"/><g class="badge" ><circle cx="1187.5" cy="893" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="1187.5" cy="893" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
-  <text x="1187.5" y="897.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">7</text></g><text x="1209.5" y="897.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12.5" font-weight="600">Event fan-out</text><text x="1209.5" y="917" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">OrderPlaced on Kafka drives Shipping and Notification asynchronously.</text><g class="legend"><text x="52" y="992" fill="#64748b" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11" font-weight="600" letter-spacing="0.16em">LEGEND</text><line x1="142" y1="988" x2="168" y2="988" stroke="#22d3ee" stroke-width="2"/><path d="M 164 984 L 170 988 L 164 992 z" fill="#22d3ee"/><text x="180" y="992" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">Sync request</text><line x1="291.2" y1="988" x2="317.2" y2="988" stroke="#c084fc" stroke-width="2" stroke-dasharray="7 5"/><path d="M 313.2 984 L 319.2 988 L 313.2 992 z" fill="#c084fc"/><text x="329.2" y="992" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">Async event</text><line x1="433.79999999999995" y1="988" x2="459.79999999999995" y2="988" stroke="#34d399" stroke-width="2"/><path d="M 455.79999999999995 984 L 461.79999999999995 988 L 455.79999999999995 992 z" fill="#34d399"/><text x="471.79999999999995" y="992" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">Data read / write</text><line x1="616" y1="988" x2="642" y2="988" stroke="#fb7185" stroke-width="2" stroke-dasharray="2 4"/><path d="M 638 984 L 644 988 L 638 992 z" fill="#fb7185"/><text x="654" y="992" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11">Auth / identity</text></g></g>
-  <g class="footer"><line x1="48" y1="1028" x2="2255" y2="1028" stroke="rgba(148,163,184,0.16)"/>
-  <text x="48" y="1048" fill="#64748b" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="10" letter-spacing="0.08em">E-COMMERCE MICROSERVICES PLATFORM · REFERENCE ARCHITECTURE</text>
-  <text x="2255" y="1048" text-anchor="end" fill="#64748b" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="10" letter-spacing="0.08em">DIAGRAM-MCP</text></g>
+  <g class="steps"><rect x="1415" y="132" width="340" height="1056" rx="14" fill="rgba(15,23,42,0.55)" stroke="rgba(148,163,184,0.16)"/>
+  <circle cx="1437" cy="157" r="3" fill="#fbbf24"/>
+  <text x="1447" y="161" fill="#64748b" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11" font-weight="600" letter-spacing="0.16em">WALKTHROUGH</text><g class="badge" ><circle cx="1443" cy="180" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="1443" cy="180" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="1443" y="184.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">1</text></g><text x="1465" y="184.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12.5" font-weight="600">Clients → Edge</text><text x="1465" y="204" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">Web, mobile and admin traffic enters through</text><text x="1465" y="221" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">CDN, WAF and the L7 load balancer.</text><line x1="1443" y1="195" x2="1443" y2="236" stroke="rgba(251,191,36,0.35)" stroke-width="1" stroke-dasharray="2 3"/><g class="badge" ><circle cx="1443" cy="252" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="1443" cy="252" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="1443" y="256.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">2</text></g><text x="1465" y="256.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12.5" font-weight="600">Gateway</text><text x="1465" y="276" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">API Gateway rate-limits, routes, and validates</text><text x="1465" y="293" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">JWTs with the Auth service.</text><line x1="1443" y1="267" x2="1443" y2="308" stroke="rgba(251,191,36,0.35)" stroke-width="1" stroke-dasharray="2 3"/><g class="badge" ><circle cx="1443" cy="324" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="1443" cy="324" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="1443" y="328.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">3</text></g><text x="1465" y="328.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12.5" font-weight="600">BFF → services</text><text x="1465" y="348" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">The Web BFF aggregates domain services</text><text x="1465" y="365" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">over gRPC.</text><line x1="1443" y1="339" x2="1443" y2="380" stroke="rgba(251,191,36,0.35)" stroke-width="1" stroke-dasharray="2 3"/><g class="badge" ><circle cx="1443" cy="396" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="1443" cy="396" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="1443" y="400.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">4</text></g><text x="1465" y="400.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12.5" font-weight="600">Order saga</text><text x="1465" y="420" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">Order reserves inventory and asks Payment to</text><text x="1465" y="437" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">authorize.</text><line x1="1443" y1="411" x2="1443" y2="452" stroke="rgba(251,191,36,0.35)" stroke-width="1" stroke-dasharray="2 3"/><g class="badge" ><circle cx="1443" cy="468" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="1443" cy="468" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="1443" y="472.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">5</text></g><text x="1465" y="472.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12.5" font-weight="600">Card network</text><text x="1465" y="492" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">Payment calls the external PSP; webhooks</text><text x="1465" y="509" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">confirm capture.</text><line x1="1443" y1="483" x2="1443" y2="524" stroke="rgba(251,191,36,0.35)" stroke-width="1" stroke-dasharray="2 3"/><g class="badge" ><circle cx="1443" cy="540" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="1443" cy="540" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="1443" y="544.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">6</text></g><text x="1465" y="544.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12.5" font-weight="600">Owned data</text><text x="1465" y="564" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">Each service writes only to its own store</text><text x="1465" y="581" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">(database-per-service).</text><line x1="1443" y1="555" x2="1443" y2="596" stroke="rgba(251,191,36,0.35)" stroke-width="1" stroke-dasharray="2 3"/><g class="badge" ><circle cx="1443" cy="612" r="15" fill="rgba(251,191,36,0.18)"/><circle cx="1443" cy="612" r="11" fill="#fbbf24" stroke="#020617" stroke-width="2"/>
+  <text x="1443" y="616.2" text-anchor="middle" fill="#1c1203" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12" font-weight="700">7</text></g><text x="1465" y="616.5" fill="#e2e8f0" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12.5" font-weight="600">Event fan-out</text><text x="1465" y="636" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">OrderPlaced on Kafka drives Shipping and</text><text x="1465" y="653" fill="#94a3b8" font-family="Inter, 'SF Pro Text', 'Segoe UI', 'Noto Sans CJK TC', 'PingFang TC', system-ui, sans-serif" font-size="12">Notification asynchronously.</text><g class="legend"><text x="1435" y="1064" fill="#64748b" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="11" font-weight="600" letter-spacing="0.16em">LEGEND</text><line x1="1437" y1="1088" x2="1463" y2="1088" stroke="#22d3ee" stroke-width="2"/><path d="M 1459 1084 L 1465 1088 L 1459 1092 z" fill="#22d3ee"/><text x="1477" y="1092" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">Sync request</text><line x1="1437" y1="1110" x2="1463" y2="1110" stroke="#c084fc" stroke-width="2" stroke-dasharray="7 5"/><path d="M 1459 1106 L 1465 1110 L 1459 1114 z" fill="#c084fc"/><text x="1477" y="1114" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">Async event</text><line x1="1437" y1="1132" x2="1463" y2="1132" stroke="#34d399" stroke-width="2"/><path d="M 1459 1128 L 1465 1132 L 1459 1136 z" fill="#34d399"/><text x="1477" y="1136" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">Data read / write</text><line x1="1437" y1="1154" x2="1463" y2="1154" stroke="#fb7185" stroke-width="2" stroke-dasharray="2 4"/><path d="M 1459 1150 L 1465 1154 L 1459 1158 z" fill="#fb7185"/><text x="1477" y="1158" fill="#94a3b8" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="12">Auth / identity</text></g></g>
+  <g class="footer"><line x1="48" y1="1206" x2="1755" y2="1206" stroke="rgba(148,163,184,0.16)"/>
+  <text x="48" y="1226" fill="#64748b" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="10" letter-spacing="0.08em">E-COMMERCE MICROSERVICES PLATFORM · REFERENCE ARCHITECTURE</text>
+  <text x="1755" y="1226" text-anchor="end" fill="#64748b" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Noto Sans Mono CJK TC', monospace" font-size="10" letter-spacing="0.08em">DIAGRAM-MCP</text></g>
 </svg>
