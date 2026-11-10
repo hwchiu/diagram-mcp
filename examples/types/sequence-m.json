@@ -1,0 +1,53 @@
+{
+  "tool": "create_sequence_diagram",
+  "input": {
+    "title": "Insight 報表匯出",
+    "subtitle": "Async export: request → queue → worker → object storage → notify",
+    "participants": [
+      { "id": "user", "label": "分析師", "type": "actor" },
+      { "id": "web", "label": "Insight Web", "type": "browser", "description": "SPA" },
+      { "id": "gw", "label": "API Gateway", "type": "gateway", "description": "Envoy" },
+      { "id": "api", "label": "Export API", "type": "service", "description": "Go" },
+      { "id": "db", "label": "Reporting DB", "type": "database", "description": "PostgreSQL" },
+      { "id": "mq", "label": "Job Queue", "type": "queue", "description": "Kafka" },
+      { "id": "wk", "label": "Export Worker", "type": "job", "description": "Python" },
+      { "id": "s3", "label": "Object Storage", "type": "external", "description": "S3" }
+    ],
+    "messages": [
+      { "from": "user", "to": "web", "label": "選擇報表並按下匯出" },
+      { "from": "web", "to": "gw", "label": "POST /exports" },
+      { "from": "gw", "to": "gw", "label": "JWT 驗證 + rate limit" },
+      { "from": "gw", "to": "api", "label": "createExport(spec)" },
+      { "id": "chk", "from": "api", "to": "db", "label": "SELECT quota" },
+      { "from": "db", "to": "api", "label": "remaining=3", "kind": "return" },
+      { "id": "deny", "from": "api", "to": "gw", "label": "429 quota exceeded", "kind": "error" },
+      { "id": "ins", "from": "api", "to": "db", "label": "INSERT export_job" },
+      { "from": "db", "to": "api", "label": "job_id", "kind": "return" },
+      { "from": "api", "to": "mq", "label": "publish export.requested", "kind": "async" },
+      { "from": "api", "to": "gw", "label": "202 Accepted {job_id}", "kind": "return" },
+      { "from": "gw", "to": "web", "label": "202 {job_id}", "kind": "return" },
+      { "type": "divider", "label": "背景處理" },
+      { "from": "mq", "to": "wk", "label": "consume export.requested", "kind": "async" },
+      { "id": "page", "from": "wk", "to": "db", "label": "SELECT … LIMIT 5000" },
+      { "from": "db", "to": "wk", "label": "rows", "kind": "return" },
+      { "id": "part", "from": "wk", "to": "s3", "label": "UploadPart(n)" },
+      { "id": "partok", "from": "s3", "to": "wk", "label": "ETag", "kind": "return" },
+      { "type": "note", "over": ["wk", "s3"], "text": "每 5000 筆一個 part，失敗自動重試 3 次" },
+      { "from": "wk", "to": "s3", "label": "CompleteMultipartUpload" },
+      { "from": "s3", "to": "wk", "label": "object URL", "kind": "return" },
+      { "from": "wk", "to": "db", "label": "UPDATE status=done" },
+      { "from": "db", "to": "wk", "label": "ok", "kind": "return" },
+      { "id": "poll", "from": "web", "to": "gw", "label": "GET /exports/{id}" },
+      { "from": "gw", "to": "api", "label": "getExport(id)" },
+      { "from": "api", "to": "gw", "label": "status + 下載連結", "kind": "return" },
+      { "id": "pollend", "from": "gw", "to": "web", "label": "200 done", "kind": "return" },
+      { "from": "web", "to": "user", "label": "顯示下載按鈕", "kind": "async" }
+    ],
+    "fragments": [
+      { "kind": "alt", "label": "quota 用完", "start": "chk", "end": 11, "sections": [{ "start": "ins", "label": "quota 足夠" }] },
+      { "kind": "loop", "label": "每一頁資料", "start": "page", "end": 19 },
+      { "kind": "par", "label": "上傳", "start": "part", "end": "partok" },
+      { "kind": "loop", "label": "每 3 秒輪詢，直到 done", "start": "poll", "end": "pollend" }
+    ]
+  }
+}

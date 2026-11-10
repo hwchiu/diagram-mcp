@@ -1,0 +1,178 @@
+{
+  "tool": "create_state_machine",
+  "input": {
+    "title": "資料查詢工作階段狀態機",
+    "subtitle": "Query session — composite states, guards, timeouts and errors",
+    "states": [
+      {
+        "id": "i",
+        "type": "initial"
+      },
+      {
+        "id": "idle",
+        "label": "Idle"
+      },
+      {
+        "id": "auth",
+        "label": "Authenticating",
+        "type": "composite"
+      },
+      {
+        "id": "ai",
+        "type": "initial",
+        "parent": "auth"
+      },
+      {
+        "id": "pwd",
+        "label": "Password",
+        "parent": "auth"
+      },
+      {
+        "id": "mfa",
+        "label": "MFA",
+        "parent": "auth",
+        "do": "waitForCode()"
+      },
+      {
+        "id": "active",
+        "label": "Active session",
+        "type": "composite"
+      },
+      {
+        "id": "xi",
+        "type": "initial",
+        "parent": "active"
+      },
+      {
+        "id": "ready",
+        "label": "Ready",
+        "parent": "active"
+      },
+      {
+        "id": "running",
+        "label": "Running query",
+        "parent": "active",
+        "entry": "startTimer()",
+        "exit": "stopTimer()"
+      },
+      {
+        "id": "chk",
+        "type": "choice",
+        "parent": "active"
+      },
+      {
+        "id": "masking",
+        "label": "Masking",
+        "parent": "active",
+        "do": "applyRules()"
+      },
+      {
+        "id": "locked",
+        "label": "Locked",
+        "entry": "notifyAdmin()"
+      },
+      {
+        "id": "closed",
+        "label": "Closed"
+      },
+      {
+        "id": "f",
+        "type": "final"
+      }
+    ],
+    "transitions": [
+      {
+        "from": "i",
+        "to": "idle"
+      },
+      {
+        "from": "idle",
+        "to": "auth",
+        "event": "login"
+      },
+      {
+        "from": "ai",
+        "to": "pwd"
+      },
+      {
+        "from": "pwd",
+        "to": "mfa",
+        "event": "submit",
+        "guard": "valid"
+      },
+      {
+        "from": "pwd",
+        "to": "locked",
+        "event": "submit",
+        "guard": "3 failures",
+        "kind": "error"
+      },
+      {
+        "from": "mfa",
+        "to": "active",
+        "event": "verified"
+      },
+      {
+        "from": "mfa",
+        "to": "idle",
+        "event": "timeout 60s",
+        "kind": "timeout"
+      },
+      {
+        "from": "xi",
+        "to": "ready"
+      },
+      {
+        "from": "ready",
+        "to": "running",
+        "event": "query"
+      },
+      {
+        "from": "running",
+        "to": "chk",
+        "event": "rows"
+      },
+      {
+        "from": "chk",
+        "to": "masking",
+        "guard": "has PII"
+      },
+      {
+        "from": "chk",
+        "to": "ready",
+        "guard": "no PII"
+      },
+      {
+        "from": "masking",
+        "to": "ready",
+        "action": "deliver"
+      },
+      {
+        "from": "running",
+        "to": "ready",
+        "event": "error",
+        "kind": "error"
+      },
+      {
+        "from": "active",
+        "to": "closed",
+        "event": "logout"
+      },
+      {
+        "from": "active",
+        "to": "closed",
+        "event": "idle 15m",
+        "kind": "timeout"
+      },
+      {
+        "from": "locked",
+        "to": "idle",
+        "event": "unlock"
+      },
+      {
+        "from": "closed",
+        "to": "f"
+      }
+    ]
+  }
+}

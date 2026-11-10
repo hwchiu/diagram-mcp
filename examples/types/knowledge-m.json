@@ -1,0 +1,182 @@
+{
+  "tool": "create_knowledge_graph",
+  "input": {
+    "title": "Insight 知識圖譜",
+    "subtitle": "企業、人物、資料集與法規之間的語意關係",
+    "types": [
+      {
+        "id": "class",
+        "label": "Class",
+        "icon": "layers",
+        "color": "gateway"
+      },
+      {
+        "id": "org",
+        "label": "Organization",
+        "icon": "building"
+      },
+      {
+        "id": "person",
+        "label": "Person",
+        "icon": "user"
+      },
+      {
+        "id": "dataset",
+        "label": "Dataset",
+        "icon": "table"
+      },
+      {
+        "id": "reg",
+        "label": "Regulation",
+        "icon": "shield",
+        "color": "security"
+      }
+    ],
+    "entities": [
+      {
+        "id": "Agent",
+        "label": "Agent",
+        "type": "class"
+      },
+      {
+        "id": "Company",
+        "label": "Company",
+        "type": "class"
+      },
+      {
+        "id": "Human",
+        "label": "Person",
+        "type": "class"
+      },
+      {
+        "id": "acme",
+        "label": "Acme 集團",
+        "type": "org",
+        "attributes": [
+          "統編: 12345678"
+        ]
+      },
+      {
+        "id": "tw",
+        "label": "Acme 台灣",
+        "type": "org"
+      },
+      {
+        "id": "vendor",
+        "label": "資料供應商",
+        "type": "org"
+      },
+      {
+        "id": "ceo",
+        "label": "王大明",
+        "type": "person",
+        "attributes": [
+          "role: CEO"
+        ]
+      },
+      {
+        "id": "dpo",
+        "label": "林資安",
+        "type": "person",
+        "attributes": [
+          "role: DPO"
+        ]
+      },
+      {
+        "id": "cust",
+        "label": "客戶主檔",
+        "type": "dataset",
+        "attributes": [
+          "PII: yes"
+        ]
+      },
+      {
+        "id": "tx",
+        "label": "交易明細",
+        "type": "dataset"
+      },
+      {
+        "id": "pdpa",
+        "label": "個資法",
+        "type": "reg"
+      },
+      {
+        "id": "gdpr",
+        "label": "GDPR",
+        "type": "reg"
+      }
+    ],
+    "relations": [
+      {
+        "from": "Company",
+        "to": "Agent",
+        "label": "subClassOf",
+        "kind": "is_a"
+      },
+      {
+        "from": "Human",
+        "to": "Agent",
+        "label": "subClassOf",
+        "kind": "is_a"
+      },
+      {
+        "from": "acme",
+        "to": "Company",
+        "label": "instanceOf",
+        "kind": "instance_of"
+      },
+      {
+        "from": "ceo",
+        "to": "Human",
+        "label": "instanceOf",
+        "kind": "instance_of"
+      },
+      {
+        "from": "tw",
+        "to": "acme",
+        "label": "subsidiaryOf",
+        "kind": "part_of"
+      },
+      {
+        "from": "ceo",
+        "to": "acme",
+        "label": "leads"
+      },
+      {
+        "from": "dpo",
+        "to": "tw",
+        "label": "worksFor"
+      },
+      {
+        "from": "tw",
+        "to": "cust",
+        "label": "controls"
+      },
+      {
+        "from": "vendor",
+        "to": "tx",
+        "label": "supplies"
+      },
+      {
+        "from": "tx",
+        "to": "cust",
+        "label": "references"
+      },
+      {
+        "from": "cust",
+        "to": "pdpa",
+        "label": "governedBy"
+      },
+      {
+        "from": "cust",
+        "to": "gdpr",
+        "label": "governedBy"
+      },
+      {
+        "from": "dpo",
+        "to": "cust",
+        "label": "stewards"
+      }
+    ]
+  }
+}

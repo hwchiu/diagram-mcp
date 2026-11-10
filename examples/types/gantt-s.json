@@ -1,0 +1,21 @@
+{
+  "tool": "create_gantt",
+  "input": {
+    "title": "Insight v2 Sprint 計畫",
+    "subtitle": "Two-week sprint, 2026-11-02 → 2026-11-13",
+    "groups": [
+      { "id": "be", "label": "Backend" },
+      { "id": "fe", "label": "Frontend" },
+      { "id": "rel", "label": "Release" }
+    ],
+    "tasks": [
+      { "id": "api", "label": "匯出 API", "group": "be", "start": "2026-11-02", "duration": 4, "progress": 100, "owner": "Ken" },
+      { "id": "worker", "label": "Export worker", "group": "be", "after": "api", "duration": 3, "progress": 60, "owner": "Amy", "critical": true },
+      { "id": "ui", "label": "匯出按鈕與進度條", "group": "fe", "start": "2026-11-04", "duration": 4, "progress": 40, "owner": "Leo" },
+      { "id": "e2e", "label": "E2E 測試", "group": "fe", "after": ["worker", "ui"], "duration": 2, "critical": true },
+      { "id": "freeze", "label": "Code freeze", "group": "rel", "start": "2026-11-12", "milestone": true },
+      { "id": "ship", "label": "上線 Production", "group": "rel", "after": "e2e", "duration": 1, "critical": true }
+    ],
+    "today": "2026-11-09"
+  }
+}

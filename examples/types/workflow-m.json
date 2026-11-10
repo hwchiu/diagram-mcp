@@ -1,0 +1,180 @@
+{
+  "tool": "create_workflow_dag",
+  "input": {
+    "title": "ML 訓練管線",
+    "subtitle": "Kubeflow pipeline · churn-model（task groups + 失敗分支）",
+    "schedule": "weekly",
+    "groups": [
+      {
+        "id": "prep",
+        "label": "資料準備"
+      },
+      {
+        "id": "train",
+        "label": "模型訓練"
+      },
+      {
+        "id": "deploy",
+        "label": "部署"
+      }
+    ],
+    "tasks": [
+      {
+        "id": "start",
+        "label": "觸發",
+        "operator": "Schedule",
+        "status": "success"
+      },
+      {
+        "id": "pull_crm",
+        "label": "拉取 CRM",
+        "operator": "BigQuery",
+        "status": "success",
+        "group": "prep"
+      },
+      {
+        "id": "pull_evt",
+        "label": "拉取事件",
+        "operator": "BigQuery",
+        "status": "success",
+        "group": "prep"
+      },
+      {
+        "id": "join",
+        "label": "特徵合併",
+        "operator": "Spark",
+        "status": "success",
+        "group": "prep"
+      },
+      {
+        "id": "split",
+        "label": "切分訓練集",
+        "operator": "Python",
+        "status": "success",
+        "group": "prep"
+      },
+      {
+        "id": "xgb",
+        "label": "XGBoost",
+        "operator": "Vertex Training",
+        "status": "success",
+        "group": "train"
+      },
+      {
+        "id": "lgbm",
+        "label": "LightGBM",
+        "operator": "Vertex Training",
+        "status": "failed",
+        "group": "train"
+      },
+      {
+        "id": "nn",
+        "label": "MLP baseline",
+        "operator": "Vertex Training",
+        "status": "success",
+        "group": "train"
+      },
+      {
+        "id": "eval",
+        "label": "評估比較",
+        "operator": "Python",
+        "status": "upstream_failed"
+      },
+      {
+        "id": "gate",
+        "label": "品質門檻",
+        "operator": "BranchOperator",
+        "status": "queued"
+      },
+      {
+        "id": "register",
+        "label": "註冊模型",
+        "operator": "Model Registry",
+        "status": "queued",
+        "group": "deploy"
+      },
+      {
+        "id": "canary",
+        "label": "Canary 部署",
+        "operator": "KServe",
+        "status": "queued",
+        "group": "deploy"
+      },
+      {
+        "id": "notify",
+        "label": "通知 ML 團隊",
+        "operator": "Slack",
+        "status": "queued"
+      }
+    ],
+    "dependencies": [
+      {
+        "from": "start",
+        "to": "pull_crm"
+      },
+      {
+        "from": "start",
+        "to": "pull_evt"
+      },
+      {
+        "from": "pull_crm",
+        "to": "join"
+      },
+      {
+        "from": "pull_evt",
+        "to": "join"
+      },
+      {
+        "from": "join",
+        "to": "split"
+      },
+      {
+        "from": "split",
+        "to": "xgb"
+      },
+      {
+        "from": "split",
+        "to": "lgbm"
+      },
+      {
+        "from": "split",
+        "to": "nn"
+      },
+      {
+        "from": "xgb",
+        "to": "eval"
+      },
+      {
+        "from": "lgbm",
+        "to": "eval"
+      },
+      {
+        "from": "nn",
+        "to": "eval"
+      },
+      {
+        "from": "eval",
+        "to": "gate"
+      },
+      {
+        "from": "gate",
+        "to": "register",
+        "label": "AUC ≥ 0.8"
+      },
+      {
+        "from": "register",
+        "to": "canary"
+      },
+      {
+        "from": "gate",
+        "to": "notify",
+        "condition": "failure"
+      },
+      {
+        "from": "canary",
+        "to": "notify",
+        "condition": "always"
+      }
+    ]
+  }
+}

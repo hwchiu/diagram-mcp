@@ -1,0 +1,234 @@
+{
+  "tool": "create_gantt",
+  "input": {
+    "title": "Insight Platform 2.0 專案時程",
+    "subtitle": "Discovery → GA, five workstreams with critical path",
+    "groups": [
+      {
+        "id": "plan",
+        "label": "規劃 Planning"
+      },
+      {
+        "id": "data",
+        "label": "資料 Data"
+      },
+      {
+        "id": "be",
+        "label": "後端 Backend"
+      },
+      {
+        "id": "fe",
+        "label": "前端 Frontend"
+      },
+      {
+        "id": "rel",
+        "label": "發佈 Release"
+      }
+    ],
+    "tasks": [
+      {
+        "id": "req",
+        "label": "需求訪談 Discovery",
+        "group": "plan",
+        "start": "2026-07-06",
+        "duration": "2w",
+        "progress": 100,
+        "owner": "PM"
+      },
+      {
+        "id": "arch",
+        "label": "架構設計 Architecture",
+        "group": "plan",
+        "after": "req",
+        "duration": "1w",
+        "progress": 100,
+        "owner": "Ken"
+      },
+      {
+        "id": "sec",
+        "label": "資安審查 Security review",
+        "group": "plan",
+        "after": "arch",
+        "duration": 5,
+        "progress": 100
+      },
+      {
+        "id": "kick",
+        "label": "Kick-off",
+        "group": "plan",
+        "start": "2026-07-06",
+        "milestone": true
+      },
+      {
+        "id": "schema",
+        "label": "資料模型 Schema",
+        "group": "data",
+        "after": "arch",
+        "duration": "1w",
+        "progress": 100,
+        "owner": "Amy"
+      },
+      {
+        "id": "ingest",
+        "label": "Ingestion pipeline",
+        "group": "data",
+        "after": "schema",
+        "duration": "3w",
+        "progress": 90,
+        "owner": "Amy",
+        "critical": true
+      },
+      {
+        "id": "quality",
+        "label": "資料品質規則 DQ rules",
+        "group": "data",
+        "after": "schema",
+        "duration": "2w",
+        "progress": 70
+      },
+      {
+        "id": "lineage",
+        "label": "Lineage 收集",
+        "group": "data",
+        "after": "ingest",
+        "duration": "2w",
+        "progress": 30
+      },
+      {
+        "id": "auth",
+        "label": "SSO / OIDC 整合",
+        "group": "be",
+        "after": "sec",
+        "duration": "2w",
+        "progress": 100,
+        "owner": "Joe"
+      },
+      {
+        "id": "query",
+        "label": "查詢 API",
+        "group": "be",
+        "after": "schema",
+        "duration": "4w",
+        "progress": 80,
+        "owner": "Ken",
+        "critical": true
+      },
+      {
+        "id": "export",
+        "label": "匯出服務 Export",
+        "group": "be",
+        "after": "query",
+        "duration": "2w",
+        "progress": 40,
+        "owner": "Ken",
+        "critical": true
+      },
+      {
+        "id": "audit",
+        "label": "稽核紀錄 Audit log",
+        "group": "be",
+        "after": "auth",
+        "duration": "2w",
+        "progress": 50
+      },
+      {
+        "id": "perf",
+        "label": "效能調校 Perf tuning",
+        "group": "be",
+        "after": "export",
+        "duration": "2w",
+        "critical": true
+      },
+      {
+        "id": "ds",
+        "label": "Design system",
+        "group": "fe",
+        "after": "arch",
+        "duration": "2w",
+        "progress": 100,
+        "owner": "Leo"
+      },
+      {
+        "id": "dash",
+        "label": "Dashboard 頁面",
+        "group": "fe",
+        "after": "ds",
+        "duration": "3w",
+        "progress": 75,
+        "owner": "Leo"
+      },
+      {
+        "id": "report",
+        "label": "報表編輯器 Report builder",
+        "group": "fe",
+        "after": "dash",
+        "duration": "4w",
+        "progress": 35,
+        "owner": "Mia"
+      },
+      {
+        "id": "i18n",
+        "label": "多語系 i18n",
+        "group": "fe",
+        "after": "dash",
+        "duration": "1w",
+        "progress": 0
+      },
+      {
+        "id": "a11y",
+        "label": "無障礙檢查 a11y",
+        "group": "fe",
+        "after": "report",
+        "duration": 5
+      },
+      {
+        "id": "alpha",
+        "label": "Alpha release",
+        "group": "rel",
+        "start": "2026-09-07",
+        "milestone": true
+      },
+      {
+        "id": "uat",
+        "label": "UAT 使用者驗收",
+        "group": "rel",
+        "after": [
+          "perf",
+          "report"
+        ],
+        "duration": "2w",
+        "critical": true
+      },
+      {
+        "id": "train",
+        "label": "教育訓練 Training",
+        "group": "rel",
+        "after": "uat",
+        "duration": "1w"
+      },
+      {
+        "id": "beta",
+        "label": "Beta release",
+        "group": "rel",
+        "after": "uat",
+        "milestone": true
+      },
+      {
+        "id": "ga",
+        "label": "GA 正式上線",
+        "group": "rel",
+        "after": "train",
+        "milestone": true,
+        "critical": true
+      },
+      {
+        "id": "hyper",
+        "label": "Hypercare",
+        "group": "rel",
+        "after": "ga",
+        "duration": "2w"
+      }
+    ],
+    "today": "2026-09-21"
+  }
+}

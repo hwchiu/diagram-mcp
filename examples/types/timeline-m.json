@@ -1,0 +1,142 @@
+{
+  "tool": "create_timeline",
+  "input": {
+    "title": "Acme Insight 公司大事記",
+    "subtitle": "2015 → 2026 · funding, product and compliance milestones",
+    "eras": [
+      {
+        "label": "新創期 Startup",
+        "start": "2015-01",
+        "end": "2017-12",
+        "role": "queue"
+      },
+      {
+        "label": "成長期 Growth",
+        "start": "2018-01",
+        "end": "2021-12",
+        "role": "gateway"
+      },
+      {
+        "label": "規模化 Scale",
+        "start": "2022-01",
+        "end": "2026-12",
+        "role": "compute"
+      }
+    ],
+    "events": [
+      {
+        "date": "2015-03",
+        "label": "公司成立",
+        "description": "5 人團隊，接案起家",
+        "role": "client"
+      },
+      {
+        "date": "2016-01",
+        "label": "第一個 SaaS 產品",
+        "description": "Insight Reports"
+      },
+      {
+        "date": "2016-09",
+        "label": "A 輪募資",
+        "description": "US$3M",
+        "role": "storage",
+        "milestone": true
+      },
+      {
+        "date": "2017-06",
+        "label": "東京辦公室",
+        "description": "進入日本市場",
+        "role": "gateway"
+      },
+      {
+        "date": "2018-02",
+        "label": "Kubernetes 遷移",
+        "description": "從 VM 全面容器化",
+        "role": "compute"
+      },
+      {
+        "date": "2018-11",
+        "label": "SOC 2 Type I",
+        "description": "資安認證",
+        "role": "security"
+      },
+      {
+        "date": "2019-05",
+        "label": "資料平台 v1",
+        "description": "Lakehouse + Catalog",
+        "role": "data",
+        "milestone": true
+      },
+      {
+        "date": "2019-12",
+        "label": "B 輪募資",
+        "description": "US$20M",
+        "role": "storage"
+      },
+      {
+        "date": "2020-04",
+        "label": "全遠端工作",
+        "description": "疫情期間 WFH",
+        "role": "client"
+      },
+      {
+        "date": "2020-10",
+        "label": "SOC 2 Type II",
+        "role": "security"
+      },
+      {
+        "date": "2021-06",
+        "label": "Insight API 開放",
+        "description": "Public REST + SDK",
+        "role": "gateway"
+      },
+      {
+        "date": "2022-01",
+        "label": "多區域部署",
+        "description": "Tokyo + Frankfurt",
+        "role": "compute"
+      },
+      {
+        "date": "2022-09",
+        "label": "Lineage 功能",
+        "description": "欄位層級血緣追蹤",
+        "role": "data"
+      },
+      {
+        "date": "2023-05",
+        "label": "AI 摘要 beta",
+        "description": "LLM 報表摘要",
+        "role": "data"
+      },
+      {
+        "date": "2023-11",
+        "label": "ISO 27001",
+        "role": "security"
+      },
+      {
+        "date": "2024-06",
+        "label": "C 輪募資",
+        "description": "US$60M",
+        "role": "storage"
+      },
+      {
+        "date": "2025-02",
+        "label": "Insight Platform 2.0",
+        "description": "多租戶 + Marketplace",
+        "role": "gateway",
+        "milestone": true
+      },
+      {
+        "date": "2025-10",
+        "label": "1000 家企業客戶",
+        "role": "client"
+      },
+      {
+        "date": "2026-08",
+        "label": "IPO 準備",
+        "description": "選定承銷商",
+        "role": "storage"
+      }
+    ]
+  }
+}

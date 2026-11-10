@@ -1,0 +1,79 @@
+{
+  "tool": "create_dependency_graph",
+  "input": {
+    "title": "前端套件相依",
+    "subtitle": "web-app 的直接與間接相依",
+    "nodes": [
+      {
+        "id": "app",
+        "label": "web-app",
+        "type": "app"
+      },
+      {
+        "id": "ui",
+        "label": "@insight/ui",
+        "type": "library"
+      },
+      {
+        "id": "api",
+        "label": "@insight/api-client",
+        "type": "library"
+      },
+      {
+        "id": "auth",
+        "label": "@insight/auth",
+        "type": "library"
+      },
+      {
+        "id": "react",
+        "label": "react",
+        "type": "external"
+      },
+      {
+        "id": "axios",
+        "label": "axios",
+        "type": "external"
+      },
+      {
+        "id": "zod",
+        "label": "zod",
+        "type": "external"
+      }
+    ],
+    "edges": [
+      {
+        "from": "app",
+        "to": "ui"
+      },
+      {
+        "from": "app",
+        "to": "api"
+      },
+      {
+        "from": "app",
+        "to": "auth"
+      },
+      {
+        "from": "ui",
+        "to": "react"
+      },
+      {
+        "from": "api",
+        "to": "axios"
+      },
+      {
+        "from": "api",
+        "to": "zod"
+      },
+      {
+        "from": "auth",
+        "to": "api"
+      },
+      {
+        "from": "auth",
+        "to": "react",
+        "optional": true
+      }
+    ]
+  }
+}

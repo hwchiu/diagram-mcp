@@ -1,0 +1,32 @@
+{
+  "tool": "create_authorization_matrix",
+  "input": {
+    "title": "Insight 權限矩陣",
+    "subtitle": "Role-based access for the reporting workspace",
+    "roles": [
+      { "id": "viewer", "label": "Viewer 檢視者" },
+      { "id": "analyst", "label": "Analyst 分析師" },
+      { "id": "owner", "label": "Data Owner" },
+      { "id": "admin", "label": "Admin 管理員" }
+    ],
+    "actions": ["read", "create", "update", "delete"],
+    "resources": [
+      { "id": "report", "label": "報表 Reports" },
+      { "id": "dataset", "label": "資料集 Datasets" },
+      { "id": "export", "label": "匯出 Exports", "actions": ["request", "download"] }
+    ],
+    "permissions": [
+      { "role": "*", "resource": "report", "actions": ["read"], "effect": "allow" },
+      { "role": "analyst", "resource": "report", "actions": ["create", "update"], "effect": "allow" },
+      { "role": "analyst", "resource": "report", "actions": ["delete"], "effect": "conditional", "condition": "僅限自己建立的報表" },
+      { "role": "analyst", "resource": "dataset", "actions": ["read"], "effect": "conditional", "condition": "需 Data Owner 核准，30 天後到期" },
+      { "role": "owner", "resource": "dataset", "effect": "allow" },
+      { "role": "owner", "resource": "dataset", "actions": ["delete"], "effect": "deny" },
+      { "role": "viewer", "resource": "export", "effect": "deny" },
+      { "role": "analyst", "resource": "export", "effect": "allow" },
+      { "role": "owner", "resource": "export", "effect": "allow" },
+      { "role": "admin", "resource": "*", "effect": "allow" },
+      { "role": "admin", "resource": "export", "actions": ["download"], "effect": "conditional", "condition": "需填寫稽核原因 (audit reason)" }
+    ]
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "tool": "create_state_machine",
+  "input": {
+    "title": "訂單狀態機",
+    "subtitle": "Order lifecycle",
+    "states": [
+      {
+        "id": "init",
+        "type": "initial"
+      },
+      {
+        "id": "created",
+        "label": "已建立",
+        "entry": "reserveStock()"
+      },
+      {
+        "id": "paid",
+        "label": "已付款"
+      },
+      {
+        "id": "shipped",
+        "label": "已出貨"
+      },
+      {
+        "id": "done",
+        "label": "已完成"
+      },
+      {
+        "id": "cancel",
+        "label": "已取消",
+        "entry": "releaseStock()"
+      },
+      {
+        "id": "end",
+        "type": "final"
+      }
+    ],
+    "transitions": [
+      {
+        "from": "init",
+        "to": "created"
+      },
+      {
+        "from": "created",
+        "to": "paid",
+        "event": "pay",
+        "guard": "amount ok"
+      },
+      {
+        "from": "created",
+        "to": "cancel",
+        "event": "cancel"
+      },
+      {
+        "from": "paid",
+        "to": "shipped",
+        "event": "ship"
+      },
+      {
+        "from": "paid",
+        "to": "cancel",
+        "event": "refund",
+        "action": "refund()"
+      },
+      {
+        "from": "shipped",
+        "to": "done",
+        "event": "deliver"
+      },
+      {
+        "from": "done",
+        "to": "end"
+      },
+      {
+        "from": "cancel",
+        "to": "end"
+      },
+      {
+        "from": "created",
+        "to": "created",
+        "event": "edit"
+      }
+    ]
+  }
+}

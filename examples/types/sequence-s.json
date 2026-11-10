@@ -1,0 +1,30 @@
+{
+  "tool": "create_sequence_diagram",
+  "input": {
+    "title": "Insight 登入流程",
+    "subtitle": "OIDC authorization code flow with PKCE",
+    "participants": [
+      { "id": "user", "label": "使用者", "type": "actor" },
+      { "id": "web", "label": "Insight Web", "type": "browser", "description": "React SPA" },
+      { "id": "idp", "label": "Identity Provider", "type": "security", "description": "OIDC" },
+      { "id": "api", "label": "Insight API", "type": "service", "description": "Go" }
+    ],
+    "messages": [
+      { "from": "user", "to": "web", "label": "開啟 Insight" },
+      { "from": "web", "to": "idp", "label": "/authorize + code_challenge" },
+      { "from": "idp", "to": "user", "label": "登入頁 + MFA", "kind": "async" },
+      { "id": "cred", "from": "user", "to": "idp", "label": "帳號密碼 + OTP" },
+      { "id": "ok", "from": "idp", "to": "web", "label": "302 redirect ?code", "kind": "return" },
+      { "id": "bad", "from": "idp", "to": "user", "label": "錯誤訊息，重試", "kind": "error" },
+      { "from": "web", "to": "idp", "label": "POST /token (code_verifier)" },
+      { "from": "idp", "to": "web", "label": "id_token + access_token", "kind": "return" },
+      { "type": "note", "over": ["web"], "text": "token 只存在記憶體，不寫 localStorage" },
+      { "from": "web", "to": "api", "label": "GET /me  Bearer token" },
+      { "from": "api", "to": "api", "label": "驗證 JWT 簽章" },
+      { "from": "api", "to": "web", "label": "200 使用者資料", "kind": "return" }
+    ],
+    "fragments": [
+      { "kind": "alt", "label": "驗證成功", "start": "cred", "end": "bad", "sections": [{ "start": "bad", "label": "驗證失敗" }] }
+    ]
+  }
+}

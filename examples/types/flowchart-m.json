@@ -1,0 +1,171 @@
+{
+  "tool": "create_flowchart",
+  "input": {
+    "title": "敏感資料查詢審核流程",
+    "subtitle": "申請 → 自動檢查 → 人工審核 → 遮罩輸出（含重試與退件迴圈）",
+    "nodes": [
+      {
+        "id": "s",
+        "label": "收到查詢申請",
+        "type": "start"
+      },
+      {
+        "id": "form",
+        "label": "填寫申請表",
+        "type": "io"
+      },
+      {
+        "id": "auth",
+        "label": "身分已驗證？",
+        "type": "decision"
+      },
+      {
+        "id": "sso",
+        "label": "導向 SSO 登入",
+        "type": "subprocess"
+      },
+      {
+        "id": "scope",
+        "label": "檢查資料範圍",
+        "type": "process"
+      },
+      {
+        "id": "pii",
+        "label": "含個資欄位？",
+        "type": "decision"
+      },
+      {
+        "id": "auto",
+        "label": "自動核准",
+        "type": "process"
+      },
+      {
+        "id": "review",
+        "label": "Data Owner 審核",
+        "type": "process"
+      },
+      {
+        "id": "approve",
+        "label": "核准？",
+        "type": "decision"
+      },
+      {
+        "id": "reason",
+        "label": "補充用途說明",
+        "type": "io"
+      },
+      {
+        "id": "query",
+        "label": "執行查詢",
+        "type": "process"
+      },
+      {
+        "id": "db",
+        "label": "資料倉儲",
+        "type": "data"
+      },
+      {
+        "id": "mask",
+        "label": "套用遮罩規則",
+        "type": "process"
+      },
+      {
+        "id": "log",
+        "label": "寫入稽核紀錄",
+        "type": "document"
+      },
+      {
+        "id": "done",
+        "label": "交付結果",
+        "type": "end"
+      },
+      {
+        "id": "rej",
+        "label": "通知退件",
+        "type": "end"
+      }
+    ],
+    "edges": [
+      {
+        "from": "s",
+        "to": "form"
+      },
+      {
+        "from": "form",
+        "to": "auth"
+      },
+      {
+        "from": "auth",
+        "to": "sso",
+        "when": "否"
+      },
+      {
+        "from": "sso",
+        "to": "auth",
+        "label": "登入後"
+      },
+      {
+        "from": "auth",
+        "to": "scope",
+        "when": "是"
+      },
+      {
+        "from": "scope",
+        "to": "pii"
+      },
+      {
+        "from": "pii",
+        "to": "auto",
+        "when": "否"
+      },
+      {
+        "from": "pii",
+        "to": "review",
+        "when": "是"
+      },
+      {
+        "from": "review",
+        "to": "approve"
+      },
+      {
+        "from": "approve",
+        "to": "query",
+        "when": "通過"
+      },
+      {
+        "from": "approve",
+        "to": "reason",
+        "when": "需補件"
+      },
+      {
+        "from": "reason",
+        "to": "review"
+      },
+      {
+        "from": "approve",
+        "to": "rej",
+        "when": "退回"
+      },
+      {
+        "from": "auto",
+        "to": "query"
+      },
+      {
+        "from": "query",
+        "to": "db"
+      },
+      {
+        "from": "query",
+        "to": "mask"
+      },
+      {
+        "from": "mask",
+        "to": "log"
+      },
+      {
+        "from": "log",
+        "to": "done"
+      }
+    ]
+  }
+}

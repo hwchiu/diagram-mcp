@@ -1,0 +1,200 @@
+{
+  "tool": "create_dependency_graph",
+  "input": {
+    "title": "服務相依與變更影響分析",
+    "subtitle": "修改 customer-db schema 會影響哪些服務？",
+    "groups": [
+      {
+        "id": "edge",
+        "label": "Edge"
+      },
+      {
+        "id": "core",
+        "label": "Core services"
+      },
+      {
+        "id": "data",
+        "label": "Data"
+      },
+      {
+        "id": "shared",
+        "label": "Shared libs"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "web",
+        "label": "Web 前台",
+        "type": "app",
+        "group": "edge"
+      },
+      {
+        "id": "mobile",
+        "label": "Mobile App",
+        "type": "app",
+        "group": "edge"
+      },
+      {
+        "id": "gw",
+        "label": "API Gateway",
+        "type": "service",
+        "group": "edge"
+      },
+      {
+        "id": "order",
+        "label": "order-svc",
+        "type": "service",
+        "group": "core"
+      },
+      {
+        "id": "cust",
+        "label": "customer-svc",
+        "type": "service",
+        "group": "core"
+      },
+      {
+        "id": "bill",
+        "label": "billing-svc",
+        "type": "service",
+        "group": "core"
+      },
+      {
+        "id": "report",
+        "label": "report-svc",
+        "type": "service",
+        "group": "core"
+      },
+      {
+        "id": "notify",
+        "label": "notify-svc",
+        "type": "service",
+        "group": "core"
+      },
+      {
+        "id": "search",
+        "label": "search-svc",
+        "type": "service",
+        "group": "core"
+      },
+      {
+        "id": "odb",
+        "label": "order-db",
+        "type": "database",
+        "group": "data"
+      },
+      {
+        "id": "cdb",
+        "label": "customer-db",
+        "type": "database",
+        "group": "data"
+      },
+      {
+        "id": "bus",
+        "label": "event-bus",
+        "type": "queue",
+        "group": "data"
+      },
+      {
+        "id": "es",
+        "label": "search-index",
+        "type": "database",
+        "group": "data"
+      },
+      {
+        "id": "sdk",
+        "label": "auth-sdk",
+        "type": "library",
+        "group": "shared"
+      },
+      {
+        "id": "orm",
+        "label": "orm-core",
+        "type": "library",
+        "group": "shared"
+      }
+    ],
+    "edges": [
+      {
+        "from": "web",
+        "to": "gw"
+      },
+      {
+        "from": "mobile",
+        "to": "gw"
+      },
+      {
+        "from": "gw",
+        "to": "order"
+      },
+      {
+        "from": "gw",
+        "to": "cust"
+      },
+      {
+        "from": "gw",
+        "to": "search"
+      },
+      {
+        "from": "gw",
+        "to": "sdk"
+      },
+      {
+        "from": "order",
+        "to": "odb"
+      },
+      {
+        "from": "order",
+        "to": "cust"
+      },
+      {
+        "from": "order",
+        "to": "bus"
+      },
+      {
+        "from": "bill",
+        "to": "cust"
+      },
+      {
+        "from": "bill",
+        "to": "bus"
+      },
+      {
+        "from": "report",
+        "to": "cdb"
+      },
+      {
+        "from": "report",
+        "to": "odb"
+      },
+      {
+        "from": "cust",
+        "to": "cdb"
+      },
+      {
+        "from": "cust",
+        "to": "orm"
+      },
+      {
+        "from": "order",
+        "to": "orm"
+      },
+      {
+        "from": "notify",
+        "to": "bus",
+        "optional": true
+      },
+      {
+        "from": "search",
+        "to": "es"
+      },
+      {
+        "from": "search",
+        "to": "cust",
+        "optional": true
+      }
+    ],
+    "changed": [
+      "cdb"
+    ]
+  }
+}

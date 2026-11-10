@@ -1,0 +1,132 @@
+{
+  "tool": "create_er_diagram",
+  "input": {
+    "title": "訂單資料模型",
+    "subtitle": "Orders schema",
+    "entities": [
+      {
+        "id": "customer",
+        "columns": [
+          {
+            "name": "id",
+            "type": "bigint",
+            "pk": true
+          },
+          {
+            "name": "name",
+            "type": "varchar(80)"
+          },
+          {
+            "name": "email",
+            "type": "varchar(120)",
+            "unique": true
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp"
+          }
+        ]
+      },
+      {
+        "id": "orders",
+        "columns": [
+          {
+            "name": "id",
+            "type": "bigint",
+            "pk": true
+          },
+          {
+            "name": "customer_id",
+            "type": "bigint",
+            "fk": "customer.id"
+          },
+          {
+            "name": "status",
+            "type": "varchar(16)"
+          },
+          {
+            "name": "total",
+            "type": "numeric(12,2)"
+          },
+          {
+            "name": "placed_at",
+            "type": "timestamp"
+          }
+        ]
+      },
+      {
+        "id": "order_item",
+        "columns": [
+          {
+            "name": "order_id",
+            "type": "bigint",
+            "pk": true,
+            "fk": true
+          },
+          {
+            "name": "line_no",
+            "type": "int",
+            "pk": true
+          },
+          {
+            "name": "product_id",
+            "type": "bigint",
+            "fk": true
+          },
+          {
+            "name": "qty",
+            "type": "int"
+          },
+          {
+            "name": "price",
+            "type": "numeric(10,2)"
+          }
+        ]
+      },
+      {
+        "id": "product",
+        "columns": [
+          {
+            "name": "id",
+            "type": "bigint",
+            "pk": true
+          },
+          {
+            "name": "sku",
+            "type": "varchar(32)",
+            "unique": true
+          },
+          {
+            "name": "name",
+            "type": "varchar(120)"
+          },
+          {
+            "name": "price",
+            "type": "numeric(10,2)"
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "from": "customer",
+        "to": "orders",
+        "cardinality": "1:N",
+        "label": "places"
+      },
+      {
+        "from": "orders",
+        "to": "order_item",
+        "cardinality": "1:1..N",
+        "label": "contains"
+      },
+      {
+        "from": "product",
+        "to": "order_item",
+        "cardinality": "1:N",
+        "label": "sold as",
+        "identifying": false
+      }
+    ]
+  }
+}

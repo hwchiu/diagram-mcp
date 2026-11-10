@@ -1,0 +1,92 @@
+{
+  "tool": "create_flowchart",
+  "input": {
+    "title": "登入流程",
+    "subtitle": "帳號密碼 + MFA",
+    "nodes": [
+      {
+        "id": "s",
+        "label": "開始",
+        "type": "start"
+      },
+      {
+        "id": "in",
+        "label": "輸入帳號密碼",
+        "type": "io"
+      },
+      {
+        "id": "chk",
+        "label": "密碼正確？",
+        "type": "decision"
+      },
+      {
+        "id": "mfa",
+        "label": "驗證 MFA",
+        "type": "process"
+      },
+      {
+        "id": "ok",
+        "label": "MFA 通過？",
+        "type": "decision"
+      },
+      {
+        "id": "lock",
+        "label": "累計失敗次數",
+        "type": "process"
+      },
+      {
+        "id": "home",
+        "label": "進入首頁",
+        "type": "process"
+      },
+      {
+        "id": "e",
+        "label": "結束",
+        "type": "end"
+      }
+    ],
+    "edges": [
+      {
+        "from": "s",
+        "to": "in"
+      },
+      {
+        "from": "in",
+        "to": "chk"
+      },
+      {
+        "from": "chk",
+        "to": "mfa",
+        "when": "是"
+      },
+      {
+        "from": "chk",
+        "to": "lock",
+        "when": "否"
+      },
+      {
+        "from": "lock",
+        "to": "in",
+        "label": "重試"
+      },
+      {
+        "from": "mfa",
+        "to": "ok"
+      },
+      {
+        "from": "ok",
+        "to": "home",
+        "when": "是"
+      },
+      {
+        "from": "ok",
+        "to": "lock",
+        "when": "否"
+      },
+      {
+        "from": "home",
+        "to": "e"
+      }
+    ]
+  }
+}

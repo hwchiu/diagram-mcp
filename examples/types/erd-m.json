@@ -1,0 +1,299 @@
+{
+  "tool": "create_er_diagram",
+  "input": {
+    "title": "Insight 權限與稽核資料模型",
+    "subtitle": "使用者、角色、資料集權限與查詢稽核（domains 分區）",
+    "domains": [
+      {
+        "id": "iam",
+        "label": "Identity & access"
+      },
+      {
+        "id": "cat",
+        "label": "Data catalog"
+      },
+      {
+        "id": "audit",
+        "label": "Audit"
+      }
+    ],
+    "entities": [
+      {
+        "id": "users",
+        "domain": "iam",
+        "columns": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "pk": true
+          },
+          {
+            "name": "email",
+            "type": "text",
+            "unique": true
+          },
+          {
+            "name": "dept_id",
+            "type": "int",
+            "fk": true
+          },
+          {
+            "name": "status",
+            "type": "text"
+          }
+        ]
+      },
+      {
+        "id": "departments",
+        "domain": "iam",
+        "columns": [
+          {
+            "name": "id",
+            "type": "int",
+            "pk": true
+          },
+          {
+            "name": "name",
+            "type": "text"
+          },
+          {
+            "name": "parent_id",
+            "type": "int",
+            "fk": true,
+            "nullable": true
+          }
+        ]
+      },
+      {
+        "id": "roles",
+        "domain": "iam",
+        "columns": [
+          {
+            "name": "id",
+            "type": "int",
+            "pk": true
+          },
+          {
+            "name": "name",
+            "type": "text",
+            "unique": true
+          },
+          {
+            "name": "level",
+            "type": "smallint"
+          }
+        ]
+      },
+      {
+        "id": "user_roles",
+        "domain": "iam",
+        "columns": [
+          {
+            "name": "user_id",
+            "type": "uuid",
+            "pk": true,
+            "fk": true
+          },
+          {
+            "name": "role_id",
+            "type": "int",
+            "pk": true,
+            "fk": true
+          },
+          {
+            "name": "granted_at",
+            "type": "timestamptz"
+          }
+        ]
+      },
+      {
+        "id": "datasets",
+        "domain": "cat",
+        "columns": [
+          {
+            "name": "id",
+            "type": "int",
+            "pk": true
+          },
+          {
+            "name": "name",
+            "type": "text"
+          },
+          {
+            "name": "owner_id",
+            "type": "uuid",
+            "fk": true
+          },
+          {
+            "name": "sensitivity",
+            "type": "text"
+          }
+        ]
+      },
+      {
+        "id": "columns",
+        "domain": "cat",
+        "columns": [
+          {
+            "name": "id",
+            "type": "int",
+            "pk": true
+          },
+          {
+            "name": "dataset_id",
+            "type": "int",
+            "fk": true
+          },
+          {
+            "name": "name",
+            "type": "text"
+          },
+          {
+            "name": "is_pii",
+            "type": "boolean"
+          }
+        ]
+      },
+      {
+        "id": "grants",
+        "domain": "cat",
+        "columns": [
+          {
+            "name": "id",
+            "type": "int",
+            "pk": true
+          },
+          {
+            "name": "role_id",
+            "type": "int",
+            "fk": true
+          },
+          {
+            "name": "dataset_id",
+            "type": "int",
+            "fk": true
+          },
+          {
+            "name": "action",
+            "type": "text"
+          },
+          {
+            "name": "mask_rule",
+            "type": "text",
+            "nullable": true
+          }
+        ]
+      },
+      {
+        "id": "queries",
+        "domain": "audit",
+        "columns": [
+          {
+            "name": "id",
+            "type": "bigint",
+            "pk": true
+          },
+          {
+            "name": "user_id",
+            "type": "uuid",
+            "fk": true
+          },
+          {
+            "name": "sql_hash",
+            "type": "char(64)"
+          },
+          {
+            "name": "started_at",
+            "type": "timestamptz"
+          }
+        ]
+      },
+      {
+        "id": "query_access",
+        "domain": "audit",
+        "columns": [
+          {
+            "name": "query_id",
+            "type": "bigint",
+            "pk": true,
+            "fk": true
+          },
+          {
+            "name": "column_id",
+            "type": "int",
+            "pk": true,
+            "fk": true
+          },
+          {
+            "name": "masked",
+            "type": "boolean"
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "from": "departments",
+        "to": "users",
+        "cardinality": "1:N",
+        "label": "employs",
+        "identifying": false
+      },
+      {
+        "from": "departments",
+        "to": "departments",
+        "cardinality": "0..1:N",
+        "label": "parent"
+      },
+      {
+        "from": "users",
+        "to": "user_roles",
+        "cardinality": "1:N"
+      },
+      {
+        "from": "roles",
+        "to": "user_roles",
+        "cardinality": "1:N"
+      },
+      {
+        "from": "users",
+        "to": "datasets",
+        "cardinality": "1:N",
+        "label": "owns",
+        "identifying": false
+      },
+      {
+        "from": "datasets",
+        "to": "columns",
+        "cardinality": "1:1..N"
+      },
+      {
+        "from": "roles",
+        "to": "grants",
+        "cardinality": "1:N"
+      },
+      {
+        "from": "datasets",
+        "to": "grants",
+        "cardinality": "1:N"
+      },
+      {
+        "from": "users",
+        "to": "queries",
+        "cardinality": "1:N",
+        "label": "runs",
+        "identifying": false
+      },
+      {
+        "from": "queries",
+        "to": "query_access",
+        "cardinality": "1:N"
+      },
+      {
+        "from": "columns",
+        "to": "query_access",
+        "cardinality": "1:N"
+      }
+    ]
+  }
+}

@@ -3,17 +3,11 @@ import { renderPipeline } from "./render/pipeline.js";
 import { compileCloud } from "./compilers/cloud.js";
 import type { CompiledArchitecture } from "./compilers/architecture.js";
 import { compileMicroservice } from "./compilers/microservice.js";
-import { compileFlowchart } from "./compilers/flowchart.js";
-import { compileDecision } from "./compilers/decision.js";
-import { compileDependency } from "./compilers/dependency.js";
 import { listIcons } from "./design/icons.js";
 import { MONO_PATHS } from "./layout/icons.js";
 import {
   cloudSchema,
   microserviceSchema,
-  flowchartSchema,
-  decisionSchema,
-  dependencySchema,
   renderSchema,
 } from "./tools/schemas.js";
 import type { EngineKind, QaIssue, RenderResult } from "./types.js";
@@ -21,6 +15,7 @@ import { componentSchema, dataflowSchema, deploymentSchema, networkSchema, swiml
 import { compileComponent, compileDataflow, compileDeployment, compileNetwork, compileSystemContext } from "./compilers/kinds/grid-kinds.js";
 import { compileSwimlane } from "./compilers/kinds/swimlane.js";
 import { summarizeQa } from "./layout/qa.js";
+import { KIND_COMPILERS, KIND_RAW } from "./compilers/kinds/registry.js";
 import type { z } from "zod";
 
 function formatResult(result: RenderResult) {
@@ -238,46 +233,76 @@ export function createServer(): McpServer {
     async (args: z.infer<typeof swimlaneSchema>) => runArchitecture(compileSwimlane(args), args),
   );
 
-  server.registerTool(
-    "create_flowchart",
-    {
-      title: "Create flowchart",
-      description:
-        "Generate a professional process / program flowchart (supports swimlanes via groups with kind=lane, decisions, subprocesses). Returns SVG+PNG paths and a compact PNG preview.",
-      inputSchema: flowchartSchema.shape,
-    },
-    async (args: z.infer<typeof flowchartSchema>) => {
-      const compiled = compileFlowchart(args);
-      return runCompiled(compiled, args);
-    },
-  );
+  const kind = (name: string, title: string, description: string) => {
+    const k = KIND_COMPILERS[name];
+    server.registerTool(name, { title, description: description + COMMON, inputSchema: (k.schema as unknown as { shape: Record<string, z.ZodTypeAny> }).shape }, async (args: Record<string, unknown>) => {
+      const parsed = k.schema.parse(args);
+      return runArchitecture(KIND_RAW[name](parsed), parsed);
+    });
+  };
 
-  server.registerTool(
-    "create_decision_diagram",
-    {
-      title: "Create decision diagram",
-      description:
-        "Generate a decision tree / decision diagram with questions, actions, and outcomes. Branch labels (yes/no/…) are color-coded. Returns SVG+PNG paths and a compact PNG preview.",
-      inputSchema: decisionSchema.shape,
-    },
-    async (args: z.infer<typeof decisionSchema>) => {
-      const compiled = compileDecision(args);
-      return runCompiled(compiled, args);
-    },
+  // ── Group 2: layered DAG family (own Sugiyama-style engine) ──
+  kind(
+    "create_data_lineage",
+    "Create data lineage diagram",
+    "Data lineage: sources → ingestion → transforms → marts → consumers in left → right stage columns (stage frames with system chips), datasets typed table / view / stream / file / model / dashboard …, edges batch / stream / cdc / manual with job labels, focus: {node, direction} highlights upstream / downstream lineage; long chains wrap into bands to stay near 16:9. Example: stages=[Sources, Staging, Marts, BI]; orders_raw → stg_orders → fct_sales → Insight Dashboard.",
   );
-
-  server.registerTool(
+  kind(
+    "create_workflow_dag",
+    "Create workflow / pipeline DAG",
+    "Workflow / pipeline DAG (Airflow, Argo, CI): tasks with status chips (success / running / failed / queued / skipped / upstream_failed), fan-out / fan-in, task groups, schedule chip, trigger rules (success / failure / always) on edges. Example: extract → [clean, validate] → load → notify.",
+  );
+  kind(
     "create_dependency_graph",
-    {
-      title: "Create dependency graph",
-      description:
-        "Generate a readable dependency graph for packages / modules / services (Graphviz). Tuned for large graphs (dozens–hundreds of nodes). Returns SVG+PNG paths and a compact PNG preview.",
-      inputSchema: dependencySchema.shape,
-    },
-    async (args: z.infer<typeof dependencySchema>) => {
-      const compiled = compileDependency(args);
-      return runCompiled(compiled, args);
-    },
+    "Create dependency / impact graph",
+    "Dependency graph for packages / modules / services (layered DAG, cycles shown). Pass changed: [ids] (impact: dependents | dependencies | both) for impact analysis — changed nodes glow, the impacted path is emphasised and everything else is dimmed. Backward compatible with the previous nodes / edges / groups input.",
+  );
+  kind(
+    "create_knowledge_graph",
+    "Create ontology / knowledge graph",
+    "Ontology / knowledge graph: typed entities (classes / instances) and named relations; is_a / instance_of / part_of draw taxonomy edges, focus: {node, direction} highlights one entity's neighbourhood. Example: Person —worksAt→ Company, Company —locatedIn→ City.",
+  );
+  kind(
+    "create_flowchart",
+    "Create flowchart",
+    "Process / program flowchart on our own layered engine: start / end terminators, process, decision diamonds with yes / no (是 / 否) branches coloured, loops (back edges drawn as dashed returns), I/O parallelograms, sub-processes, documents; groups with kind=lane are routed to the swimlane layout. Backward compatible with the previous create_flowchart input.",
+  );
+  kind(
+    "create_decision_diagram",
+    "Create decision diagram",
+    "Decision tree / decision diagram: questions (diamonds), actions and outcomes, branch labels colour-coded (yes / no / other). Backward compatible with the previous create_decision_diagram input.",
+  );
+  // ── Group 3: fixed-form notations ──
+  kind(
+    "create_state_machine",
+    "Create state machine (UML state diagram)",
+    "UML state machine: initial / final pseudo-states, states with entry / do / exit activities, composite (nested) states, choice points, transitions labelled event [guard] / action, self transitions as loops, error / timeout styles.",
+  );
+  kind(
+    "create_er_diagram",
+    "Create entity-relationship diagram",
+    "ER diagram: entities as tables with columns (PK / FK / UK markers, types, nullable), relationships with crow's-foot cardinality (1:1, 1:N, N:M, zero-or-one …), optional subject-area frames. Example: customers 1—N orders, orders 1—N order_items.",
+  );
+  kind(
+    "create_sequence_diagram",
+    "Create sequence diagram",
+    "UML sequence diagram: participant header cards (actor / service / database / queue / external …), lifelines, numbered sync (solid), async (open arrow) and return (dashed) messages, self calls, automatic activation bars, alt / opt / loop / par / critical fragments with else sections, notes and dividers. Long conversations wrap into 2–3 side-by-side panels near 16:9.",
+  );
+  kind(
+    "create_authorization_matrix",
+    "Create authorization / permission matrix",
+    "Authorization matrix: roles × resources × actions with allow ✓ / deny ✗ / conditional ◐ cells; conditional cells carry numbered footnotes listed in a conditions panel. Permissions apply in order with \"*\" wildcards; default none or deny. Auto-picks roles-as-rows, transposed or column-chunked layouts near 16:9.",
+  );
+  // ── Group 4: time-based ──
+  kind(
+    "create_gantt",
+    "Create Gantt chart",
+    "Gantt chart: task groups / phases, bars from start + end / duration or after: [dependencies] (finish-to-start, auto-scheduled), progress fill, milestones (diamonds), critical-path highlight, owner tags, optional TODAY marker; the axis auto-scales day / week / month / quarter with a two-tier header.",
+  );
+  kind(
+    "create_timeline",
+    "Create timeline",
+    "Timeline / roadmap history: events (YYYY, YYYY-MM or YYYY-MM-DD) as cards alternating above / below a time axis with non-overlapping levels, eras as coloured bands, milestones emphasised; proportional time or even spacing; long histories snake into 2–3 rows.",
   );
 
   server.registerTool(

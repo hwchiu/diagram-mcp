@@ -1,0 +1,255 @@
+{
+  "tool": "create_data_lineage",
+  "input": {
+    "title": "Insight 平台資料血緣",
+    "subtitle": "來源系統 → 擷取 → 資料湖 → 倉儲模型 → 服務層（含串流與 ML）",
+    "stages": [
+      {
+        "id": "src",
+        "label": "Source systems"
+      },
+      {
+        "id": "ing",
+        "label": "Ingest",
+        "description": "Airbyte · Kafka"
+      },
+      {
+        "id": "lake",
+        "label": "Lakehouse",
+        "description": "Delta"
+      },
+      {
+        "id": "dwh",
+        "label": "Warehouse",
+        "description": "dbt"
+      },
+      {
+        "id": "serve",
+        "label": "Serve"
+      }
+    ],
+    "datasets": [
+      {
+        "id": "erp",
+        "label": "ERP 訂單",
+        "type": "source",
+        "system": "Oracle",
+        "stage": "src"
+      },
+      {
+        "id": "crm",
+        "label": "CRM 客戶",
+        "type": "source",
+        "system": "Salesforce",
+        "stage": "src",
+        "tags": [
+          "PII"
+        ]
+      },
+      {
+        "id": "web",
+        "label": "網站點擊流",
+        "type": "source",
+        "system": "Web SDK",
+        "stage": "src"
+      },
+      {
+        "id": "pay",
+        "label": "金流交易",
+        "type": "source",
+        "system": "Payment API",
+        "stage": "src",
+        "tags": [
+          "PCI"
+        ]
+      },
+      {
+        "id": "ab_erp",
+        "label": "Airbyte ERP sync",
+        "type": "job",
+        "stage": "ing"
+      },
+      {
+        "id": "ab_crm",
+        "label": "Airbyte CRM sync",
+        "type": "job",
+        "stage": "ing"
+      },
+      {
+        "id": "topic",
+        "label": "clickstream topic",
+        "type": "stream",
+        "system": "Kafka",
+        "stage": "ing"
+      },
+      {
+        "id": "pay_topic",
+        "label": "payments topic",
+        "type": "stream",
+        "system": "Kafka",
+        "stage": "ing"
+      },
+      {
+        "id": "bronze_o",
+        "label": "bronze.orders",
+        "type": "table",
+        "stage": "lake"
+      },
+      {
+        "id": "bronze_c",
+        "label": "bronze.customers",
+        "type": "table",
+        "stage": "lake",
+        "tags": [
+          "PII"
+        ]
+      },
+      {
+        "id": "bronze_e",
+        "label": "bronze.events",
+        "type": "table",
+        "stage": "lake"
+      },
+      {
+        "id": "silver_p",
+        "label": "silver.payments",
+        "type": "table",
+        "stage": "lake"
+      },
+      {
+        "id": "stg_o",
+        "label": "stg_orders",
+        "type": "view",
+        "stage": "dwh"
+      },
+      {
+        "id": "dim_c",
+        "label": "dim_customer",
+        "type": "table",
+        "system": "masked",
+        "stage": "dwh"
+      },
+      {
+        "id": "fct_rev",
+        "label": "fct_revenue",
+        "type": "table",
+        "stage": "dwh"
+      },
+      {
+        "id": "fct_sess",
+        "label": "fct_sessions",
+        "type": "table",
+        "stage": "dwh"
+      },
+      {
+        "id": "dash",
+        "label": "營收儀表板",
+        "type": "dashboard",
+        "system": "Looker",
+        "stage": "serve"
+      },
+      {
+        "id": "churn",
+        "label": "流失預測模型",
+        "type": "model",
+        "system": "Vertex AI",
+        "stage": "serve"
+      },
+      {
+        "id": "api",
+        "label": "客戶洞察 API",
+        "type": "api",
+        "stage": "serve"
+      }
+    ],
+    "flows": [
+      {
+        "from": "erp",
+        "to": "ab_erp"
+      },
+      {
+        "from": "crm",
+        "to": "ab_crm",
+        "kind": "cdc"
+      },
+      {
+        "from": "web",
+        "to": "topic",
+        "kind": "stream"
+      },
+      {
+        "from": "pay",
+        "to": "pay_topic",
+        "kind": "stream"
+      },
+      {
+        "from": "ab_erp",
+        "to": "bronze_o"
+      },
+      {
+        "from": "ab_crm",
+        "to": "bronze_c"
+      },
+      {
+        "from": "topic",
+        "to": "bronze_e",
+        "kind": "stream"
+      },
+      {
+        "from": "pay_topic",
+        "to": "silver_p",
+        "kind": "stream"
+      },
+      {
+        "from": "bronze_o",
+        "to": "stg_o",
+        "label": "dbt"
+      },
+      {
+        "from": "bronze_c",
+        "to": "dim_c",
+        "label": "mask PII"
+      },
+      {
+        "from": "bronze_e",
+        "to": "fct_sess"
+      },
+      {
+        "from": "stg_o",
+        "to": "fct_rev"
+      },
+      {
+        "from": "silver_p",
+        "to": "fct_rev"
+      },
+      {
+        "from": "dim_c",
+        "to": "fct_rev"
+      },
+      {
+        "from": "dim_c",
+        "to": "fct_sess"
+      },
+      {
+        "from": "fct_rev",
+        "to": "dash"
+      },
+      {
+        "from": "fct_sess",
+        "to": "churn"
+      },
+      {
+        "from": "dim_c",
+        "to": "churn"
+      },
+      {
+        "from": "churn",
+        "to": "api"
+      },
+      {
+        "from": "fct_rev",
+        "to": "api"
+      }
+    ]
+  }
+}

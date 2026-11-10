@@ -1,0 +1,22 @@
+{
+  "tool": "create_timeline",
+  "input": {
+    "title": "Insight 產品里程碑",
+    "subtitle": "From prototype to platform",
+    "eras": [
+      { "label": "Prototype", "start": "2023-01", "end": "2023-09", "role": "queue" },
+      { "label": "Product", "start": "2023-10", "end": "2024-12", "role": "gateway" },
+      { "label": "Platform", "start": "2025-01", "end": "2026-06", "role": "compute" }
+    ],
+    "events": [
+      { "date": "2023-02", "label": "第一版 PoC", "description": "3 位分析師內部試用" },
+      { "date": "2023-08", "label": "資料目錄上線", "description": "Catalog + 搜尋" },
+      { "date": "2023-11", "label": "v1.0 GA", "description": "全公司開放", "milestone": true, "role": "storage" },
+      { "date": "2024-05", "label": "SSO / OIDC", "description": "整合公司身分系統", "role": "security" },
+      { "date": "2024-10", "label": "報表匯出", "description": "非同步匯出到 S3" },
+      { "date": "2025-03", "label": "Lineage", "description": "欄位層級血緣" },
+      { "date": "2025-09", "label": "v2.0 Platform", "description": "多租戶 + API", "milestone": true, "role": "storage" },
+      { "date": "2026-04", "label": "AI 助理", "description": "自然語言查詢 (beta)", "role": "data" }
+    ]
+  }
+}

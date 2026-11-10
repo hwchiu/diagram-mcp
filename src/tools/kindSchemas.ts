@@ -298,3 +298,373 @@ export const swimlaneSchema = z.object({
     .describe("Sequence / handoffs between steps"),
   numbering: z.boolean().optional().describe("Number task cards in flow order (default true)"),
 });
+
+// ════════════════════════════════════════════════════════════════════════════
+// Group 2 — layered DAG family (Sugiyama layout, own engine)
+// ════════════════════════════════════════════════════════════════════════════
+const direction = z.enum(["LR", "TB", "auto"]).optional().describe("Layer direction: LR (left → right), TB (top → bottom) or auto (default: whichever reads best near 16:9)");
+const wrapOpt = z.enum(["auto", "never"]).optional().describe("auto (default) wraps long chains into 2–3 bands to stay near 16:9");
+const roleEnum = z.enum(["compute", "data", "network", "security", "external", "client", "queue", "gateway", "storage", "observability", "default"]);
+
+// ── 7. Data lineage ────────────────────────────────────────────────────────
+export const lineageSchema = z.object({
+  ...base,
+  direction,
+  wrap: wrapOpt,
+  stages: z
+    .array(z.object({ id, label, description: z.string().optional().describe("Shown as a chip on the stage header (system / tech)") }))
+    .optional()
+    .describe("Pipeline stages left → right (Source, Ingest, Lake, Warehouse, Serve …); each dataset sits in one stage column"),
+  datasets: z
+    .array(
+      z.object({
+        id,
+        label,
+        type: z.enum(["source", "table", "view", "file", "stream", "job", "model", "dashboard", "report", "api"]).optional().describe("default table"),
+        system: z.string().optional().describe("Where it lives (\"Oracle · ERP\", \"BigQuery\") — shown under the label"),
+        stage: z.string().optional().describe("Stage id"),
+        description: z.string().optional(),
+        tags: z.array(z.string()).optional().describe("Classification chips, e.g. [\"PII\"]"),
+      }),
+    )
+    .min(1),
+  flows: z
+    .array(
+      z.object({
+        from: z.string(),
+        to: z.string(),
+        label: z.string().optional().describe("Transformation (\"dbt model\", \"Spark job\", \"CDC\")"),
+        kind: z.enum(["batch", "stream", "cdc", "manual"]).optional().describe("default batch"),
+      }),
+    )
+    .describe("Data movement source → target"),
+  focus: z
+    .object({ node: z.string(), direction: z.enum(["upstream", "downstream", "both"]).optional() })
+    .optional()
+    .describe("Highlight the lineage of one dataset (others are dimmed)"),
+});
+
+// ── 8. Workflow DAG ────────────────────────────────────────────────────────
+export const workflowSchema = z.object({
+  ...base,
+  direction,
+  wrap: wrapOpt,
+  schedule: z.string().optional().describe("Schedule / trigger shown as a header chip (\"0 2 * * *\", \"on push\")"),
+  groups: z.array(z.object({ id, label, parent: z.string().optional() })).optional().describe("Task groups (frames)"),
+  tasks: z
+    .array(
+      z.object({
+        id,
+        label,
+        operator: z.string().optional().describe("Operator / runner shown under the label (\"SparkSubmit\", \"dbt run\")"),
+        status: z.enum(["success", "failed", "running", "queued", "skipped", "upstream_failed", "none"]).optional(),
+        group: z.string().optional().describe("Task group id"),
+        description: z.string().optional(),
+        icon: z.string().optional(),
+      }),
+    )
+    .min(1),
+  dependencies: z
+    .array(z.object({ from: z.string(), to: z.string(), label: z.string().optional(), condition: z.enum(["success", "failure", "always"]).optional().describe("Trigger rule (default success)") }))
+    .describe("upstream → downstream"),
+});
+
+// ── 9. Dependency / impact graph (backward compatible with the old tool) ─────
+export const dependencyGraphSchema = z.object({
+  ...base,
+  direction,
+  wrap: wrapOpt,
+  layout: z.string().optional().describe("ignored (legacy)"),
+  nodes: z
+    .array(
+      z.object({
+        id,
+        label,
+        subtitle: z.string().optional(),
+        description: z.string().optional(),
+        role: roleEnum.optional(),
+        icon: z.string().optional(),
+        group: z.string().optional().describe("Cluster id (package / domain / team)"),
+        shape: z.string().optional().describe("ignored (legacy)"),
+        type: z.enum(["service", "library", "database", "queue", "external", "app"]).optional(),
+      }),
+    )
+    .min(1),
+  edges: z
+    .array(z.object({ from: z.string().describe("dependent"), to: z.string().describe("dependency"), label: z.string().optional(), kind: flowKind.optional(), optional: z.boolean().optional().describe("soft / optional dependency (dashed)") }))
+    .min(1)
+    .describe("from DEPENDS ON to (arrow points at the dependency)"),
+  groups: z.array(z.object({ id, label, parent: z.string().optional(), kind: z.string().optional() })).optional(),
+  changed: z.array(z.string()).optional().describe("Impact analysis: ids of changed nodes — everything that (transitively) depends on them is highlighted, the rest dimmed"),
+  impact: z.enum(["dependents", "dependencies", "both"]).optional().describe("dependents (default): who breaks if the changed node changes; dependencies: what the changed node needs"),
+});
+
+// ── 10. Ontology / knowledge graph ──────────────────────────────────────────
+export const knowledgeGraphSchema = z.object({
+  ...base,
+  direction,
+  wrap: wrapOpt,
+  types: z
+    .array(z.object({ id, label, color: roleEnum.optional().describe("Palette role"), icon: z.string().optional() }))
+    .optional()
+    .describe("Entity classes (Person, Company, Dataset …) — coloured and listed in the legend"),
+  entities: z
+    .array(
+      z.object({
+        id,
+        label,
+        type: z.string().optional().describe("Type id"),
+        description: z.string().optional(),
+        attributes: z.array(z.string()).optional().describe("Up to 3 \"key: value\" lines"),
+      }),
+    )
+    .min(1),
+  relations: z
+    .array(
+      z.object({
+        from: z.string(),
+        to: z.string(),
+        label: z.string().describe("Predicate (\"owns\", \"is_a\", \"擁有\")"),
+        kind: z.enum(["relation", "is_a", "part_of", "instance_of"]).optional().describe("is_a / instance_of draw a hollow-arrow taxonomy edge"),
+        bidirectional: z.boolean().optional(),
+      }),
+    )
+    .describe("Labelled, directed relations"),
+  focus: z.object({ node: z.string(), direction: z.enum(["upstream", "downstream", "both"]).optional() }).optional().describe("Highlight one entity's neighbourhood"),
+});
+
+// ── 11. Flowchart (backward compatible) ────────────────────────────────────
+const fcType = z.enum(["start", "end", "process", "decision", "io", "subprocess", "document", "data", "wait"]);
+export const flowchartKindSchema = z.object({
+  ...base,
+  direction,
+  wrap: wrapOpt,
+  layout: z.string().optional().describe("ignored (legacy)"),
+  nodes: z
+    .array(
+      z.object({
+        id,
+        label,
+        type: fcType.optional().describe("default process"),
+        subtitle: z.string().optional(),
+        description: z.string().optional(),
+        role: roleEnum.optional(),
+        icon: z.string().optional(),
+        group: z.string().optional().describe("Lane id (when groups have kind \"lane\" the chart becomes a swimlane)"),
+        shape: z.string().optional().describe("ignored (legacy)"),
+      }),
+    )
+    .min(1),
+  edges: z
+    .array(z.object({ from: z.string(), to: z.string(), label: z.string().optional(), when: z.string().optional().describe("Branch label (yes / no / 是 / 否)"), kind: flowKind.optional() }))
+    .optional(),
+  groups: z.array(z.object({ id, label, kind: z.string().optional(), parent: z.string().optional() })).optional(),
+});
+
+export const decisionKindSchema = z.object({
+  ...base,
+  direction,
+  wrap: wrapOpt,
+  layout: z.string().optional(),
+  root: z.string(),
+  nodes: z
+    .array(z.object({ id, label, type: z.enum(["question", "outcome", "action"]).optional(), subtitle: z.string().optional(), description: z.string().optional(), role: roleEnum.optional(), icon: z.string().optional(), group: z.string().optional(), shape: z.string().optional() }))
+    .min(1),
+  edges: z.array(z.object({ from: z.string(), to: z.string(), label: z.string().optional(), when: z.string().optional(), kind: flowKind.optional() })).min(1),
+});
+
+// ════════════════════════════════════════════════════════════════════════════
+// Group 3 — fixed-form notations
+// ════════════════════════════════════════════════════════════════════════════
+// ── 12. State machine ──────────────────────────────────────────────────────
+export const stateMachineSchema = z.object({
+  ...base,
+  direction,
+  wrap: wrapOpt,
+  states: z
+    .array(
+      z.object({
+        id,
+        label: z.string().optional().describe("Defaults to the id; ignored for initial / final / choice"),
+        type: z.enum(["state", "initial", "final", "choice", "composite"]).optional().describe("default state; composite = has child states (parent)"),
+        parent: z.string().optional().describe("Composite state id"),
+        entry: z.string().optional().describe("entry / action"),
+        do: z.string().optional().describe("do / activity"),
+        exit: z.string().optional().describe("exit / action"),
+        description: z.string().optional(),
+      }),
+    )
+    .min(1),
+  transitions: z
+    .array(
+      z.object({
+        from: z.string(),
+        to: z.string(),
+        event: z.string().optional(),
+        guard: z.string().optional().describe("Condition, drawn as [guard]"),
+        action: z.string().optional().describe("Effect, drawn as / action"),
+        kind: z.enum(["normal", "error", "timeout", "internal"]).optional(),
+      }),
+    )
+    .describe("Self transitions (from == to) are drawn as loops"),
+});
+
+// ── 13. ERD ─────────────────────────────────────────────────────────────────
+const cardEnd = z.enum(["one", "exactlyOne", "zeroOrOne", "many", "oneOrMany", "zeroOrMany"]);
+export const erdSchema = z.object({
+  ...base,
+  direction,
+  wrap: wrapOpt,
+  domains: z.array(z.object({ id, label })).optional().describe("Optional subject areas (frames)"),
+  entities: z
+    .array(
+      z.object({
+        id,
+        label: z.string().optional().describe("Table name (defaults to id)"),
+        domain: z.string().optional(),
+        columns: z
+          .array(
+            z.object({
+              name: z.string(),
+              type: z.string().optional(),
+              pk: z.boolean().optional(),
+              fk: z.union([z.boolean(), z.string()]).optional().describe("true or \"table.column\""),
+              unique: z.boolean().optional(),
+              nullable: z.boolean().optional(),
+            }),
+          )
+          .min(1),
+      }),
+    )
+    .min(1),
+  relationships: z
+    .array(
+      z.object({
+        from: z.string(),
+        to: z.string(),
+        cardinality: z.string().optional().describe("\"1:N\" (default), \"1:1\", \"N:1\", \"N:M\", \"0..1:N\", \"1:1..N\""),
+        fromEnd: cardEnd.optional().describe("Explicit notation at the from table (overrides cardinality)"),
+        toEnd: cardEnd.optional(),
+        label: z.string().optional().describe("Verb (\"places\", \"擁有\")"),
+        identifying: z.boolean().optional().describe("Identifying (solid, default) vs non-identifying (dashed)"),
+      }),
+    )
+    .optional()
+    .default([]),
+});
+
+// ── 14. Sequence ────────────────────────────────────────────────────────────
+const itemRef = z.union([z.string(), z.number().int().positive()]).describe("Item id, or 1-based position in messages[]");
+export const sequenceSchema = z.object({
+  ...base,
+  participants: z
+    .array(
+      z.object({
+        id,
+        label,
+        type: z.enum(["actor", "service", "database", "queue", "external", "browser", "gateway", "security", "job"]).optional().describe("Header icon / colour (default service)"),
+        description: z.string().optional().describe("Second header line, e.g. technology"),
+      }),
+    )
+    .min(1)
+    .describe("Left → right order of lifelines"),
+  messages: z
+    .array(
+      z.object({
+        type: z.enum(["message", "note", "divider"]).optional().describe("default message"),
+        id: z.string().optional().describe("Referenced by fragments"),
+        from: z.string().optional(),
+        to: z.string().optional().describe("from == to draws a self call"),
+        label: z.string().optional().describe("Message text (or divider label)"),
+        kind: z.enum(["sync", "async", "return", "error"]).optional().describe("sync (default, solid filled arrow), async (open arrow), return (dashed), error"),
+        text: z.string().optional().describe("Note text"),
+        over: z.array(z.string()).optional().describe("Note: participant ids it sits over (1 or a span)"),
+        position: z.enum(["over", "left", "right"]).optional().describe("Note placement relative to over[0]"),
+      }),
+    )
+    .min(1)
+    .describe("Messages, notes and dividers in time order (top → bottom)"),
+  fragments: z
+    .array(
+      z.object({
+        kind: z.enum(["alt", "opt", "loop", "par", "critical", "break", "group"]),
+        label: z.string().optional().describe("Guard / condition, drawn as [label]"),
+        start: itemRef,
+        end: itemRef,
+        sections: z.array(z.object({ start: itemRef, label: z.string().optional() })).optional().describe("alt else / par branches: the item where each extra section begins"),
+      }),
+    )
+    .optional()
+    .describe("Combined fragments over a contiguous range of items (may nest, must not partially overlap)"),
+  autonumber: z.boolean().optional().describe("Number messages (default true)"),
+  activations: z.enum(["auto", "none"]).optional().describe("auto (default): sync call activates the callee until its return"),
+  panels: z.number().int().min(1).max(3).optional().describe("Force 1–3 side-by-side panels (default: auto for long conversations)"),
+});
+
+// ── 15. Authorization matrix ────────────────────────────────────────────────
+export const authzSchema = z.object({
+  ...base,
+  roles: z.array(z.object({ id, label, description: z.string().optional().describe("Second line, e.g. who holds the role") })).min(1),
+  resources: z
+    .array(z.object({ id, label, actions: z.array(z.string().min(1)).optional().describe("Actions for this resource (default: top-level actions)") }))
+    .min(1),
+  actions: z.array(z.string().min(1)).optional().describe("Default actions for every resource, e.g. [\"read\",\"write\",\"delete\"]"),
+  permissions: z
+    .array(
+      z.object({
+        role: z.string().describe("Role id or \"*\""),
+        resource: z.string().describe("Resource id or \"*\""),
+        actions: z.union([z.array(z.string()), z.literal("*")]).optional().describe("Actions (default all of the resource's actions)"),
+        effect: z.enum(["allow", "deny", "conditional"]),
+        condition: z.string().optional().describe("For conditional: the rule, shown as a numbered footnote (e.g. 僅限本人建立的資料)"),
+      }),
+    )
+    .describe("Applied in order; later entries override earlier ones"),
+  default: z.enum(["none", "deny"]).optional().describe("Cells no permission covers: none (—, default) or deny"),
+  orientation: z.enum(["auto", "roles-rows", "roles-columns"]).optional().describe("auto (default) picks the layout nearest 16:9"),
+});
+
+// ── 16. Gantt ───────────────────────────────────────────────────────────────
+const isoDate = z.string().regex(/^\d{4}-\d{1,2}-\d{1,2}$/, "use YYYY-MM-DD");
+export const ganttSchema = z.object({
+  ...base,
+  groups: z.array(z.object({ id, label })).optional().describe("Task groups / phases / workstreams (rows are grouped in this order)"),
+  tasks: z
+    .array(
+      z.object({
+        id,
+        label,
+        group: z.string().optional(),
+        start: isoDate.optional().describe("YYYY-MM-DD; omit when after is set (starts when its dependencies finish)"),
+        end: isoDate.optional().describe("Last day (inclusive), YYYY-MM-DD"),
+        duration: z.union([z.number().positive(), z.string().regex(/^\d+(\.\d+)?\s*[dwm]$/i)]).optional().describe("Days, or \"5d\" / \"2w\" / \"1m\" (30 days)"),
+        after: z.union([z.string(), z.array(z.string())]).optional().describe("Finish-to-start dependencies (task ids)"),
+        progress: z.number().min(0).max(100).optional().describe("Percent complete"),
+        milestone: z.boolean().optional().describe("Zero-length diamond at start"),
+        critical: z.boolean().optional().describe("Highlight as critical path"),
+        owner: z.string().optional(),
+      }),
+    )
+    .min(1),
+  today: isoDate.optional().describe("Draws a TODAY marker (only when given)"),
+  scale: z.enum(["auto", "day", "week", "month", "quarter"]).optional().describe("Axis unit (default auto from the date span)"),
+});
+
+// ── 17. Timeline ────────────────────────────────────────────────────────────
+const looseDate = z.string().regex(/^\d{4}(-\d{1,2}(-\d{1,2})?)?$/, "use YYYY, YYYY-MM or YYYY-MM-DD");
+export const timelineSchema = z.object({
+  ...base,
+  events: z
+    .array(
+      z.object({
+        date: looseDate,
+        label,
+        description: z.string().optional().describe("Up to ~3 short lines"),
+        role: roleEnum.optional().describe("Colour"),
+        milestone: z.boolean().optional().describe("Emphasised event"),
+      }),
+    )
+    .min(1),
+  eras: z.array(z.object({ label, start: looseDate, end: looseDate, role: roleEnum.optional() })).optional().describe("Periods drawn as bands on the axis"),
+  scale: z.enum(["time", "even"]).optional().describe("time (default): positions proportional to dates; even: equal spacing in date order"),
+});

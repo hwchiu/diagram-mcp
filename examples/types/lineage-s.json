@@ -1,0 +1,115 @@
+{
+  "tool": "create_data_lineage",
+  "input": {
+    "title": "客戶營收報表資料血緣",
+    "subtitle": "ERP / CRM → 資料湖 → 倉儲 → BI",
+    "stages": [
+      {
+        "id": "src",
+        "label": "Source"
+      },
+      {
+        "id": "lake",
+        "label": "Data Lake",
+        "description": "S3"
+      },
+      {
+        "id": "dwh",
+        "label": "Warehouse",
+        "description": "BigQuery"
+      },
+      {
+        "id": "bi",
+        "label": "Serve"
+      }
+    ],
+    "datasets": [
+      {
+        "id": "erp",
+        "label": "ERP 訂單",
+        "type": "source",
+        "system": "Oracle · ERP",
+        "stage": "src"
+      },
+      {
+        "id": "crm",
+        "label": "CRM 客戶",
+        "type": "source",
+        "system": "Salesforce",
+        "stage": "src",
+        "tags": [
+          "PII"
+        ]
+      },
+      {
+        "id": "raw_orders",
+        "label": "raw.orders",
+        "type": "file",
+        "system": "parquet",
+        "stage": "lake"
+      },
+      {
+        "id": "raw_cust",
+        "label": "raw.customers",
+        "type": "file",
+        "system": "parquet",
+        "stage": "lake",
+        "tags": [
+          "PII"
+        ]
+      },
+      {
+        "id": "fct",
+        "label": "fct_revenue",
+        "type": "table",
+        "system": "dbt model",
+        "stage": "dwh"
+      },
+      {
+        "id": "dim",
+        "label": "dim_customer",
+        "type": "table",
+        "system": "dbt model · masked",
+        "stage": "dwh"
+      },
+      {
+        "id": "dash",
+        "label": "營收儀表板",
+        "type": "dashboard",
+        "system": "Looker",
+        "stage": "bi"
+      }
+    ],
+    "flows": [
+      {
+        "from": "erp",
+        "to": "raw_orders",
+        "label": "nightly extract"
+      },
+      {
+        "from": "crm",
+        "to": "raw_cust",
+        "kind": "cdc",
+        "label": "CDC"
+      },
+      {
+        "from": "raw_orders",
+        "to": "fct",
+        "label": "dbt run"
+      },
+      {
+        "from": "raw_cust",
+        "to": "dim",
+        "label": "mask PII"
+      },
+      {
+        "from": "dim",
+        "to": "fct"
+      },
+      {
+        "from": "fct",
+        "to": "dash"
+      }
+    ]
+  }
+}

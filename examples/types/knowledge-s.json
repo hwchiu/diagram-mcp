@@ -1,0 +1,82 @@
+{
+  "tool": "create_knowledge_graph",
+  "input": {
+    "title": "公司資料本體",
+    "subtitle": "Company ontology — 實體類別與關係",
+    "types": [
+      {
+        "id": "org",
+        "label": "Organization",
+        "icon": "building"
+      },
+      {
+        "id": "person",
+        "label": "Person",
+        "icon": "user"
+      },
+      {
+        "id": "product",
+        "label": "Product",
+        "icon": "box"
+      }
+    ],
+    "entities": [
+      {
+        "id": "acme",
+        "label": "Acme 集團",
+        "type": "org"
+      },
+      {
+        "id": "sub",
+        "label": "Acme 台灣",
+        "type": "org"
+      },
+      {
+        "id": "ceo",
+        "label": "王大明",
+        "type": "person",
+        "attributes": [
+          "title: CEO"
+        ]
+      },
+      {
+        "id": "p1",
+        "label": "智慧感測器",
+        "type": "product"
+      },
+      {
+        "id": "p2",
+        "label": "雲端平台",
+        "type": "product"
+      }
+    ],
+    "relations": [
+      {
+        "from": "sub",
+        "to": "acme",
+        "label": "subsidiary_of",
+        "kind": "part_of"
+      },
+      {
+        "from": "ceo",
+        "to": "acme",
+        "label": "leads"
+      },
+      {
+        "from": "sub",
+        "to": "p1",
+        "label": "manufactures"
+      },
+      {
+        "from": "acme",
+        "to": "p2",
+        "label": "owns"
+      },
+      {
+        "from": "p1",
+        "to": "p2",
+        "label": "integrates_with"
+      }
+    ]
+  }
+}

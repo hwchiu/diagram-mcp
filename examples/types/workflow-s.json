@@ -1,0 +1,69 @@
+{
+  "tool": "create_workflow_dag",
+  "input": {
+    "title": "每日 ETL 排程",
+    "subtitle": "Airflow DAG · daily_sales",
+    "schedule": "0 2 * * *",
+    "tasks": [
+      {
+        "id": "wait",
+        "label": "等待來源檔",
+        "operator": "S3KeySensor",
+        "status": "success"
+      },
+      {
+        "id": "extract",
+        "label": "擷取訂單",
+        "operator": "PythonOperator",
+        "status": "success"
+      },
+      {
+        "id": "validate",
+        "label": "資料驗證",
+        "operator": "GreatExpectations",
+        "status": "success"
+      },
+      {
+        "id": "transform",
+        "label": "dbt run",
+        "operator": "DbtRunOperator",
+        "status": "running"
+      },
+      {
+        "id": "alert",
+        "label": "通知值班",
+        "operator": "SlackOperator",
+        "status": "skipped"
+      },
+      {
+        "id": "publish",
+        "label": "發佈報表",
+        "operator": "LookerOperator",
+        "status": "queued"
+      }
+    ],
+    "dependencies": [
+      {
+        "from": "wait",
+        "to": "extract"
+      },
+      {
+        "from": "extract",
+        "to": "validate"
+      },
+      {
+        "from": "validate",
+        "to": "transform"
+      },
+      {
+        "from": "validate",
+        "to": "alert",
+        "condition": "failure"
+      },
+      {
+        "from": "transform",
+        "to": "publish"
+      }
+    ]
+  }
+}
