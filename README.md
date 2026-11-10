@@ -8,6 +8,12 @@
 |---|---|---|
 | `create_cloud_architecture` | 雲端 / K8s 架構（巢狀 tier、避障正交路由、`steps` 面板、QA、draw.io） | **SVG grid** |
 | `create_microservice_architecture` | 微服務（同上；sync / async / data / auth） | **SVG grid** |
+| `create_system_context` | **C4 L1 系統情境圖**：人物（頭像卡）→ 系統邊界內的大型系統方塊 → 外部系統 | **SVG grid** |
+| `create_component_diagram` | **C4 L3 元件圖**：container 邊界、provided interface（pill）、分層元件、外部依賴 | **SVG grid** |
+| `create_deployment_topology` | **K8s 部署拓撲**：cluster → namespace → workload（類型 chip、replica 疊卡）、叢集外資源 | **SVG grid** |
+| `create_network_topology` | **網路拓撲**：Internet / DMZ / VPC / subnet / 廠區，CIDR chip、防火牆 / VPN / 路由，allow / deny / VPN 線型 | **SVG grid** |
+| `create_dataflow_trust_boundary` | **DFD + 信任邊界**（威脅建模）：外部實體 / P# 流程 / D# 資料存放、紅色虛線信任邊界、⊗ 跨界標記、`[PII]` 敏感資料標籤 | **SVG grid** |
+| `create_swimlane` | **泳道圖**：每個角色一條 lane，任務自動編號、決策菱形、起訖膠囊、跨 lane 交接 | **SVG swimlane** |
 | `create_flowchart` | 流程圖（支援 swimlane） | Mermaid |
 | `create_decision_diagram` | 決策樹（yes/no 色碼） | Mermaid |
 | `create_dependency_graph` | 套件 / 模組依賴圖 | Graphviz |
@@ -160,6 +166,30 @@ node dist/index.js
 預設會在 PNG 旁輸出 `<name>.drawio`（mxGraph XML；拆圖時每張 view 各一份）：位置與 SVG 完全一致、
 深色樣式、tier 為可拖曳的巢狀 container、卡片內嵌 monoline icon、邊線為 orthogonal + waypoint、
 步驟徽章 / 圖例 / walkthrough 皆為可編輯 cell。可直接用 draw.io / diagrams.net 開啟。
+
+## 圖種（Group 1）
+
+六個新工具共用同一套 dark Cocoon 視覺、避障正交路由、結構 QA 與 draw.io 輸出（`outputs` 預設 svg + png + drawio），
+文字支援繁體中文（Noto Sans / Mono CJK TC 量測與渲染）。範例輸入在 [`examples/types/`](./examples/types)（每種一個小圖 `-s`、一個 12–20 節點的中圖 `-m`）。
+所有工具都接受共用欄位 `title` / `subtitle` / `theme` / `name` / `outputDir` / `outputs` / `steps`（walkthrough）/ `split` / `splitThreshold`。
+
+| Tool | 主要欄位 | 視覺特徵 |
+|---|---|---|
+| `create_system_context` | `system{id,label,description,technology}`、`boundary{label,tag}`、`internalSystems[]`、`actors[]{external}`、`externalSystems[]{type}`、`relationships[]{from,to,label,technology,kind,bidirectional,step}` | 人物＝頭像 + 圓角卡；系統＝加大加粗的中央方塊；藍色虛線系統邊界；外部系統灰色 |
+| `create_component_diagram` | `container{id,label,technology}`、`interfaces[]{protocol}`、`components[]{responsibility,technology,layer,type: component/store/adapter/policy/job}`、`layers[]`、`externals[]{type,side}`、`relationships[]` | container 邊界 + 技術 chip；interface 為 pill（左側圓點）；元件右上 UML 元件符號；依 layer 分欄 |
+| `create_deployment_topology` | `clusters[]{provider,version,region,namespaces[]{workloads[]{type,replicas,image,port}}}`、`outside[]{type,location,side}`、`connections[]{protocol,port,kind}` | cluster / namespace 巢狀框 + 類型 chip（DEPLOY / STS / DS / ING / CRON…）；replicas > 1 畫成疊卡；叢集外資源另一欄 |
+| `create_network_topology` | `zones[]{type: internet/dmz/vpc/subnet/onprem/site/…,cidr,parent}`、`devices[]{type,zone,ip}`、`links[]{protocol,port,type: allow/deny/vpn/route/mgmt,bidirectional}` | 區域框右上 CIDR chip；防火牆紅、VPN / 路由器專屬 icon；allow 實線、VPN 紫色虛線、deny 紅色點線 |
+| `create_dataflow_trust_boundary` | `boundaries[]{trust: untrusted…restricted,parent}`、`externalEntities[]`、`processes[]{number}`、`dataStores[]{number}`、`flows[]{label,data[],protocol,kind}` | 紅色虛線信任邊界 + 鎖頭 + 信任等級 chip；外部實體雙框方塊、流程 P#、資料存放 D#（開口框）；跨界的流用 ⊗ 標記並加光暈；`data` 中的 PII / 機密以紅色 `[TAG]` 標在 pill 上 |
+| `create_swimlane` | `lanes[]{id,label,description}`、`steps[]{id,label,lane,type: start/end/task/decision/document/system/wait,column}`、`flows[]{from,to,label,kind}`、`numbering` | 左側 lane 標頭（LANE 01…）；任務自動編號 chip；決策菱形、起訖膠囊；退回流用紅色點線；寬度太長會自動壓縮欄位或分段 |
+
+QA 規則與架構圖相同（0 error 為必要條件）；`npm test` 會對 `examples/types/` 的 12 份規格檢查 0 error、長寬比 1.4–2.2、
+每條有 label 的邊都有 pill，以及 draw.io XML 可解析。
+
+### 細節圖密度控制（split）
+
+- **stub 扇入合併**：同一個 zone 內 ≥ 3 張卡片以同一種線連到同一個 stub 時，改畫一條「zone → stub」的邊並標 `×N`。
+- **大 zone 自動分組**：細節圖中 > 12 張卡片或 > 20 條內部邊的 zone，會依連線自動拆成子群組（以 hub 命名）。
+- **重心排序**：未指定 `reorder` 時，引擎會同時試排「原順序」與「鄰居重心順序」，交叉較少者勝出。
 
 ## Showcase
 

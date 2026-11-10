@@ -11,6 +11,12 @@ Reference images used during development stay local only — third-party samples
 |---|---|---|
 | Cloud architecture | **SVG grid** (`src/layout/`) | Deterministic nested layout, A* orthogonal router, QA, draw.io |
 | Microservice | **SVG grid** | Same engine |
+| System context (C4 L1) | **SVG grid** | `compilers/kinds/grid-kinds.ts` → shared `compileModel` |
+| Component (C4 L3) | **SVG grid** | same |
+| Deployment topology (k8s) | **SVG grid** | same |
+| Network topology | **SVG grid** | same |
+| DFD + trust boundaries | **SVG grid** | same |
+| Swimlane | **SVG swimlane** (`layout/swimlane.ts`) | own rank/lane placement, shared router, QA, SVG, draw.io |
 | Flowchart / decision / sequence | Mermaid | Unchanged |
 | Dependency graph | Graphviz DOT | Unchanged |
 | Escape hatch | `render_diagram` | Raw D2 / Mermaid / DOT |
@@ -94,6 +100,43 @@ edges and steps, so future diagram types (deployment, network zones, DFD, swimla
 Rules: 8px-based tokens (`grid.ts`), uniform card size, column heights equalized, gutters widened only where a labelled
 edge needs room for its pill, tier labels shifted out of straight vertical edge corridors. Text width is *measured*
 (`text.ts`: JetBrains Mono 0.6em/glyph, Inter advance table baked from the font, CJK 1em) and ellipsized if needed.
+
+### Density controls in detail views
+
+- `collapseFanIn`: ≥ 3 focus cards of one zone hitting the same stub with the same kind and direction become one
+  zone → stub edge labelled `×N` (the router already supports tier endpoints).
+- `splitDenseZones`: a leaf zone with > 12 cards or > 20 internal edges is split into ⌈n/8⌉ connected sub-groups;
+  hubs (highest degree, not adjacent to an earlier hub) seed the groups, each other card joins the seed group it talks to most.
+- Barycentre auto-try (`layoutArchitecture`): when `reorder` is unset and the diagram has ≥ 6 cards and ≥ 6 edges, both the
+  given order and the barycentre order are laid out; barycentre is kept only if it removes crossings without routing failures.
+- Short, wide posters (> 2.2) get extra row height instead of shipping a banner (cards stay centred in their zones).
+
+## Diagram kinds (Group 1)
+
+Every kind compiles to the same `ArchitectureLayoutInput` (zones, nodes, edges, steps) plus a `DiagramProfile`
+(`kind`, footer caption, header nouns) and goes through `compileModel` — split, SVG, draw.io and QA are shared.
+Kind-specific notation lives in the model, not in the engine:
+
+| Kind | Zones (`GroupKind`) | Card shapes (`NodeShape`) | Edge notation |
+|---|---|---|---|
+| `context` | `boundary` (dashed blue) | `person` (head + body), `system` (large, bold), default | kinds → legend |
+| `component` | `boundary` + sub-zones per layer | `interface` (pill + port dot), `component` (UML glyph), `cylinder` | calls / publishes / reads |
+| `deployment` | cluster / namespace zones with `tag` chips | `pod` with `replicas` stack, type `tag` chip | request / async / data |
+| `network` | `internet`, `dmz`, `site`, `zone` with CIDR `tag` | device icons (router, switch, firewall, vpn…) | allow / vpn / deny / route / mgmt |
+| `dfd` | `trust` (red dashes, lock, trust-level chip) | `entity` (double frame), `process` (P#), `datastore` (D#, open side) | crossings ⊗ + highlight, data `tags` in red |
+| `swimlane` | `lane` (header cell, LANE nn) | `terminator`, `decision` (diamond), numbered tasks | reject flows dotted red |
+
+Card sizes come from `cardMetrics` (`layout/shapes.ts`): per-shape text room, up to 2 label lines and 3 description lines
+(`wrapBalanced`: prefers breaks after CJK punctuation, never starts a line with closing punctuation, avoids a lone
+trailing glyph). The grid uses per-column widths and per-row heights so mixed shapes stay aligned.
+
+Swimlane layout: strict longest-path ranks (one column per step) vs. compact ranks (a cross-lane handoff may stay in
+the same column when the cells in between are free); the strict plan wins unless compact scores > 0.15 better
+(aspect 1.4–2.2, 1–4 bands). Over-wide results get taller lanes.
+
+draw.io mapping: trust → red dashed container with lock, lanes → native `swimlane` (horizontal=0), decision → `rhombus`,
+datastore → `partialRectangle`, cylinder → `cylinder3`, component → `module`, person → card + head ellipse,
+replicas → offset ghost cells, bidirectional → start arrow, highlighted flows → thicker stroke, tagged labels → red pill border.
 
 ## Router
 
