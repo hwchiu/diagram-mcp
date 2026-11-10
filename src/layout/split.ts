@@ -316,7 +316,7 @@ export function buildDetail(input: ArchitectureLayoutInput, unit: string[]): Vie
     const orig = crossing.find((e) => remap(e.from) === a.from && remap(e.to) === a.to && (e.kind ?? "sync") === a.kind);
     return { from: a.from, to: a.to, kind: a.kind, label: a.count > 1 ? `×${a.count}` : orig?.label, step: a.count === 1 ? orig?.step : [...a.steps].sort((x, y) => x - y)[0] };
   });
-  const edges = [...inner, ...crossEdges];
+  const edges = [...inner, ...collapseFanIn(crossEdges, focusNodes, unit)];
 
   // upstream stubs left, downstream right
   const flow = new Map<string, number>();
@@ -347,6 +347,8 @@ export function buildDetail(input: ArchitectureLayoutInput, unit: string[]): Vie
     [...unitStacks, ...chunk([...left, ...right], k)],
   ]);
 
+  const { subGroups, subOf } = splitDenseZones(focusGroups, focusNodes, inner);
+
   const stepNs = new Set(edges.filter((e) => e.step != null).map((e) => e.step!));
   const steps = (input.steps ?? []).filter((s) => stepNs.has(s.n) || (s.anchor && inUnit(s.anchor)));
   const label = unit.map(homeLabel).join(" + ");
@@ -357,8 +359,8 @@ export function buildDetail(input: ArchitectureLayoutInput, unit: string[]): Vie
     input: {
       ...input,
       title: input.title ? `${input.title} · ${label}` : label,
-      nodes: [...focusNodes, ...stubNodes],
-      groups: [...focusGroups, ...stubGroups],
+      nodes: [...focusNodes, ...stubNodes].map((n) => (subOf.has(n.id) ? { ...n, group: subOf.get(n.id) } : n)),
+      groups: [...focusGroups, ...subGroups, ...stubGroups],
       edges,
       steps,
       columns,
@@ -377,4 +379,102 @@ export function planViews(input: ArchitectureLayoutInput, mode: SplitMode = "aut
     return [{ info, input: { ...input, view: info } }];
   }
   return [buildOverview(input), ...detailUnits(input).map((u) => buildDetail(input, u))];
+}
+
+/** A stub hit by this many focus cards with one kind collapses into one zone → stub edge. */
+export const FAN_IN_COLLAPSE = 3;
+
+/**
+ * Collapse fan-in / fan-out on stub cards: when ≥ FAN_IN_COLLAPSE focus cards of
+ * one zone talk to the same stub with the same kind and direction, draw a single
+ * zone → stub edge labelled "×N" instead of N parallel wires.
+ */
+export function collapseFanIn(cross: DiagramEdge[], focusNodes: DiagramNode[], unit: string[]): DiagramEdge[] {
+  const focus = new Map(focusNodes.map((n) => [n.id, n]));
+  const zoneOf = (id: string) => focus.get(id)?.group ?? unit[0];
+  const buckets = new Map<string, DiagramEdge[]>();
+  for (const e of cross) {
+    const out = focus.has(e.from);
+    const stub = out ? e.to : e.from;
+    const zone = zoneOf(out ? e.from : e.to);
+    const key = `${zone}|${stub}|${e.kind ?? "sync"}|${out ? ">" : "<"}`;
+    (buckets.get(key) ?? buckets.set(key, []).get(key)!).push(e);
+  }
+  const result: DiagramEdge[] = [];
+  for (const [key, es] of buckets) {
+    const [zone, stub, kind, dir] = key.split("|");
+    const cards = new Set(es.map((e) => (dir === ">" ? e.from : e.to)));
+    if (cards.size < FAN_IN_COLLAPSE || !zone) {
+      result.push(...es);
+      continue;
+    }
+    const n = es.reduce((t, e) => t + (e.label && /^×\d+$/.test(e.label) ? Number(e.label.slice(1)) : 1), 0);
+    const steps = es.map((e) => e.step).filter((x): x is number => x != null).sort((a, b) => a - b);
+    result.push({ from: dir === ">" ? zone : stub, to: dir === ">" ? stub : zone, kind: kind as EdgeKind, label: `×${n}`, step: steps[0] });
+  }
+  return result;
+}
+
+/** Zones above these sizes get auto sub-groups in detail views. */
+export const DENSE_ZONE = { nodes: 12, edges: 20 };
+
+/**
+ * Split a dense leaf zone (> 12 cards or > 20 internal flows) into connected
+ * sub-groups so the router gets corridors between them. Greedy: hubs (highest
+ * degree) seed the groups, every other card joins the seed group it talks to most.
+ */
+export function splitDenseZones(groups: DiagramGroup[], nodes: DiagramNode[], inner: DiagramEdge[]): { subGroups: DiagramGroup[]; subOf: Map<string, string> } {
+  const subGroups: DiagramGroup[] = [];
+  const subOf = new Map<string, string>();
+  for (const g of groups) {
+    if (groups.some((c) => c.parent === g.id) || g.layout) continue;
+    const mem = nodes.filter((n) => n.group === g.id);
+    const ids = new Set(mem.map((n) => n.id));
+    const own = inner.filter((e) => ids.has(e.from) && ids.has(e.to));
+    if (mem.length <= DENSE_ZONE.nodes && own.length <= DENSE_ZONE.edges) continue;
+    const k = Math.max(2, Math.ceil(mem.length / 8));
+    const cap = Math.ceil(mem.length / k) + 1;
+    const deg = new Map(mem.map((n) => [n.id, 0]));
+    const adj = new Map<string, Map<string, number>>();
+    for (const e of own) {
+      deg.set(e.from, deg.get(e.from)! + 1);
+      deg.set(e.to, deg.get(e.to)! + 1);
+      for (const [a, b] of [[e.from, e.to], [e.to, e.from]]) {
+        const m = adj.get(a) ?? adj.set(a, new Map()).get(a)!;
+        m.set(b, (m.get(b) ?? 0) + 1);
+      }
+    }
+    const order = [...mem].sort((a, b) => deg.get(b.id)! - deg.get(a.id)!);
+    // seeds: high-degree cards that are not direct neighbours of an earlier seed
+    const seeds: DiagramNode[] = [];
+    for (const n of order) {
+      if (seeds.length >= k) break;
+      if (seeds.every((s) => !adj.get(s.id)?.has(n.id))) seeds.push(n);
+    }
+    for (const n of order) if (seeds.length < k && !seeds.includes(n)) seeds.push(n);
+    const of = new Map<string, number>(seeds.map((s, i) => [s.id, i]));
+    const size = seeds.map(() => 1);
+    for (const n of order) {
+      if (of.has(n.id)) continue;
+      let bi = 0;
+      let bv = -1;
+      seeds.forEach((_, i) => {
+        if (size[i] >= cap) return;
+        let v = 0;
+        for (const [o, w] of adj.get(n.id) ?? []) if (of.get(o) === i) v += w;
+        if (v > bv || (v === bv && size[i] < size[bi])) {
+          bv = v;
+          bi = i;
+        }
+      });
+      of.set(n.id, bi);
+      size[bi]++;
+    }
+    seeds.forEach((s, i) => {
+      const id = `${g.id}~${i + 1}`;
+      subGroups.push({ id, label: `${s.label} +${size[i] - 1}`, parent: g.id, kind: g.kind, cols: size[i] > 4 ? 2 : 1 });
+    });
+    for (const n of mem) subOf.set(n.id, `${g.id}~${of.get(n.id)! + 1}`);
+  }
+  return { subGroups, subOf };
 }
