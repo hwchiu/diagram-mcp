@@ -847,6 +847,28 @@ export function routeEdges(input: RouteInput): { edges: RoutedEdge[]; notes: str
   return { edges: routed, notes, junctions: computeJunctions(routed) };
 }
 
+/** Perpendicular crossings between edges that are not trunk mates (same rule as QA). */
+export function countCrossings(edges: RoutedEdge[]): number {
+  let n = 0;
+  for (let i = 0; i < edges.length; i++) {
+    for (let j = i + 1; j < edges.length; j++) {
+      const a = edges[i];
+      const b = edges[j];
+      if ((a.kind === b.kind && sharesTrunk(a, b)) || a.from === b.from || a.to === b.to) continue;
+      for (let p = 0; p < a.points.length - 1; p++) {
+        for (let q = 0; q < b.points.length - 1; q++) {
+          const a1 = a.points[p], a2 = a.points[p + 1], b1 = b.points[q], b2 = b.points[q + 1];
+          const aH = a1.y === a2.y;
+          if (aH === (b1.y === b2.y)) continue;
+          const h1 = aH ? a1 : b1, h2 = aH ? a2 : b2, v1 = aH ? b1 : a1, v2 = aH ? b2 : a2;
+          if (v1.x > Math.min(h1.x, h2.x) && v1.x < Math.max(h1.x, h2.x) && h1.y > Math.min(v1.y, v2.y) && h1.y < Math.max(v1.y, v2.y)) n++;
+        }
+      }
+    }
+  }
+  return n;
+}
+
 /** Edges that may legitimately share track (same port bundle or trunk key). */
 export function sharesTrunk(a: RoutedEdge, b: RoutedEdge): boolean {
   if (a.bundle === b.bundle) return true;
@@ -1039,7 +1061,34 @@ function placeAnnotations(edges: RoutedEdge[], nodes: PlacedNode[], tiers: Place
         }
       }
     }
-    const chosen = best as { r: Rect; score: number } | null;
+    let chosen = best as { r: Rect; score: number; leader?: Point } | null;
+    if (!chosen) {
+      // fallback: park the pill in the nearest free spot and draw a leader to the line
+      const L = pathLength(e.points);
+      let lb: { r: Rect; score: number; leader: Point } | null = null;
+      for (const t of [0.5, 0.35, 0.65, 0.2, 0.8]) {
+        const anchor = pointAt(e.points, L * t).p;
+        for (let rad = 22; rad <= 110 && !lb; rad += 11) {
+          for (let k = 0; k < 16; k++) {
+            const ang = (k / 16) * Math.PI * 2;
+            const c = { x: anchor.x + Math.cos(ang) * rad, y: anchor.y + Math.sin(ang) * rad * 0.7 };
+            const r = { x: Math.round(c.x - w / 2), y: Math.round(c.y - h / 2), w, h };
+            const pad = inflate(r, 3);
+            if (hard.some((q) => rectsHit(q, pad)) || placed.some((q) => rectsHit(q, pad))) continue;
+            if (otherSegs(e, inflate(r, 2))) continue;
+            // own line must not run under the pill either (it would look like a crossing)
+            let own = false;
+            for (let i = 0; i < e.points.length - 1; i++) if (segCrossesRect(e.points[i], e.points[i + 1], inflate(r, 2))) own = true;
+            if (own) continue;
+            const score = rad + Math.abs(t - 0.5) * 40;
+            if (!lb || score < lb.score) lb = { r, score, leader: { x: Math.round(anchor.x), y: Math.round(anchor.y) } };
+          }
+        }
+        if (lb) break;
+      }
+      if (lb) chosen = lb;
+    }
+    if (chosen?.leader) e.labelLeader = chosen.leader;
     if (!chosen) {
       notes.push(`label "${e.label}" has no clear straight segment`);
       continue;

@@ -106,6 +106,8 @@ export interface RoutedEdge {
   toTier: boolean;
   labelRect?: Rect;
   badgeAt?: Point;
+  /** pill parked off the line: leader from this point on the path to the pill */
+  labelLeader?: Point;
   /** badge drawn at the left end of the label pill */
   badgeInLabel?: boolean;
   /** bundle key: edges sharing a port */

@@ -224,7 +224,8 @@ export function buildOverview(input: ArchitectureLayoutInput): ViewSpec {
       columnCandidates: [m.stacks.map((st) => st.map(mapId)), m.stacks.flat().map((id) => [mapId(id)])],
       bottomRow: m.band.map(mapId),
       rows: undefined,
-      reorder: true,
+      // sub-zone order inside a region is semantic (ingress → services → data): keep it
+      reorder: false,
       view: { kind: "overview", key: "overview", focus: [] },
     },
   };

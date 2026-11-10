@@ -139,7 +139,7 @@ export function createServer(): McpServer {
     {
       title: "Create cloud architecture diagram",
       description:
-        "Generate a reference-architecture style cloud / Kubernetes diagram (dark tech theme by default): deterministic tier grid (columns + optional bottomRow, nested groups), uniform cards with monoline icons, A*-routed orthogonal edges that never cross cards, numbered step badges + walkthrough panel. Returns SVG+PNG paths, structural QA findings, a compact PNG preview, and optionally an editable .drawio file (outputs: [\"drawio\"]).",
+        "Generate a reference-architecture style cloud / Kubernetes diagram (dark tech theme by default): deterministic tier grid (columns + optional bottomRow, nested groups) auto-wrapped into 1–3 rows to stay near 16:9 (override with rows / wrap:\"never\"), uniform cards with monoline icons, A*-routed orthogonal edges that never cross cards and bundle into trunks with junction dots, numbered step badges + walkthrough panel. Diagrams above splitThreshold nodes (default 25; split: \"auto\"|\"never\"|\"always\") are split into an overview (one block per tier, aggregated ×N flows) plus one detail view per region / top-level tier with dimmed stub cards for external endpoints; files are <name>.overview.* and <name>.<tier>.*. Returns SVG+PNG+.drawio paths per view (draw.io on by default; outputs without \"drawio\" opts out), structural QA per view and a compact PNG preview of the first (overview) view.",
       inputSchema: cloudSchema.shape,
     },
     async (args: z.infer<typeof cloudSchema>) => {
@@ -152,7 +152,7 @@ export function createServer(): McpServer {
     {
       title: "Create microservice architecture diagram",
       description:
-        "Generate a microservice architecture diagram (frontend → edge → BFF → services → data / events → third-party) with sync / async / data / auth edge styles, numbered steps, structural QA, PNG preview, and optional editable .drawio output (outputs: [\"drawio\"]).",
+        "Generate a microservice architecture diagram (frontend → edge → BFF → services → data / events → third-party) with sync / async / data / auth edge styles, numbered steps, auto 16:9 wrap, edge trunks, auto-split into overview + detail views above splitThreshold nodes (split: \"auto\"|\"never\"|\"always\"), structural QA per view, PNG preview, and editable .drawio output (on by default).",
       inputSchema: microserviceSchema.shape,
     },
     async (args: z.infer<typeof microserviceSchema>) => {

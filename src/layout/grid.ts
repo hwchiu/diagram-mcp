@@ -6,7 +6,7 @@ import type { NodeRole } from "../design/themes.js";
 import type { DiagramEdge, DiagramGroup, DiagramNode, EdgeKind } from "../types.js";
 import { resolveMonoIcon } from "./icons.js";
 import { ellipsize, measureText, wrapText, type FontSpec } from "./text.js";
-import { routeEdges } from "./router.js";
+import { countCrossings, routeEdges } from "./router.js";
 import type {
   ArchitectureLayoutInput,
   LayoutResult,
@@ -146,12 +146,21 @@ export interface GridPlan {
 export function layoutArchitecture(input: ArchitectureLayoutInput): LayoutResult {
   let best: { r: LayoutResult; f: number } | null = null;
   // regular spacing first; then wider gutters; then the runner-up wrap plans
-  const attempts: Array<[number, number]> = [[1, 0], [1.3, 0], [1, 1], [1.3, 1], [1.65, 0], [1, 2], [1.3, 2]];
+  const attempts: Array<[number, number]> = [[1, 0], [1, 1], [1.3, 0], [1, 2], [1.3, 1], [1, 3], [1.65, 0], [1.3, 2]];
   for (const [sp, rank] of attempts) {
     const r = layoutOnce(input, sp, rank);
-    const f = layoutFailures(r);
+    // unplaced annotations dominate; a canvas too wide to read at 1600px costs too
+    const a = r.width / r.height;
+    const budget = Math.max(4, Math.round(r.edges.length * 0.3));
+    const f =
+      layoutFailures(r) +
+      Math.max(0, (r.width - 2040) / 240) +
+      (a < 1.4 || a > 2.2 ? 1.5 : 0) +
+      Math.max(0, countCrossings(r.edges) - budget) * 0.04;
+    if (process.env.DBG_ATTEMPT) console.log("attempt", sp, rank, r.width, r.height, f.toFixed(2), r.routeNotes.join(" | "));
     if (!best || f < best.f) best = { r, f };
-    if (f === 0) break;
+    // one parked (leader) label is cheaper than a reshuffled or wider canvas
+    if (f < 0.15) break;
   }
   return best!.r;
 }
@@ -160,6 +169,7 @@ function layoutFailures(r: LayoutResult): number {
   let f = 0;
   for (const n of r.routeNotes) f += n.includes("could not be routed") ? 10 : 1;
   for (const e of r.edges) if (e.label && !e.labelRect) f += 1;
+  for (const e of r.edges) if (e.labelLeader) f += 0.1;
   return f;
 }
 
@@ -260,7 +270,7 @@ function layoutOnce(input: ArchitectureLayoutInput, sp: number, rank = 0): Layou
         const i = b.nodes.findIndex((x) => x.id === e.from);
         const j = b.nodes.findIndex((x) => x.id === e.to);
         if (i < 0 || j < 0 || Math.floor(i / b.cols) !== Math.floor(j / b.cols)) continue;
-        b.gapX = Math.max(b.gapX, Math.ceil(measureText(e.label, FONTS.edgeLabel) + 18 + 34));
+        b.gapX = Math.max(b.gapX, Math.ceil((measureText(e.label, FONTS.edgeLabel) + 18 + (e.step != null ? 24 : 0) + 34) * sp));
       }
       b.gapY = GAP_Y;
       for (const e of edges) {
@@ -268,7 +278,7 @@ function layoutOnce(input: ArchitectureLayoutInput, sp: number, rank = 0): Layou
         const i = b.nodes.findIndex((x) => x.id === e.from);
         const j = b.nodes.findIndex((x) => x.id === e.to);
         if (i < 0 || j < 0 || i % b.cols !== j % b.cols || Math.abs(Math.floor(i / b.cols) - Math.floor(j / b.cols)) !== 1) continue;
-        b.gapY = Math.max(b.gapY, 30 + (e.label ? 30 : 0) + (e.step != null ? 30 : 0));
+        b.gapY = Math.max(b.gapY, Math.round((30 + (e.label ? 30 : 0) + (e.step != null ? 30 : 0)) * sp));
       }
       if (n) {
         const rows = Math.ceil(n / b.cols);
@@ -339,14 +349,14 @@ function layoutOnce(input: ArchitectureLayoutInput, sp: number, rank = 0): Layou
       return a != null && b != null && Math.min(a, b) === i && Math.max(a, b) === i + 1;
     });
     if (!crossing.length) continue;
-    const lw = (e: DiagramEdge) => measureText(e.label!, FONTS.edgeLabel) + 18;
+    const lw = (e: DiagramEdge) => measureText(e.label!, FONTS.edgeLabel) + 18 + (e.step != null ? 24 : 0);
     let need = Math.max(...crossing.map(lw)) + 56;
     const byEnd = new Map<string, number[]>();
     for (const e of crossing) {
       for (const k of [`f:${e.from}`, `t:${e.to}`]) (byEnd.get(k) ?? byEnd.set(k, []).get(k)!).push(lw(e));
     }
     for (const ws of byEnd.values()) if (ws.length > 1) need = Math.max(need, ws.reduce((a, b) => a + b, 0) + 16 * (ws.length - 1) + 48);
-    labelGap[i] = Math.max(CGAP, Math.min(380, Math.ceil(need)));
+    labelGap[i] = Math.max(CGAP, Math.min(380 * sp, Math.ceil(need * sp)));
   }
 
   const titleW = input.title ? measureText(input.title, FONTS.title) + 40 : 0;
@@ -423,6 +433,13 @@ function layoutOnce(input: ArchitectureLayoutInput, sp: number, rank = 0): Layou
       for (let end = start + 1; end <= k - left + 1; end++) rec(end, left - 1, [...acc, range(start, end)]);
     };
     for (let r = 1; r <= maxRows; r++) rec(0, r, []);
+    // snake variants: odd rows run right→left so a wrapped flow turns a U instead of jumping back to the left edge
+    const n0 = partitions.length;
+    for (let i = 0; i < n0; i++) {
+      const p = partitions[i];
+      if (p.length < 2 || !p.some((row, r) => r % 2 === 1 && row.length > 1)) continue;
+      partitions.push(p.map((row, r) => (r % 2 === 1 ? [...row].reverse() : row)));
+    }
   }
   const variants = input.wrap === "never" && !explicitRows ? [VARIANTS[0]] : VARIANTS;
 
@@ -458,7 +475,9 @@ function layoutOnce(input: ArchitectureLayoutInput, sp: number, rank = 0): Layou
     part.forEach((row, r) => row.forEach((s) => (rowOfStack[s] = r)));
     const colW = model.stacks.map((c) => Math.max(0, ...c.map((b) => b.w)));
     const colH = model.stacks.map((c) => c.reduce((s, b) => s + b.h, 0) + Math.max(0, c.length - 1) * RGAP);
-    const gaps = model.stacks.map((_, i) => (i < k - 1 && rowOfStack[i] === rowOfStack[i + 1] ? labelGap[i] : 0));
+    // gap after stack i in its row (rows may run right→left when snaked)
+    const gaps = model.stacks.map(() => 0);
+    for (const row of part) for (let j = 0; j < row.length - 1; j++) gaps[row[j]] = labelGap[Math.min(row[j], row[j + 1])];
     const rowW = part.map((row) => row.reduce((s, i, j) => s + colW[i] + (j < row.length - 1 ? gaps[i] : 0), 0));
     const rowH = part.map((row) => Math.max(0, ...row.map((i) => colH[i])));
     const rowGaps = part.map((_, r) => (r < part.length - 1 ? rowGapFor(rowOfStack, r) : 0));
@@ -533,6 +552,11 @@ function layoutOnce(input: ArchitectureLayoutInput, sp: number, rank = 0): Layou
     for (const pl of r.plans.slice(0, 4)) ranked.push({ P: r, plan: pl });
   }
   ranked.sort((a, b) => a.plan.score - b.plan.score);
+  // plans that differ only in an unused cols-variant produce the same canvas: keep one
+  for (let i = ranked.length - 1; i > 0; i--) {
+    const a = ranked[i].plan;
+    if (ranked.slice(0, i).some((o) => o.P === ranked[i].P && JSON.stringify(o.plan.part) === JSON.stringify(a.part) && Math.abs(o.plan.geo.innerW - a.geo.innerW) < 1 && Math.abs(o.plan.geo.innerH - a.geo.innerH) < 1)) ranked.splice(i, 1);
+  }
   const pick = ranked[Math.min(rank, ranked.length - 1)];
   const { stackSpec, ownerOf, chrome, RIGHT_H, bottomLayout, legend, titleW, subW, stepBodyW } = pick.P;
   const plan = pick.plan;
@@ -931,7 +955,7 @@ export function aspectPenalty(a: number): number {
   const hi = Math.log(TARGET_ASPECT.max);
   const v = Math.log(a);
   const out = v < lo ? lo - v : v > hi ? v - hi : 0;
-  return out + Math.abs(v - Math.log(TARGET_ASPECT.ideal)) * 0.15;
+  return out * 3 + Math.abs(v - Math.log(TARGET_ASPECT.ideal)) * 0.15;
 }
 
 function widthPenalty(w: number): number {

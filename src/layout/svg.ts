@@ -128,6 +128,11 @@ function renderAnnotations(e: RoutedEdge, t: ArchTheme): string {
   let out = "";
   if (e.label && e.labelRect) {
     const r = e.labelRect;
+    if (e.labelLeader) {
+      const p = e.labelLeader;
+      const q = { x: Math.max(r.x, Math.min(r.x + r.w, p.x)), y: Math.max(r.y, Math.min(r.y + r.h, p.y)) };
+      out += `<g class="edge-leader" data-edge="${e.id}"><line x1="${p.x}" y1="${p.y}" x2="${q.x}" y2="${q.y}" stroke="${color}" stroke-width="1" stroke-dasharray="2 2.5" opacity="0.9"/><circle cx="${p.x}" cy="${p.y}" r="2.6" fill="${color}"/></g>`;
+    }
     out += `<g class="edge-label" data-edge="${e.id}">
   <rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" rx="${r.h / 2}" fill="${t.pillFill}" stroke="${color}" stroke-width="1"/>
   <text x="${r.x + (e.badgeInLabel ? BADGE_R * 2 + 2 : 0) + (r.w - (e.badgeInLabel ? BADGE_R * 2 + 2 : 0)) / 2}" y="${r.y + r.h / 2 + 4.2}" text-anchor="middle" fill="${t.ink}" font-family="${t.mono}" font-size="${FONTS.edgeLabel.size}" font-weight="500">${esc(e.label)}</text>
