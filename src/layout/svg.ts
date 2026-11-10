@@ -61,7 +61,7 @@ function renderTier(tier: PlacedTier, t: ArchTheme): string {
         .map((d) => `<path d="${d}" fill="none" stroke="${accent}" stroke-width="2" stroke-linecap="round"/>`)
         .join("");
   const lr = tier.labelRect;
-  return `<g class="tier" id="tier-${esc(tier.id)}" data-depth="${tier.depth}">
+  return `<g class="tier${tier.stub ? " stub" : ""}" id="tier-${esc(tier.id)}" data-depth="${tier.depth}"${tier.stub ? ' opacity="0.7"' : ""}>
   <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${nested ? 10 : 12}" fill="${fill}" stroke="${stroke}" stroke-width="1.1"${dash}/>
   ${brackets}
   <circle cx="${lr.x + 5}" cy="${lr.y + lr.h / 2}" r="3" fill="${accent}"/>
@@ -81,22 +81,34 @@ function renderCard(n: PlacedNode, t: ArchTheme): string {
   const c = t.roles[n.role] ?? t.roles.default;
   const hasIcon = n.icon !== "none";
   const tx = hasIcon ? x + CARD_TEXT_X : x + 16;
-  const ly = n.subtitle ? y + 27 : y + h / 2 + 5;
-  const glow = t.glow ? ` filter="url(#glow)"` : ` filter="url(#shadow)"`;
-  const ib = ICON_BOX;
+  const lines = [n.label, n.subtitle, n.detail].filter(Boolean).length;
+  // vertical rhythm: label 14px, sub / detail 11.5px, 17px apart
+  const block = 14 + (lines - 1) * 17;
+  const ly = y + (h - block) / 2 + 12;
+  const glow = n.stub ? "" : t.glow ? ` filter="url(#glow)"` : ` filter="url(#shadow)"`;
+  const ib = n.stub ? 26 : ICON_BOX;
   const ix = x + CARD_PAD_X;
   const iy = y + (h - ib) / 2;
-  return `<g class="node" id="node-${esc(n.id)}" data-role="${n.role}">
+  const op = n.stub ? ` opacity="0.62"` : "";
+  const dash = n.stub ? ` stroke-dasharray="4 3"` : "";
+  let ty = ly;
+  const text: string[] = [];
+  text.push(`<text x="${tx}" y="${ty}" fill="${t.ink}" font-family="${t.mono}" font-size="${n.stub ? 13 : FONTS.cardLabel.size}" font-weight="600">${esc(n.label.text)}</text>`);
+  for (const sub of [n.subtitle, n.detail]) {
+    if (!sub) continue;
+    ty += 17;
+    text.push(`<text x="${tx}" y="${ty}" fill="${t.muted}" font-family="${t.mono}" font-size="${FONTS.cardSub.size}">${esc(sub.text)}</text>`);
+  }
+  return `<g class="node${n.stub ? " stub" : ""}" id="node-${esc(n.id)}" data-role="${n.role}"${op}>
   <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="${t.cardBase}"/>
-  <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="${rgba(c, t.fillAlpha)}" stroke="${c}" stroke-width="1.3"${glow}/>
+  <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="${rgba(c, n.stub ? 0.06 : t.fillAlpha)}" stroke="${c}" stroke-width="1.3"${dash}${glow}/>
   ${
     hasIcon
       ? `<rect x="${ix}" y="${iy}" width="${ib}" height="${ib}" rx="7" fill="${rgba(c, t.id === "dark" ? 0.16 : 0.1)}" stroke="${rgba(c, 0.45)}" stroke-width="1"/>
-  ${iconMarkup(n.icon, c, ix + (ib - 20) / 2, iy + (ib - 20) / 2, 20)}`
+  ${iconMarkup(n.icon, c, ix + (ib - (n.stub ? 16 : 20)) / 2, iy + (ib - (n.stub ? 16 : 20)) / 2, n.stub ? 16 : 20)}`
       : ""
   }
-  <text x="${tx}" y="${ly}" fill="${t.ink}" font-family="${t.mono}" font-size="${FONTS.cardLabel.size}" font-weight="600">${esc(n.label.text)}</text>
-  ${n.subtitle ? `<text x="${tx}" y="${y + 44}" fill="${t.muted}" font-family="${t.mono}" font-size="${FONTS.cardSub.size}">${esc(n.subtitle.text)}</text>` : ""}
+  ${text.join("\n  ")}
 </g>`;
 }
 
@@ -118,15 +130,15 @@ function renderAnnotations(e: RoutedEdge, t: ArchTheme): string {
     const r = e.labelRect;
     out += `<g class="edge-label" data-edge="${e.id}">
   <rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" rx="${r.h / 2}" fill="${t.pillFill}" stroke="${color}" stroke-width="1"/>
-  <text x="${r.x + r.w / 2}" y="${r.y + r.h / 2 + 3.6}" text-anchor="middle" fill="${t.ink}" font-family="${t.mono}" font-size="${FONTS.edgeLabel.size}" font-weight="500">${esc(e.label)}</text>
+  <text x="${r.x + (e.badgeInLabel ? BADGE_R * 2 + 2 : 0) + (r.w - (e.badgeInLabel ? BADGE_R * 2 + 2 : 0)) / 2}" y="${r.y + r.h / 2 + 4.2}" text-anchor="middle" fill="${t.ink}" font-family="${t.mono}" font-size="${FONTS.edgeLabel.size}" font-weight="500">${esc(e.label)}</text>
 </g>`;
   }
-  if (e.step != null && e.badgeAt) out += badge(e.badgeAt.x, e.badgeAt.y, e.step, t, `data-edge="${e.id}"`);
+  if (e.step != null && e.badgeAt) out += badge(e.badgeAt.x, e.badgeAt.y, e.step, t, `data-edge="${e.id}"`, !e.badgeInLabel);
   return out;
 }
 
-function badge(cx: number, cy: number, n: number, t: ArchTheme, attrs = ""): string {
-  const ring = t.glow ? `<circle cx="${cx}" cy="${cy}" r="${BADGE_R + 4}" fill="${rgba(t.badgeFill, 0.18)}"/>` : "";
+function badge(cx: number, cy: number, n: number, t: ArchTheme, attrs = "", halo = true): string {
+  const ring = t.glow && halo ? `<circle cx="${cx}" cy="${cy}" r="${BADGE_R + 4}" fill="${rgba(t.badgeFill, 0.18)}"/>` : "";
   return `<g class="badge" ${attrs}>${ring}<circle cx="${cx}" cy="${cy}" r="${BADGE_R}" fill="${t.badgeFill}" stroke="${t.canvas}" stroke-width="2"/>
   <text x="${cx}" y="${cy + 4.2}" text-anchor="middle" fill="${t.badgeInk}" font-family="${t.mono}" font-size="12" font-weight="700">${n}</text></g>`;
 }
@@ -240,6 +252,10 @@ export function renderArchitectureSvg(layout: LayoutResult, themeId?: string): s
   const nodes = layout.nodes.map((n) => renderCard(n, t)).join("\n");
   const edges = layout.edges.map((e) => renderEdge(e, t)).join("\n");
   const ann = layout.edges.map((e) => renderAnnotations(e, t)).join("\n");
+  const junctions = layout.junctions
+    .map((j) => `<circle class="junction" cx="${j.at.x}" cy="${j.at.y}" r="3.6" fill="${t.edges[j.kind] ?? t.edges.default}" stroke="${t.canvas}" stroke-width="1.5"/>`)
+    .join("");
+  const anchors = layout.anchors.map((a) => badge(a.at.x, a.at.y, a.n, t, `data-anchor="${esc(a.anchor)}"`)).join("\n");
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="${t.mono}">
@@ -249,8 +265,8 @@ export function renderArchitectureSvg(layout: LayoutResult, themeId?: string): s
   <g id="containers">${panel}
   ${tiers}</g>
   <g id="nodes">${nodes}</g>
-  <g id="connections">${edges}</g>
-  <g id="labels">${ann}</g>
+  <g id="connections">${edges}<g id="junctions">${junctions}</g></g>
+  <g id="labels">${ann}${anchors}</g>
   ${renderSteps(layout, t)}
   ${footer}
 </svg>`;

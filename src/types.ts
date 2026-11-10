@@ -29,6 +29,10 @@ export interface DiagramNode {
   group?: string;
   /** Shape hint for compilers that support it */
   shape?: "rectangle" | "rounded" | "cylinder" | "diamond" | "hexagon" | "person" | "queue" | "cloud";
+  /** @internal third text line (overview blocks list their members) */
+  detail?: string;
+  /** @internal dimmed stub for an endpoint that lives in another view */
+  stub?: boolean;
 }
 
 export interface DiagramGroup {
@@ -42,6 +46,8 @@ export interface DiagramGroup {
   cols?: number;
   /** How child containers are arranged inside this one (default "row"). */
   layout?: "row" | "column";
+  /** @internal frame that only holds stub cards (detail views) */
+  stub?: boolean;
 }
 
 export interface DiagramEdge {
@@ -95,6 +101,20 @@ export interface StructuredDiagramInput extends DiagramMeta {
   stepsPosition?: "auto" | "right" | "bottom";
   /** Extra outputs. ["drawio"] also writes an editable .drawio file. */
   outputs?: OutputFormat[];
+  /**
+   * Explicit rows of column stacks (overrides auto-wrap), e.g.
+   * [[["clients"],["edge"]],[["app"],["data"]]].
+   */
+  rows?: string[][][];
+  /** "auto" (default) wraps column stacks into 1–3 rows to stay near 16:9; "never" keeps one row. */
+  wrap?: "auto" | "never";
+  /**
+   * Large diagrams: "auto" (default) splits above `splitThreshold` nodes into an
+   * overview + one detail view per region / top-level tier; "never" / "always".
+   */
+  split?: "auto" | "never" | "always";
+  /** Node count above which split:"auto" kicks in (default 25). */
+  splitThreshold?: number;
 }
 
 export interface CloudDiagramInput extends StructuredDiagramInput {

@@ -6,6 +6,7 @@
 import type { QaIssue } from "../types.js";
 import { CARD_TEXT_X, FONTS } from "./grid.js";
 import { measureText } from "./text.js";
+import { sharesTrunk } from "./router.js";
 import { BADGE_R, type LayoutResult, type Point, type Rect } from "./types.js";
 
 const hit = (a: Rect, b: Rect, gap = 0) =>
@@ -42,6 +43,10 @@ function distPointSeg(p: Point, a: Point, b: Point): number {
 export interface QaOptions {
   /** Max acceptable crossings before warning (default: max(4, 30% of edges)) */
   maxCrossings?: number;
+  /** Acceptable canvas aspect band (default [1.3, 2.3]) */
+  aspect?: [number, number];
+  /** Minimum effective font px at 1600px viewing width (default 9.5) */
+  minEffectiveFont?: number;
 }
 
 export function runArchitectureQa(layout: LayoutResult, opts: QaOptions = {}): QaIssue[] {
@@ -136,7 +141,7 @@ export function runArchitectureQa(layout: LayoutResult, opts: QaOptions = {}): Q
       for (const an of annotations) {
         if (an.owner === e.id) continue;
         const owner = layout.edges.find((x) => x.id === an.owner);
-        if (owner && owner.bundle === e.bundle && an.kind === "badge") continue;
+        if (owner && sharesTrunk(owner, e) && an.kind === "badge") continue;
         if (segHitsInterior(a, b, an.r, 1)) {
           add(an.kind === "pill" ? "error" : "warning", "edge-through-label", `edge ${e.from}→${e.to} runs under another edge's ${an.kind}`, [e.id, an.owner]);
         }
@@ -163,12 +168,12 @@ export function runArchitectureQa(layout: LayoutResult, opts: QaOptions = {}): Q
     checkEnd(pts[0], e.from, "source");
     checkEnd(pts[pts.length - 1], e.to, "target");
     if (e.label && !e.labelRect) add("warning", "label-missing", `label "${e.label}" on ${e.from}→${e.to} could not be placed`, [e.id]);
-    if (e.step != null && e.badgeAt) {
+    if (e.step != null && e.badgeAt && !e.badgeInLabel) {
       let onOwn = Infinity;
       for (let i = 0; i < pts.length - 1; i++) onOwn = Math.min(onOwn, distPointSeg(e.badgeAt, pts[i], pts[i + 1]));
       if (onOwn > 1.5) add("warning", "badge-floating", `step ${e.step} badge is not on its edge`, [e.id]);
       for (const o of layout.edges) {
-        if (o === e || o.bundle === e.bundle) continue;
+        if (o === e || sharesTrunk(o, e)) continue;
         for (let i = 0; i < o.points.length - 1; i++) {
           if (distPointSeg(e.badgeAt, o.points[i], o.points[i + 1]) < BADGE_R + 2) {
             add("warning", "badge-ambiguous", `step ${e.step} badge also sits on edge ${o.from}→${o.to}`, [e.id, o.id]);
@@ -184,6 +189,7 @@ export function runArchitectureQa(layout: LayoutResult, opts: QaOptions = {}): Q
     for (const n of cards) if (hit(annotations[i].r, n.rect, 2)) add("error", "label-collision", `${annotations[i].kind} of ${annotations[i].owner} overlaps card ${n.id}`, [annotations[i].owner, n.id]);
     for (const t of tiers) if (hit(annotations[i].r, t.labelRect, 1)) add("error", "label-collision", `${annotations[i].kind} of ${annotations[i].owner} overlaps tier label ${t.id}`, [annotations[i].owner, t.id]);
     for (let j = i + 1; j < annotations.length; j++) {
+      if (annotations[i].owner === annotations[j].owner) continue;
       if (hit(annotations[i].r, annotations[j].r, 1)) add("error", "label-collision", `${annotations[i].kind} of ${annotations[i].owner} overlaps ${annotations[j].kind} of ${annotations[j].owner}`, [annotations[i].owner, annotations[j].owner]);
     }
   }
@@ -195,7 +201,8 @@ export function runArchitectureQa(layout: LayoutResult, opts: QaOptions = {}): Q
     for (let j = i + 1; j < E.length; j++) {
       const a = E[i];
       const b = E[j];
-      const shared = a.bundle === b.bundle || a.from === b.from || a.to === b.to;
+      // shared trunks are intentional bundling; only accidental overlaps count
+      const shared = (a.kind === b.kind && sharesTrunk(a, b)) || a.from === b.from || a.to === b.to;
       for (let p = 0; p < a.points.length - 1; p++) {
         for (let q = 0; q < b.points.length - 1; q++) {
           const a1 = a.points[p], a2 = a.points[p + 1], b1 = b.points[q], b2 = b.points[q + 1];
@@ -224,7 +231,13 @@ export function runArchitectureQa(layout: LayoutResult, opts: QaOptions = {}): Q
 
   // 4. Composition / whitespace
   const aspect = layout.width / layout.height;
-  if (aspect > 2.6 || aspect < 1.1) add("warning", "canvas-aspect", `canvas aspect ${aspect.toFixed(2)} is outside 1.1–2.6 (poster too ${aspect > 2.6 ? "wide" : "tall"})`);
+  const [amin, amax] = opts.aspect ?? [1.3, 2.3];
+  if (aspect > amax || aspect < amin) add("warning", "canvas-aspect", `canvas aspect ${aspect.toFixed(2)} is outside ${amin}–${amax} (poster too ${aspect > amax ? "wide" : "tall"})`);
+  // Readability when the PNG is viewed 1600px wide
+  const minFont = Math.min(FONTS.edgeLabel.size, FONTS.cardSub.size, FONTS.tierLabel.size, FONTS.stepBody.size);
+  const effective = (minFont * Math.min(1, 1600 / layout.width));
+  if (effective < (opts.minEffectiveFont ?? 9)) add("warning", "readability", `smallest text renders at ${effective.toFixed(1)}px when viewed 1600px wide — split the diagram or wrap rows`);
+  else if (effective < 10) add("info", "readability", `smallest text renders at ${effective.toFixed(1)}px when viewed 1600px wide`);
   const panel = layout.content;
   const filled = [...cards.map((n) => n.rect), ...tiers.filter((t) => t.depth === 0).map((t) => t.rect)];
   const band = (horizontal: boolean) => {
@@ -256,7 +269,7 @@ export function runArchitectureQa(layout: LayoutResult, opts: QaOptions = {}): Q
   // 5. Steps consistency
   const edgeSteps = new Set(layout.edges.filter((e) => e.step != null).map((e) => e.step!));
   for (const s of layout.steps) {
-    if (!edgeSteps.has(s.n) && !s.anchor) add("warning", "step-unanchored", `step ${s.n} has no edge badge on the diagram`);
+    if (!edgeSteps.has(s.n) && !layout.anchors.some((a) => a.n === s.n)) add("warning", "step-unanchored", `step ${s.n} has no edge badge on the diagram`);
   }
   for (const n of edgeSteps) {
     if (!layout.steps.some((s) => s.n === n)) add("warning", "step-undocumented", `badge ${n} has no entry in the steps panel`);

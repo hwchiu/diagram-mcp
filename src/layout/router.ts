@@ -13,19 +13,21 @@
  */
 import type { DiagramEdge, EdgeKind } from "../types.js";
 import { measureText, type FontSpec } from "./text.js";
-import { BADGE_R, type PlacedNode, type PlacedTier, type Point, type Rect, type RoutedEdge, type Side } from "./types.js";
+import { BADGE_R, type Junction, type PlacedNode, type PlacedTier, type Point, type Rect, type RoutedEdge, type Side } from "./types.js";
 
 export const CLEARANCE = 14;
 const FRAME_CLR = 10;
 const LABEL_CLR = 6;
 const LANE_SPACING = 14;
-const MAX_LANES = 3;
+const MAX_LANES = 6;
 const BEND = 70;
 const FOREIGN = 2.5;
 const OVERLAP = 400;
 const CROSS = 45;
-const EDGE_LABEL_FONT: FontSpec = { font: "mono", size: 10.5, weight: 500 };
-export const PILL_H = 20;
+/** Fraction of a segment's length refunded when it rides a trunk of its own bundle. */
+const TRUNK_DISCOUNT = 0.7;
+const EDGE_LABEL_FONT: FontSpec = { font: "mono", size: 12, weight: 500 };
+export const PILL_H = 22;
 
 export interface RouteInput {
   nodes: PlacedNode[];
@@ -80,6 +82,8 @@ interface EdgeState {
   to: Endpoint;
   srcKey: string;
   dstKey: string;
+  /** intentional bundling keys (shared target / source tier + kind) */
+  trunks: string[];
   fromPort?: Port;
   toPort?: Port;
   nodes: number[];
@@ -386,7 +390,7 @@ function search(
 
   const shares = (other: number) => {
     const o = all[other];
-    return o.srcKey === es.srcKey || o.dstKey === es.dstKey;
+    return o.srcKey === es.srcKey || o.dstKey === es.dstKey || o.trunks.some((k) => es.trunks.includes(k));
   };
 
   let best: { cost: number; state: number; goalK: number } | null = null;
@@ -454,7 +458,7 @@ function search(
           else other = true;
         }
         if (other) c += OVERLAP + len * 4;
-        else if (shared) c -= len * 0.6;
+        else if (shared) c -= len * TRUNK_DISCOUNT;
       }
       const cross = (horiz ? occ.nodeV : occ.nodeH).get(m);
       if (cross && cross.some((e) => e !== es.idx && !shares(e))) c += CROSS;
@@ -557,7 +561,7 @@ function portCoords(ports: Port[]): { xs: number[]; ys: number[] } {
   return { xs, ys };
 }
 
-export function routeEdges(input: RouteInput): { edges: RoutedEdge[]; notes: string[] } {
+export function routeEdges(input: RouteInput): { edges: RoutedEdge[]; notes: string[]; junctions: Junction[] } {
   const notes: string[] = [];
   const { nodes, tiers, area } = input;
   const nodeMap = new Map(nodes.map((n) => [n.id, n]));
@@ -576,6 +580,18 @@ export function routeEdges(input: RouteInput): { edges: RoutedEdge[]; notes: str
       cur = tierMap.get(cur)!.parentId;
     }
     return out;
+  };
+  const trunkKeys = (e: DiagramEdge, from: Endpoint, to: Endpoint): string[] => {
+    const kind = e.kind ?? "sync";
+    const home = (ep: Endpoint) => (ep.isTier ? ep.id : nodeMap.get(ep.id)?.tierId ?? `free:${ep.id}`);
+    const a = home(from);
+    const b = home(to);
+    if (a === b) return [];
+    // a labelled edge keeps its own track so the pill is never ambiguous
+    if (e.label) return [];
+    // inside-out: edges never trunk with an edge that stays inside its own tier
+    const keys: string[] = [`in:${b}:${kind}`, `out:${a}:${kind}`];
+    return keys;
   };
   const endpoint = (id: string): Endpoint | undefined => {
     const n = nodeMap.get(id);
@@ -601,6 +617,7 @@ export function routeEdges(input: RouteInput): { edges: RoutedEdge[]; notes: str
       to,
       srcKey: `p1s:${k}`,
       dstKey: `p1d:${k}`,
+      trunks: trunkKeys(e, from, to),
       nodes: [],
       points: [],
     });
@@ -823,10 +840,95 @@ export function routeEdges(input: RouteInput): { edges: RoutedEdge[]; notes: str
       fromTier: s.from.isTier,
       toTier: s.to.isTier,
       bundle: s.srcKey,
+      trunks: [...s.trunks, `port:${s.srcKey}`, `port:${s.dstKey}`],
     });
   }
   placeAnnotations(routed, nodes, tiers, notes);
-  return { edges: routed, notes };
+  return { edges: routed, notes, junctions: computeJunctions(routed) };
+}
+
+/** Edges that may legitimately share track (same port bundle or trunk key). */
+export function sharesTrunk(a: RoutedEdge, b: RoutedEdge): boolean {
+  if (a.bundle === b.bundle) return true;
+  for (const k of a.trunks) if (b.trunks.includes(k)) return true;
+  return false;
+}
+
+interface Interval {
+  lo: number;
+  hi: number;
+}
+
+function overlapOn(a: Point, b: Point, c: Point, d: Point): Interval | null {
+  const aH = a.y === b.y;
+  const cH = c.y === d.y;
+  if (aH !== cH) return null;
+  if (aH ? Math.abs(a.y - c.y) > 0.5 : Math.abs(a.x - c.x) > 0.5) return null;
+  const lo = aH ? Math.max(Math.min(a.x, b.x), Math.min(c.x, d.x)) : Math.max(Math.min(a.y, b.y), Math.min(c.y, d.y));
+  const hi = aH ? Math.min(Math.max(a.x, b.x), Math.max(c.x, d.x)) : Math.min(Math.max(a.y, b.y), Math.max(c.y, d.y));
+  return hi - lo > 0.5 ? { lo, hi } : null;
+}
+
+/**
+ * Where an edge joins or leaves track it shares with its own trunk, emit a
+ * junction dot so merges / splits read as deliberate.
+ */
+export function computeJunctions(edges: RoutedEdge[]): Junction[] {
+  const out: Junction[] = [];
+  const seen = new Set<string>();
+  for (const e of edges) {
+    const mates = edges.filter((o) => o !== e && o.kind === e.kind && sharesTrunk(e, o));
+    if (!mates.length) continue;
+    // walk the path, tracking covered (shared) pieces
+    const pieces: Array<{ a: Point; b: Point; covered: boolean }> = [];
+    for (let i = 0; i < e.points.length - 1; i++) {
+      const a = e.points[i];
+      const b = e.points[i + 1];
+      const horiz = a.y === b.y;
+      const ivs: Interval[] = [];
+      for (const o of mates) {
+        for (let j = 0; j < o.points.length - 1; j++) {
+          const iv = overlapOn(a, b, o.points[j], o.points[j + 1]);
+          if (iv) ivs.push(iv);
+        }
+      }
+      ivs.sort((p, q) => p.lo - q.lo);
+      const merged: Interval[] = [];
+      for (const iv of ivs) {
+        const last = merged[merged.length - 1];
+        if (last && iv.lo <= last.hi + 0.5) last.hi = Math.max(last.hi, iv.hi);
+        else merged.push({ ...iv });
+      }
+      const s0 = horiz ? a.x : a.y;
+      const s1 = horiz ? b.x : b.y;
+      const dir = s1 >= s0 ? 1 : -1;
+      const at = (v: number): Point => (horiz ? { x: v, y: a.y } : { x: a.x, y: v });
+      // convert to path order
+      const cuts = merged
+        .map((m) => (dir > 0 ? m : { lo: m.hi, hi: m.lo }))
+        .sort((p, q) => (p.lo - q.lo) * dir);
+      let cur = s0;
+      for (const m of cuts) {
+        if ((m.lo - cur) * dir > 0.5) pieces.push({ a: at(cur), b: at(m.lo), covered: false });
+        pieces.push({ a: at(m.lo), b: at(m.hi), covered: true });
+        cur = m.hi;
+      }
+      if ((s1 - cur) * dir > 0.5) pieces.push({ a: at(cur), b: at(s1), covered: false });
+    }
+    const first = e.points[0];
+    const last = e.points[e.points.length - 1];
+    const near = (p: Point, q: Point) => Math.abs(p.x - q.x) + Math.abs(p.y - q.y) < 2;
+    for (let i = 1; i < pieces.length; i++) {
+      if (pieces[i].covered === pieces[i - 1].covered) continue;
+      const p = pieces[i].a;
+      if (near(p, first) || near(p, last)) continue;
+      const key = `${Math.round(p.x)}:${Math.round(p.y)}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push({ at: { x: Math.round(p.x * 2) / 2, y: Math.round(p.y * 2) / 2 }, kind: e.kind });
+    }
+  }
+  return out;
 }
 
 // ── Labels & badges ─────────────────────────────────────────────────────────
@@ -884,9 +986,75 @@ function placeAnnotations(edges: RoutedEdge[], nodes: PlacedNode[], tiers: Place
     return n;
   };
 
-  // Badges first (they anchor numbered steps), near the source.
+  for (const e of edges) {
+    if (!e.label) continue;
+    // a stepped, labelled edge carries its badge inside the pill (one unit)
+    const withBadge = e.step != null;
+    const base0 = edgeLabelSize(e.label);
+    const w = base0.w + (withBadge ? BADGE_R * 2 + 2 : 0);
+    const h = withBadge ? Math.max(base0.h, BADGE_R * 2 + 2) : base0.h;
+    let best: { r: Rect; score: number } | null = null;
+    const consider = (r: Rect, base: number, padBy: number) => {
+      const pad = inflate(r, padBy);
+      const dbg = process.env.DBG_LABEL === e.label;
+      if (hard.some((q) => rectsHit(q, pad))) { if (dbg) console.log("hard", JSON.stringify(r), JSON.stringify(hard.find((q) => rectsHit(q, pad)))); return; }
+      if (placed.some((q) => rectsHit(q, pad))) { if (dbg) console.log("placed", JSON.stringify(r)); return; }
+      // a pill must never cover another edge (that reads as its label)
+      if (otherSegs(e, inflate(r, 2))) { if (dbg) console.log("seg", JSON.stringify(r)); return; }
+      if (!best || base < best.score) best = { r, score: base };
+    };
+    const n = e.points.length;
+    for (let i = 0; i < n - 1; i++) {
+      const a = e.points[i];
+      const b = e.points[i + 1];
+      const horiz = a.y === b.y;
+      const L = Math.abs(b.x - a.x) + Math.abs(b.y - a.y);
+      // prefer segments that belong to this edge alone (trunk branches, not the shared trunk)
+      const endBias = i === n - 2 ? -6 : i === 0 ? 4 : 0;
+      const ts = [0.5, 0.35, 0.65, 0.2, 0.8, 0.1, 0.9];
+      for (let d = 8; d < L; d += 8) ts.push(d / L);
+      for (const t of ts) {
+        const base = Math.abs(t - 0.5) * 30 - Math.min(L, 400) * 0.02 + endBias;
+        if (horiz) {
+          // on the line
+          if (L >= w + 20) {
+            const x = Math.min(Math.max(a.x, b.x) - w / 2 - 10, Math.max(Math.min(a.x, b.x) + w / 2 + 10, a.x + (b.x - a.x) * t));
+            consider({ x: Math.round(x - w / 2), y: Math.round(a.y - h / 2), w, h }, base, 3);
+          }
+          // beside the line (above, then below)
+          if (L >= Math.min(w + 20, 60)) {
+            const x = Math.min(Math.max(a.x, b.x) - w / 2, Math.max(Math.min(a.x, b.x) + w / 2, a.x + (b.x - a.x) * t));
+            for (const side of [-1, 1]) {
+              const cy = a.y + side * (h / 2 + 4);
+              consider({ x: Math.round(x - w / 2), y: Math.round(cy - h / 2), w, h }, base + 26 + (side > 0 ? 4 : 0), 1);
+            }
+          }
+        } else {
+          if (L < h + 12) continue;
+          const y = Math.min(Math.max(a.y, b.y) - h / 2 - 6, Math.max(Math.min(a.y, b.y) + h / 2 + 6, a.y + (b.y - a.y) * t));
+          consider({ x: Math.round(a.x - w / 2), y: Math.round(y - h / 2), w, h }, base + 40, 1);
+          for (const side of [1, -1]) {
+            consider({ x: Math.round(a.x + side * (w / 2 + 5) - w / 2), y: Math.round(y - h / 2), w, h }, base + 60, 1);
+          }
+        }
+      }
+    }
+    const chosen = best as { r: Rect; score: number } | null;
+    if (!chosen) {
+      notes.push(`label "${e.label}" has no clear straight segment`);
+      continue;
+    }
+    e.labelRect = chosen.r;
+    placed.push(chosen.r);
+    if (withBadge) {
+      e.badgeAt = { x: chosen.r.x + BADGE_R + 1, y: chosen.r.y + chosen.r.h / 2 };
+      e.badgeInLabel = true;
+    }
+  }
+
+  // Badges after labels (they are small and find room more easily), near the source.
   for (const e of [...edges].sort((a, b) => (a.step ?? 0) - (b.step ?? 0))) {
-    if (e.step == null) continue;
+    if (e.step == null || e.badgeInLabel) continue;
     const L = pathLength(e.points);
     let best: { p: Point; score: number } | null = null;
     for (let d = BADGE_R + 10; d <= L - BADGE_R - 12; d += 4) {
@@ -906,42 +1074,4 @@ function placeAnnotations(edges: RoutedEdge[], nodes: PlacedNode[], tiers: Place
     placed.push({ x: best.p.x - BADGE_R - 2, y: best.p.y - BADGE_R - 2, w: 2 * BADGE_R + 4, h: 2 * BADGE_R + 4 });
   }
 
-  for (const e of edges) {
-    if (!e.label) continue;
-    const { w, h } = edgeLabelSize(e.label);
-    let best: { r: Rect; score: number } | null = null;
-    for (let i = 0; i < e.points.length - 1; i++) {
-      const a = e.points[i];
-      const b = e.points[i + 1];
-      const horiz = a.y === b.y;
-      const L = Math.abs(b.x - a.x) + Math.abs(b.y - a.y);
-      const need = horiz ? w + 20 : h + 12;
-      if (L < need) continue;
-      for (const t of [0.5, 0.35, 0.65, 0.2, 0.8]) {
-        let c: Point;
-        if (horiz) {
-          const x = Math.min(Math.max(a.x, b.x) - w / 2 - 10, Math.max(Math.min(a.x, b.x) + w / 2 + 10, a.x + (b.x - a.x) * t));
-          c = { x, y: a.y };
-        } else {
-          const y = Math.min(Math.max(a.y, b.y) - h / 2 - 6, Math.max(Math.min(a.y, b.y) + h / 2 + 6, a.y + (b.y - a.y) * t));
-          c = { x: a.x, y };
-        }
-        const offsets = horiz ? [0] : [0, w / 2 + 5, -(w / 2 + 5)];
-        for (const off of offsets) {
-          const r = { x: Math.round(c.x + off - w / 2), y: Math.round(c.y - h / 2), w, h };
-          const pad = inflate(r, horiz ? 3 : 1);
-          if (hard.some((q) => rectsHit(q, pad)) || placed.some((q) => rectsHit(q, pad))) continue;
-          const others = otherSegs(e, off ? r : pad);
-          const score = (horiz ? 0 : 40) + (off ? 30 : 0) + Math.abs(t - 0.5) * 30 - L * 0.02 + others * 200;
-          if (!best || score < best.score) best = { r, score };
-        }
-      }
-    }
-    if (!best) {
-      notes.push(`label "${e.label}" has no clear straight segment`);
-      continue;
-    }
-    e.labelRect = best.r;
-    placed.push(best.r);
-  }
 }

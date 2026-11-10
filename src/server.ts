@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { renderPipeline } from "./render/pipeline.js";
 import { compileCloud } from "./compilers/cloud.js";
+import type { CompiledArchitecture } from "./compilers/architecture.js";
 import { compileMicroservice } from "./compilers/microservice.js";
 import { compileFlowchart } from "./compilers/flowchart.js";
 import { compileDecision } from "./compilers/decision.js";
@@ -50,6 +51,52 @@ function formatResult(result: RenderResult) {
   return { content };
 }
 
+async function runArchitecture(
+  compiled: CompiledArchitecture,
+  meta: { theme?: string; name?: string; includePreview?: boolean; outputDir?: string; title?: string },
+) {
+  const t0 = Date.now();
+  const results = [];
+  for (let i = 0; i < compiled.views.length; i++) {
+    const v = compiled.views[i];
+    results.push({
+      v,
+      r: await renderPipeline({
+        engine: "svg",
+        source: v.source,
+        themeId: meta.theme ?? compiled.theme,
+        name: meta.name ?? meta.title,
+        suffix: v.info.key || undefined,
+        includePreview: i === 0 ? meta.includePreview : false,
+        outputDir: meta.outputDir,
+        drawio: v.drawio,
+        qa: v.qa,
+      }),
+    });
+  }
+  if (results.length === 1) return formatResult(results[0].r);
+  const head = [
+    `Split into ${results.length} views (overview + ${results.length - 1} detail) in ${Date.now() - t0}ms. Preview shows the overview.`,
+  ];
+  const blocks = results.map(({ v, r }) =>
+    [
+      `## ${v.info.kind === "overview" ? "Overview" : `Detail: ${(v.info.focus ?? []).join(", ")}`} (${v.info.key})`,
+      `SVG: ${r.svgPath}`,
+      `PNG: ${r.pngPath}`,
+      r.drawioPath ? `draw.io: ${r.drawioPath}` : null,
+      r.width && r.height ? `Size: ${r.width}×${r.height}px` : null,
+      r.qa ? summarizeQa(r.qa) : null,
+    ]
+      .filter(Boolean)
+      .join("\n"),
+  );
+  const content: Array<{ type: "text"; text: string } | { type: "image"; data: string; mimeType: string }> = [
+    { type: "text", text: [...head, ...blocks, 'Self-review: inspect the overview preview; pass split:"never" for a single poster or split:"always" to force views.'].join("\n\n") },
+  ];
+  if (results[0].r.previewBase64) content.push({ type: "image", data: results[0].r.previewBase64, mimeType: "image/png" });
+  return { content };
+}
+
 async function runCompiled(
   compiled: {
     engine: EngineKind;
@@ -96,8 +143,7 @@ export function createServer(): McpServer {
       inputSchema: cloudSchema.shape,
     },
     async (args: z.infer<typeof cloudSchema>) => {
-      const compiled = compileCloud(args);
-      return runCompiled(compiled, args);
+      return runArchitecture(compileCloud(args), args);
     },
   );
 
@@ -110,8 +156,7 @@ export function createServer(): McpServer {
       inputSchema: microserviceSchema.shape,
     },
     async (args: z.infer<typeof microserviceSchema>) => {
-      const compiled = compileMicroservice(args);
-      return runCompiled(compiled, args);
+      return runArchitecture(compileMicroservice(args), args);
     },
   );
 

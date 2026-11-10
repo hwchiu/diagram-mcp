@@ -75,6 +75,13 @@ const archExtras = {
   stepsPosition: z.enum(["auto", "right", "bottom"]).optional(),
   /** Extra outputs; "drawio" writes an editable diagrams.net file next to the SVG/PNG */
   outputs: z.array(z.enum(["svg", "png", "drawio"])).optional(),
+  /** Explicit rows of column stacks; disables auto-wrap */
+  rows: z.array(z.array(z.array(z.string()))).optional(),
+  /** "auto" wraps column stacks into 1–3 rows to stay near 16:9 */
+  wrap: z.enum(["auto", "never"]).optional(),
+  /** Large diagrams → overview + per-zone detail views */
+  split: z.enum(["auto", "never", "always"]).optional(),
+  splitThreshold: z.number().int().min(4).max(500).optional(),
 };
 
 export const cloudSchema = z.object({

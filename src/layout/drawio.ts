@@ -127,9 +127,8 @@ export function renderArchitectureDrawio(layout: LayoutResult, themeId?: string)
     const color = t.roles[n.role] ?? t.roles.default;
     const id = `node-${safe(n.id)}`;
     const hasIcon = n.icon !== "none";
-    const value = n.rawSubtitle
-      ? `<b>${htmlEsc(n.rawLabel)}</b><br><font style="font-size:10.5px" color="${t.muted}">${htmlEsc(n.rawSubtitle)}</font>`
-      : `<b>${htmlEsc(n.rawLabel)}</b>`;
+    const sub = (txt?: string) => (txt ? `<br><font style="font-size:11px" color="${t.muted}">${htmlEsc(txt)}</font>` : "");
+    const value = `<b>${htmlEsc(n.rawLabel)}</b>${sub(n.rawSubtitle)}${sub(n.detail?.text)}`;
     vertex(
       id,
       value,
@@ -142,6 +141,9 @@ export function renderArchitectureDrawio(layout: LayoutResult, themeId?: string)
         fillColor: blend(color, t.fillAlpha, t.cardBase),
         strokeColor: color,
         strokeWidth: 1.3,
+        dashed: n.stub ? 1 : 0,
+        opacity: n.stub ? 62 : undefined,
+        textOpacity: n.stub ? 70 : undefined,
         fontFamily: mono,
         fontSize: 13,
         fontColor: t.ink,
@@ -203,7 +205,7 @@ export function renderArchitectureDrawio(layout: LayoutResult, themeId?: string)
       entryDy: 0,
       entryPerimeter: 0,
       fontFamily: mono,
-      fontSize: 10.5,
+      fontSize: 12,
       fontColor: t.ink,
       labelBackgroundColor: t.pillFill,
       labelBorderColor: color,
@@ -211,15 +213,19 @@ export function renderArchitectureDrawio(layout: LayoutResult, themeId?: string)
     });
     const way = e.points.slice(1, -1).map((p) => `<mxPoint x="${round(p.x)}" y="${round(p.y)}"/>`).join("");
     let labelGeo = "";
+    let offset = "";
     if (e.label && e.labelRect) {
-      // relative position along the polyline (-1..1)
+      // relative position along the polyline (-1..1) + offset for pills beside the line
       const L = pathLen(e.points);
-      const cx = { x: e.labelRect.x + e.labelRect.w / 2, y: e.labelRect.y + e.labelRect.h / 2 };
+      const bw = e.badgeInLabel ? BADGE_R * 2 + 2 : 0;
+      const cx = { x: e.labelRect.x + bw + (e.labelRect.w - bw) / 2, y: e.labelRect.y + e.labelRect.h / 2 };
       const d = distAlong(e.points, cx);
+      const q = nearestOn(e.points, cx);
       labelGeo = ` x="${round3((d / L) * 2 - 1)}" y="0"`;
+      if (Math.hypot(cx.x - q.x, cx.y - q.y) > 0.5) offset = `<mxPoint x="${round(cx.x - q.x)}" y="${round(cx.y - q.y)}" as="offset"/>`;
     }
     cells.push({
-      xml: `<mxCell id="edge-${e.id}" value="${xmlEsc(e.label ?? "")}" style="${xmlEsc(st)}" edge="1" parent="1" source="${src.id}" target="${dst.id}"><mxGeometry relative="1"${labelGeo} as="geometry">${way ? `<Array as="points">${way}</Array>` : ""}</mxGeometry></mxCell>`,
+      xml: `<mxCell id="edge-${e.id}" value="${xmlEsc(e.label ?? "")}" style="${xmlEsc(st)}" edge="1" parent="1" source="${src.id}" target="${dst.id}"><mxGeometry relative="1"${labelGeo} as="geometry">${way ? `<Array as="points">${way}</Array>` : ""}${offset}</mxGeometry></mxCell>`,
     });
   }
 
@@ -228,6 +234,15 @@ export function renderArchitectureDrawio(layout: LayoutResult, themeId?: string)
   for (const e of layout.edges) {
     if (e.step == null || !e.badgeAt) continue;
     vertex(`badge-${e.id}`, String(e.step), badgeStyle, { x: e.badgeAt.x - BADGE_R, y: e.badgeAt.y - BADGE_R, w: BADGE_R * 2, h: BADGE_R * 2 });
+  }
+
+  // Pinned step badges + trunk junctions
+  for (const a of layout.anchors) {
+    vertex(nid("anchor"), String(a.n), badgeStyle, { x: a.at.x - BADGE_R, y: a.at.y - BADGE_R, w: BADGE_R * 2, h: BADGE_R * 2 });
+  }
+  for (const j of layout.junctions) {
+    const c = t.edges[j.kind] ?? t.edges.default;
+    vertex(nid("junction"), "", style({ ellipse: "", fillColor: c, strokeColor: t.canvas, strokeWidth: 1.5, connectable: 0 }), { x: j.at.x - 3.6, y: j.at.y - 3.6, w: 7.2, h: 7.2 });
   }
 
   // Steps panel
@@ -298,6 +313,18 @@ function pathLen(pts: Point[]): number {
   for (let i = 0; i < pts.length - 1; i++) L += Math.abs(pts[i + 1].x - pts[i].x) + Math.abs(pts[i + 1].y - pts[i].y);
   return L || 1;
 }
+function nearestOn(pts: Point[], p: Point): Point {
+  let best = { q: pts[0], err: Infinity };
+  for (let i = 0; i < pts.length - 1; i++) {
+    const a = pts[i];
+    const b = pts[i + 1];
+    const q = { x: Math.max(Math.min(a.x, b.x), Math.min(Math.max(a.x, b.x), p.x)), y: Math.max(Math.min(a.y, b.y), Math.min(Math.max(a.y, b.y), p.y)) };
+    const err = Math.hypot(p.x - q.x, p.y - q.y);
+    if (err < best.err) best = { q, err };
+  }
+  return best.q;
+}
+
 function distAlong(pts: Point[], p: Point): number {
   let acc = 0;
   let best = { d: 0, err: Infinity };

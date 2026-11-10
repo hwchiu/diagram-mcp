@@ -3,7 +3,7 @@
  * uniform cards, docked walkthrough panel. Routing lives in ./router.ts.
  */
 import type { NodeRole } from "../design/themes.js";
-import type { DiagramGroup, DiagramNode, EdgeKind } from "../types.js";
+import type { DiagramEdge, DiagramGroup, DiagramNode, EdgeKind } from "../types.js";
 import { resolveMonoIcon } from "./icons.js";
 import { ellipsize, measureText, wrapText, type FontSpec } from "./text.js";
 import { routeEdges } from "./router.js";
@@ -17,9 +17,14 @@ import type {
   StepCard,
   TextLine,
 } from "./types.js";
+import { BADGE_R } from "./types.js";
 
 // ── Design tokens (px) ────────────────────────────────────────────────────
 export const CARD_H = 62;
+/** Overview blocks carry a third text line (member list). */
+export const CARD_H_TALL = 80;
+/** Dimmed stub cards for endpoints that live in another view. */
+export const CARD_H_STUB = 46;
 export const CARD_MIN_W = 184;
 export const CARD_MAX_W = 244;
 export const ICON_BOX = 34;
@@ -44,13 +49,13 @@ export const FONTS = {
   title: { font: "mono", size: 26, weight: 700 } as FontSpec,
   subtitle: { font: "mono", size: 13, weight: 400 } as FontSpec,
   cardLabel: { font: "mono", size: 14, weight: 600 } as FontSpec,
-  cardSub: { font: "mono", size: 11, weight: 400 } as FontSpec,
-  tierLabel: { font: "mono", size: 11, weight: 600, tracking: 0.14 } as FontSpec,
-  edgeLabel: { font: "mono", size: 10.5, weight: 500 } as FontSpec,
+  cardSub: { font: "mono", size: 12, weight: 400 } as FontSpec,
+  tierLabel: { font: "mono", size: 12, weight: 600, tracking: 0.14 } as FontSpec,
+  edgeLabel: { font: "mono", size: 12, weight: 500 } as FontSpec,
   stepTitle: { font: "mono", size: 12.5, weight: 600 } as FontSpec,
   stepBody: { font: "sans", size: 12, weight: 400 } as FontSpec,
   panelHead: { font: "mono", size: 11, weight: 600, tracking: 0.16 } as FontSpec,
-  legend: { font: "mono", size: 11, weight: 400 } as FontSpec,
+  legend: { font: "mono", size: 12, weight: 400 } as FontSpec,
 };
 
 interface Box {
@@ -64,6 +69,8 @@ interface Box {
   layout: "row" | "column";
   /** horizontal gap between cards (widened for labelled in-row edges) */
   gapX: number;
+  /** vertical gap between card rows (widened for labelled / stepped in-column edges) */
+  gapY?: number;
   /** natural size */
   w: number;
   h: number;
@@ -108,12 +115,66 @@ function dominantRole(nodes: DiagramNode[]): NodeRole {
   return best;
 }
 
+/** Caller-facing aspect band the auto-wrapper aims for (width / height). */
+export const TARGET_ASPECT = { min: 1.4, max: 2.0, ideal: 1.72 };
+/** Canvas width above which text drops below ~10px when viewed 1600px wide. */
+export const READABLE_W = 1920;
+
+interface ColsVariant {
+  id: number;
+  cols: (n: number, ext: boolean) => number;
+}
+const VARIANTS: ColsVariant[] = [
+  { id: 0, cols: (n, ext) => (ext ? Math.min(n, 5) : autoCols(n, false)) },
+  { id: 1, cols: (n) => autoCols(n, false) },
+  { id: 2, cols: (n) => Math.min(5, Math.max(1, Math.ceil(n / 2))) },
+  { id: 3, cols: (n) => Math.max(1, Math.ceil(n / 4)) },
+];
+
+export interface GridPlan {
+  /** rows → column stacks → tier / free-node ids */
+  rows: string[][][];
+  variant: number;
+  spacing: number;
+  score: number;
+}
+
+/**
+ * Lay out an architecture diagram. Tries the regular spacing first and widens
+ * gutters when the router could not place every label / badge cleanly.
+ */
 export function layoutArchitecture(input: ArchitectureLayoutInput): LayoutResult {
+  let best: { r: LayoutResult; f: number } | null = null;
+  // regular spacing first; then wider gutters; then the runner-up wrap plans
+  const attempts: Array<[number, number]> = [[1, 0], [1.3, 0], [1, 1], [1.3, 1], [1.65, 0], [1, 2], [1.3, 2]];
+  for (const [sp, rank] of attempts) {
+    const r = layoutOnce(input, sp, rank);
+    const f = layoutFailures(r);
+    if (!best || f < best.f) best = { r, f };
+    if (f === 0) break;
+  }
+  return best!.r;
+}
+
+function layoutFailures(r: LayoutResult): number {
+  let f = 0;
+  for (const n of r.routeNotes) f += n.includes("could not be routed") ? 10 : 1;
+  for (const e of r.edges) if (e.label && !e.labelRect) f += 1;
+  return f;
+}
+
+function layoutOnce(input: ArchitectureLayoutInput, sp: number, rank = 0): LayoutResult {
   const groups = input.groups ?? [];
   const nodes = input.nodes;
+  const edges = input.edges ?? [];
   const groupById = new Map(groups.map((g) => [g.id, g]));
   const nodeById = new Map(nodes.map((n) => [n.id, n]));
   const steps = [...(input.steps ?? [])].sort((a, b) => a.n - b.n);
+  const GAP_X = Math.round(CARD_GAP_X * sp);
+  const GAP_Y = Math.round(CARD_GAP_Y * sp);
+  const CGAP = Math.round(COL_GAP * sp);
+  const RGAP = Math.round(ROW_GAP * sp);
+  const KGAP = Math.round(CHILD_GAP * sp);
 
   // ── Card width: uniform across the diagram, sized to measured text ────────
   let textMax = 0;
@@ -122,192 +183,188 @@ export function layoutArchitecture(input: ArchitectureLayoutInput): LayoutResult
       textMax,
       measureText(n.label, FONTS.cardLabel),
       n.subtitle ? measureText(n.subtitle, FONTS.cardSub) : 0,
+      n.detail ? measureText(n.detail, FONTS.cardSub) : 0,
     );
   }
   const cardW = Math.round(Math.min(CARD_MAX_W, Math.max(CARD_MIN_W, CARD_TEXT_X + textMax + 16)));
   const textRoom = cardW - CARD_TEXT_X - 12;
+  const cardH = nodes.some((n) => n.detail) ? CARD_H_TALL : CARD_H;
+  const stubH = CARD_H_STUB;
+  const hOf = (n: DiagramNode) => (n.stub ? stubH : cardH);
 
-  // ── Build container tree ──────────────────────────────────────────────────
+  const planCandidate = (columnsIn: string[][] | undefined) => {
+  // ── Column stacks (tier ids / free node ids) ─────────────────────────────
   const bandIds = new Set(input.bottomRow ?? []);
-  const buildBox = (g: DiagramGroup, depth: number, band: boolean): Box => {
-    const own = nodes.filter((n) => n.group === g.id);
-    const kids = groups.filter((c) => c.parent === g.id).map((c) => buildBox(c, depth + 1, false));
-    const ext = isExternalGroup(g);
-    return {
-      id: g.id,
-      group: g,
-      hidden: false,
-      depth,
-      nodes: own,
-      children: kids,
-      cols: Math.max(1, Math.min(own.length || 1, g.cols ?? autoCols(own.length, band || ext))),
-      layout: g.layout ?? "row",
-      gapX: CARD_GAP_X,
+  const rootGroups = groups.filter((g) => !g.parent || !groupById.has(g.parent));
+  const grouped = new Set(groups.map((g) => g.id));
+  const freeNodes = nodes.filter((n) => !n.group || !grouped.has(n.group));
+  const explicitRows = input.rows?.length ? input.rows.map((r) => r.map((c) => [...c])) : null;
+  let stackSpec: string[][] = explicitRows ? explicitRows.flat() : columnsIn?.length ? columnsIn.map((c) => [...c]) : [];
+  const bottomSpec = [...(input.bottomRow ?? [])];
+  const mentioned = new Set([...stackSpec.flat(), ...bottomSpec]);
+  const appended: string[][] = [];
+  if (!stackSpec.length) stackSpec = rootGroups.filter((g) => !bandIds.has(g.id)).map((g) => [g.id]);
+  else for (const g of rootGroups) if (!mentioned.has(g.id)) appended.push([g.id]);
+  stackSpec.push(...appended);
+  const unmentionedFree = freeNodes.filter((n) => !mentioned.has(n.id));
+  if (unmentionedFree.length) stackSpec.unshift(["__free"]);
+  if (explicitRows && unmentionedFree.length) explicitRows[0].unshift(["__free"]);
+  if (explicitRows && appended.length) explicitRows[explicitRows.length - 1].push(...appended);
+
+  // ── Box tree for one cols-variant ─────────────────────────────────────────
+  const buildModel = (variant: ColsVariant) => {
+    const buildBox = (g: DiagramGroup, depth: number, band: boolean): Box => {
+      const own = nodes.filter((n) => n.group === g.id);
+      const kids = groups.filter((c) => c.parent === g.id).map((c) => buildBox(c, depth + 1, false));
+      const ext = isExternalGroup(g);
+      const auto = band ? own.length : variant.cols(own.length, ext);
+      return {
+        id: g.id,
+        group: g,
+        hidden: false,
+        depth,
+        nodes: own,
+        children: kids,
+        cols: Math.max(1, Math.min(own.length || 1, g.cols ?? auto)),
+        layout: g.layout ?? "row",
+        gapX: GAP_X,
+        w: 0,
+        h: 0,
+        blockW: 0,
+        blockH: 0,
+        header: depth === 0 ? FRAME_HEADER : FRAME_HEADER_NESTED,
+        pad: FRAME_PAD,
+      };
+    };
+    const hiddenBox = (ns: DiagramNode[], id: string): Box => ({
+      id,
+      hidden: true,
+      depth: 0,
+      nodes: ns,
+      children: [],
+      cols: 1,
+      layout: "column",
+      gapX: GAP_X,
       w: 0,
       h: 0,
       blockW: 0,
       blockH: 0,
-      header: depth === 0 ? FRAME_HEADER : FRAME_HEADER_NESTED,
-      pad: FRAME_PAD,
+      header: 0,
+      pad: 0,
+    });
+    const measure = (b: Box): void => {
+      b.children.forEach(measure);
+      const n = b.nodes.length;
+      for (const e of edges) {
+        if (!e.label) continue;
+        const i = b.nodes.findIndex((x) => x.id === e.from);
+        const j = b.nodes.findIndex((x) => x.id === e.to);
+        if (i < 0 || j < 0 || Math.floor(i / b.cols) !== Math.floor(j / b.cols)) continue;
+        b.gapX = Math.max(b.gapX, Math.ceil(measureText(e.label, FONTS.edgeLabel) + 18 + 34));
+      }
+      b.gapY = GAP_Y;
+      for (const e of edges) {
+        if (!e.label && e.step == null) continue;
+        const i = b.nodes.findIndex((x) => x.id === e.from);
+        const j = b.nodes.findIndex((x) => x.id === e.to);
+        if (i < 0 || j < 0 || i % b.cols !== j % b.cols || Math.abs(Math.floor(i / b.cols) - Math.floor(j / b.cols)) !== 1) continue;
+        b.gapY = Math.max(b.gapY, 30 + (e.label ? 30 : 0) + (e.step != null ? 30 : 0));
+      }
+      if (n) {
+        const rows = Math.ceil(n / b.cols);
+        const rowH = (r: number) => Math.max(...b.nodes.slice(r * b.cols, r * b.cols + b.cols).map(hOf));
+        b.blockW = b.cols * cardW + (b.cols - 1) * b.gapX;
+        b.blockH = 0;
+        for (let r = 0; r < rows; r++) b.blockH += rowH(r) + (r ? b.gapY : 0);
+      }
+      const items: Array<{ w: number; h: number }> = [];
+      if (n) items.push({ w: b.blockW, h: b.blockH });
+      for (const c of b.children) items.push({ w: c.w, h: c.h });
+      let iw = 0;
+      let ih = 0;
+      const gap = b.children.length ? KGAP + 8 : 0;
+      if (b.layout === "row") {
+        iw = items.reduce((s, it) => s + it.w, 0) + Math.max(0, items.length - 1) * gap;
+        ih = Math.max(0, ...items.map((it) => it.h));
+      } else {
+        iw = Math.max(0, ...items.map((it) => it.w));
+        ih = items.reduce((s, it) => s + it.h, 0) + Math.max(0, items.length - 1) * gap;
+      }
+      if (b.hidden) {
+        b.w = iw;
+        b.h = ih;
+        return;
+      }
+      const labelW = measureText(tierLabelText(b.group!.label, "00"), FONTS.tierLabel) + 56;
+      b.w = Math.max(iw + b.pad * 2, labelW);
+      b.h = b.header + ih + b.pad;
     };
-  };
-  const hiddenBox = (ns: DiagramNode[], id: string): Box => ({
-    id,
-    hidden: true,
-    depth: 0,
-    nodes: ns,
-    children: [],
-    cols: 1,
-    layout: "column",
-    gapX: CARD_GAP_X,
-    w: 0,
-    h: 0,
-    blockW: 0,
-    blockH: 0,
-    header: 0,
-    pad: 0,
-  });
-
-  const measure = (b: Box): void => {
-    b.children.forEach(measure);
-    const n = b.nodes.length;
-    for (const e of input.edges ?? []) {
-      if (!e.label) continue;
-      const i = b.nodes.findIndex((x) => x.id === e.from);
-      const j = b.nodes.findIndex((x) => x.id === e.to);
-      if (i < 0 || j < 0 || Math.floor(i / b.cols) !== Math.floor(j / b.cols)) continue;
-      b.gapX = Math.max(b.gapX, Math.ceil(measureText(e.label, FONTS.edgeLabel) + 18 + 34));
-    }
-    if (n) {
-      const rows = Math.ceil(n / b.cols);
-      b.blockW = b.cols * cardW + (b.cols - 1) * b.gapX;
-      b.blockH = rows * CARD_H + (rows - 1) * CARD_GAP_Y;
-    }
-    const items: Array<{ w: number; h: number }> = [];
-    if (n) items.push({ w: b.blockW, h: b.blockH });
-    for (const c of b.children) items.push({ w: c.w, h: c.h });
-    let iw = 0;
-    let ih = 0;
-    const gap = b.children.length ? CHILD_GAP + 8 : 0;
-    if (b.layout === "row") {
-      iw = items.reduce((s, it) => s + it.w, 0) + Math.max(0, items.length - 1) * gap;
-      ih = Math.max(0, ...items.map((it) => it.h));
-    } else {
-      iw = Math.max(0, ...items.map((it) => it.w));
-      ih = items.reduce((s, it) => s + it.h, 0) + Math.max(0, items.length - 1) * gap;
-    }
-    if (b.hidden) {
-      b.w = iw;
-      b.h = ih;
-      return;
-    }
-    const labelW = measureText(tierLabelText(b.group!.label, "00"), FONTS.tierLabel) + 56;
-    b.w = Math.max(iw + b.pad * 2, labelW);
-    b.h = b.header + ih + b.pad;
+    const boxFor = (id: string, band: boolean): Box | undefined => {
+      if (id === "__free") return hiddenBox(unmentionedFree, "__free");
+      const g = groupById.get(id);
+      if (g) return buildBox(g, 0, band);
+      if (nodeById.has(id)) return hiddenBox([nodeById.get(id)!], `__free_${id}`);
+      return undefined;
+    };
+    const stacks: Box[][] = stackSpec.map((st) => st.map((id) => boxFor(id, false)).filter((b): b is Box => !!b));
+    const band: Box[] = bottomSpec.map((id) => boxFor(id, true)).filter((b): b is Box => !!b);
+    stacks.forEach((c) => c.forEach(measure));
+    band.forEach(measure);
+    return { stacks, band, measure };
   };
 
-  // Column stacks (group ids or ungrouped node ids)
-  const used = new Set<string>();
-  const topBoxes = new Map<string, Box>();
-  const boxFor = (id: string, band: boolean): Box | undefined => {
-    if (topBoxes.has(id)) return topBoxes.get(id);
-    const g = groupById.get(id);
-    let b: Box | undefined;
-    if (g) b = buildBox(g, 0, band);
-    else if (nodeById.has(id)) b = hiddenBox([nodeById.get(id)!], `__free_${id}`);
-    if (b) {
-      topBoxes.set(id, b);
-      used.add(id);
-    }
-    return b;
+  // id → (stack, box) for geometry estimates and gutter sizing
+  const ownerOf = new Map<string, { s: number; b: number }>();
+  const markIds = (ids: string[], s: number, b: number) => {
+    for (const id of ids) ownerOf.set(id, { s, b });
   };
-  const rootGroups = groups.filter((g) => !g.parent || !groupById.has(g.parent));
-  const grouped = new Set(groups.map((g) => g.id));
-  const freeNodes = nodes.filter((n) => !n.group || !grouped.has(n.group));
-
-  let columnSpec = input.columns?.length ? input.columns.map((c) => [...c]) : [];
-  const bottomSpec = [...(input.bottomRow ?? [])];
-  const mentioned = new Set([...columnSpec.flat(), ...bottomSpec]);
-  if (!columnSpec.length) {
-    columnSpec = rootGroups.filter((g) => !bandIds.has(g.id)).map((g) => [g.id]);
-  } else {
-    for (const g of rootGroups) if (!mentioned.has(g.id)) columnSpec.push([g.id]);
-  }
-  const unmentionedFree = freeNodes.filter((n) => !mentioned.has(n.id));
-
-  const columns: Box[][] = [];
-  if (unmentionedFree.length) {
-    const b = hiddenBox(unmentionedFree, "__free");
-    columns.push([b]);
-  }
-  for (const stack of columnSpec) {
-    const col: Box[] = [];
-    for (const id of stack) {
-      const b = boxFor(id, false);
-      if (b) col.push(b);
-    }
-    if (col.length) columns.push(col);
-  }
-  const band: Box[] = bottomSpec.map((id) => boxFor(id, true)).filter((b): b is Box => !!b);
-  for (const col of columns) col.forEach(measure);
-  band.forEach(measure);
-
-  // ── Gutters: widen a column gap so labelled edges crossing it get a pill ──
-  const colOf = new Map<string, number>();
-  const mark = (b: Box, ci: number) => {
-    colOf.set(b.id, ci);
-    if (b.group) colOf.set(b.group.id, ci);
-    for (const n of b.nodes) colOf.set(n.id, ci);
-    b.children.forEach((c) => mark(c, ci));
+  const descendantsOf = (gid: string): string[] => {
+    const out = [gid];
+    for (const n of nodes) if (n.group === gid) out.push(n.id);
+    for (const c of groups) if (c.parent === gid) out.push(...descendantsOf(c.id));
+    return out;
   };
-  columns.forEach((col, ci) => col.forEach((b) => mark(b, ci)));
-  const gaps = columns.map(() => COL_GAP);
-  for (const e of input.edges ?? []) {
-    if (!e.label) continue;
-    const a = colOf.get(e.from);
-    const b = colOf.get(e.to);
-    if (a == null || b == null || Math.abs(a - b) !== 1) continue;
-    const need = measureText(e.label, FONTS.edgeLabel) + 18 + 56;
-    const gi = Math.min(a, b);
-    gaps[gi] = Math.max(gaps[gi], Math.min(180, Math.ceil(need)));
+  stackSpec.forEach((st, s) =>
+    st.forEach((id, b) => markIds(id === "__free" ? unmentionedFree.map((n) => n.id) : groupById.has(id) ? descendantsOf(id) : [id], s, b)),
+  );
+  bottomSpec.forEach((id, b) => markIds(groupById.has(id) ? descendantsOf(id) : [id], -1, b));
+
+  // Gutter between adjacent stacks: wide enough for the labels that cross it
+  const labelGap = stackSpec.map(() => CGAP);
+  for (let i = 0; i < stackSpec.length - 1; i++) {
+    const crossing = edges.filter((e) => {
+      if (!e.label) return false;
+      const a = ownerOf.get(e.from)?.s;
+      const b = ownerOf.get(e.to)?.s;
+      return a != null && b != null && Math.min(a, b) === i && Math.max(a, b) === i + 1;
+    });
+    if (!crossing.length) continue;
+    const lw = (e: DiagramEdge) => measureText(e.label!, FONTS.edgeLabel) + 18;
+    let need = Math.max(...crossing.map(lw)) + 56;
+    const byEnd = new Map<string, number[]>();
+    for (const e of crossing) {
+      for (const k of [`f:${e.from}`, `t:${e.to}`]) (byEnd.get(k) ?? byEnd.set(k, []).get(k)!).push(lw(e));
+    }
+    for (const ws of byEnd.values()) if (ws.length > 1) need = Math.max(need, ws.reduce((a, b) => a + b, 0) + 16 * (ws.length - 1) + 48);
+    labelGap[i] = Math.max(CGAP, Math.min(380, Math.ceil(need)));
   }
 
-  // ── Content geometry ──────────────────────────────────────────────────────
-  const colW = columns.map((c) => Math.max(...c.map((b) => b.w)));
-  const colH = columns.map((c) => c.reduce((s, b) => s + b.h, 0) + (c.length - 1) * ROW_GAP);
-  let framesW = colW.reduce((s, w) => s + w, 0) + gaps.slice(0, Math.max(0, columns.length - 1)).reduce((s, g) => s + g, 0);
-  const framesH = Math.max(0, ...colH);
-  const bandW = band.reduce((s, b) => s + b.w, 0) + Math.max(0, band.length - 1) * COL_GAP;
-  const bandH = band.length ? Math.max(...band.map((b) => b.h)) : 0;
-  if (bandW > framesW && columns.length) {
-    const extra = (bandW - framesW) / columns.length;
-    for (let i = 0; i < colW.length; i++) colW[i] += extra;
-    framesW = bandW;
-  }
-  const innerW = Math.max(framesW, bandW);
-  const innerH = framesH + (band.length ? ROW_GAP + bandH : 0);
-  const contentW = innerW + PANEL_PAD * 2;
-  const contentH = innerH + PANEL_PAD * 2;
-
-  // Title width can force a wider canvas
   const titleW = input.title ? measureText(input.title, FONTS.title) + 40 : 0;
   const subW = input.subtitle ? measureText(input.subtitle, FONTS.subtitle) + 40 : 0;
-
-  // ── Steps panel: right vs bottom (closest to 16:10) ───────────────────────
-  const stepBodyW = SIDEBAR_W - 72;
   const legend = deriveLegend(input, nodes);
-  const legendRowsRight = legend.length;
+  const stepBodyW = SIDEBAR_W - 72;
   const rightStepsH = (): number => {
     let h = 52;
     for (const s of steps) {
       const lines = s.description ? wrapText(s.description, FONTS.stepBody, stepBodyW) : [];
       h += 20 + lines.length * 17 + 18;
     }
-    h += 24 + 30 + legendRowsRight * 22 + 16;
+    h += 24 + 30 + legend.length * 22 + 16;
     return h;
   };
+  const RIGHT_H = rightStepsH();
   const bottomCardW = 300;
-  const bottomLayout = (totalW = contentW) => {
+  const bottomLayout = (totalW: number) => {
     const maxCols = Math.max(1, Math.min(steps.length || 1, Math.floor((totalW + 20) / (bottomCardW + 20))));
     const rows = Math.ceil((steps.length || 1) / maxCols);
     const bottomCols = Math.ceil((steps.length || 1) / rows);
@@ -322,29 +379,185 @@ export function layoutArchitecture(input: ArchitectureLayoutInput): LayoutResult
     }
     return { cw, cards, h: h + 40, cols: bottomCols };
   };
-
-  let stepsPosition: LayoutResult["stepsPosition"] = steps.length ? "right" : "none";
   const want = input.stepsPosition ?? "auto";
-  const baseW = Math.max(contentW, titleW, subW);
-  if (steps.length) {
-    if (want === "bottom") stepsPosition = "bottom";
-    else if (want === "auto") {
-      const rW = Math.max(contentW + SIDEBAR_GAP + SIDEBAR_W, titleW, subW);
-      const rH = Math.max(contentH, rightStepsH());
-      const bl = bottomLayout();
-      const bW = baseW;
-      const bH = contentH + SIDEBAR_GAP + bl.h + 34;
-      const score = (w: number, h: number) => Math.abs(Math.log(w / h / 1.6));
-      // Prefer right panel unless bottom is clearly better balanced
-      stepsPosition = score(bW, bH) + 0.12 < score(rW, rH) ? "bottom" : "right";
+  /** Canvas size for a content panel; picks the steps position. */
+  const chrome = (contentW: number, contentH: number) => {
+    const head = MARGIN + TITLE_H;
+    const tail = 18 + FOOTER_H - 12 + MARGIN / 2;
+    const titleNeed = Math.max(titleW, subW);
+    const right = () => {
+      const w = Math.max(contentW, titleNeed - SIDEBAR_GAP - SIDEBAR_W) + SIDEBAR_GAP + SIDEBAR_W + 2 * MARGIN;
+      return { W: w, H: head + Math.max(contentH, RIGHT_H) + tail, pos: "right" as const };
+    };
+    const bottom = () => {
+      const cw = Math.max(contentW, titleNeed);
+      return { W: cw + 2 * MARGIN, H: head + contentH + SIDEBAR_GAP + bottomLayout(cw).h + 44 + tail, pos: "bottom" as const };
+    };
+    if (!steps.length) {
+      const cw = Math.max(contentW, titleNeed);
+      return { W: cw + 2 * MARGIN, H: head + contentH + 48 + tail, pos: "none" as const };
+    }
+    if (want === "right") return right();
+    if (want === "bottom") return bottom();
+    const r = right();
+    const b = bottom();
+    const sc = (x: { W: number; H: number }) => aspectPenalty(x.W / x.H) + widthPenalty(x.W) * 0.5;
+    return sc(b) + 0.06 < sc(r) ? b : r;
+  };
+
+  // ── Wrap planning: choose rows × cols-variant ─────────────────────────────
+  const k = stackSpec.length;
+  const partitions: number[][][] = [];
+  if (explicitRows) {
+    let i = 0;
+    partitions.push(explicitRows.map((r) => r.map(() => i++)));
+  } else if (input.wrap === "never" || k <= 2) {
+    partitions.push([stackSpec.map((_, i) => i)]);
+  } else {
+    const maxRows = Math.min(3, k);
+    const rec = (start: number, left: number, acc: number[][]) => {
+      if (left === 1) {
+        partitions.push([...acc, range(start, k)]);
+        return;
+      }
+      for (let end = start + 1; end <= k - left + 1; end++) rec(end, left - 1, [...acc, range(start, end)]);
+    };
+    for (let r = 1; r <= maxRows; r++) rec(0, r, []);
+  }
+  const variants = input.wrap === "never" && !explicitRows ? [VARIANTS[0]] : VARIANTS;
+
+  const rowGapFor = (rowOfStack: number[], r: number) => {
+    // trunks that must cross the boundary between row r and r+1
+    const keys = new Set<string>();
+    for (const e of edges) {
+      const a = ownerOf.get(e.from)?.s;
+      const b = ownerOf.get(e.to)?.s;
+      if (a == null || b == null || a < 0 || b < 0) continue;
+      const ra = rowOfStack[a];
+      const rb = rowOfStack[b];
+      if (Math.min(ra, rb) <= r && Math.max(ra, rb) > r) keys.add(`${b}:${e.kind ?? "sync"}`);
+    }
+    return Math.max(RGAP + 12, Math.min(200, 44 + keys.size * 16));
+  };
+
+  interface Geo {
+    rowOfStack: number[];
+    gaps: number[];
+    rowGaps: number[];
+    colW: number[];
+    colH: number[];
+    rowW: number[];
+    rowH: number[];
+    innerW: number;
+    innerH: number;
+    bandW: number;
+    bandH: number;
+  }
+  const geometry = (model: ReturnType<typeof buildModel>, part: number[][]): Geo => {
+    const rowOfStack: number[] = [];
+    part.forEach((row, r) => row.forEach((s) => (rowOfStack[s] = r)));
+    const colW = model.stacks.map((c) => Math.max(0, ...c.map((b) => b.w)));
+    const colH = model.stacks.map((c) => c.reduce((s, b) => s + b.h, 0) + Math.max(0, c.length - 1) * RGAP);
+    const gaps = model.stacks.map((_, i) => (i < k - 1 && rowOfStack[i] === rowOfStack[i + 1] ? labelGap[i] : 0));
+    const rowW = part.map((row) => row.reduce((s, i, j) => s + colW[i] + (j < row.length - 1 ? gaps[i] : 0), 0));
+    const rowH = part.map((row) => Math.max(0, ...row.map((i) => colH[i])));
+    const rowGaps = part.map((_, r) => (r < part.length - 1 ? rowGapFor(rowOfStack, r) : 0));
+    const bandW = model.band.reduce((s, b) => s + b.w, 0) + Math.max(0, model.band.length - 1) * CGAP;
+    const bandH = model.band.length ? Math.max(...model.band.map((b) => b.h)) : 0;
+    const innerW = Math.max(bandW, ...rowW);
+    const innerH = rowH.reduce((s, h) => s + h, 0) + rowGaps.reduce((s, g) => s + g, 0) + (model.band.length ? RGAP + bandH : 0);
+    return { rowOfStack, gaps, rowGaps, colW, colH, rowW, rowH, innerW, innerH, bandW, bandH };
+  };
+
+  const estimateLength = (model: ReturnType<typeof buildModel>, g: Geo, part: number[][]): number => {
+    const cx: number[] = [];
+    const cyBox: number[][] = [];
+    let y = 0;
+    part.forEach((row, r) => {
+      let x = 0;
+      for (const s of row) {
+        cx[s] = x + g.colW[s] / 2;
+        let by = y;
+        cyBox[s] = model.stacks[s].map((b) => {
+          const c = by + b.h / 2;
+          by += b.h + RGAP;
+          return c;
+        });
+        x += g.colW[s] + g.gaps[s];
+      }
+      y += g.rowH[r] + g.rowGaps[r];
+    });
+    const bandY = y + g.bandH / 2;
+    const pos = (id: string) => {
+      const o = ownerOf.get(id);
+      if (!o) return null;
+      if (o.s < 0) return { x: g.innerW / 2, y: bandY };
+      return { x: cx[o.s], y: cyBox[o.s]?.[o.b] ?? 0 };
+    };
+    let L = 0;
+    for (const e of edges) {
+      const a = pos(e.from);
+      const b = pos(e.to);
+      if (!a || !b) continue;
+      L += Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+      // flows that run right→left read backwards
+      if (b.x < a.x - 1 && Math.abs(a.y - b.y) > 1) L += 120;
+    }
+    return L;
+  };
+
+  type Plan = { part: number[][]; variant: ColsVariant; score: number; model: ReturnType<typeof buildModel>; geo: Geo };
+  const plans: Plan[] = [];
+  for (const v of variants) {
+    const model = buildModel(v);
+    for (const part of partitions) {
+      const g = geometry(model, part);
+      const c = chrome(g.innerW + PANEL_PAD * 2, g.innerH + PANEL_PAD * 2);
+      const a = c.W / c.H;
+      const waste =
+        part.reduce((s, row, r) => s + (g.innerW - g.rowW[r]) * g.rowH[r], 0) / Math.max(1, g.innerW * g.innerH);
+      const len = estimateLength(model, g, part) / Math.max(1, edges.length * (c.W + c.H) * 0.5);
+      const score =
+        aspectPenalty(a) * 6 + widthPenalty(c.W) * 6 + waste * 1.2 + len * 1.0 + (part.length - 1) * 0.08 + v.id * 0.03;
+      plans.push({ part, variant: v, score, model, geo: g });
+      if (process.env.DBG_PLAN) console.log("plan", JSON.stringify(part), "v", v.id, "W", Math.round(c.W), "H", Math.round(c.H), "a", a.toFixed(2), "score", score.toFixed(3), "asp", aspectPenalty(a).toFixed(2), "wid", widthPenalty(c.W).toFixed(2), "waste", waste.toFixed(2), "len", len.toFixed(2));
     }
   }
+    plans.sort((a, b) => a.score - b.score);
+    return { stackSpec, ownerOf, plans, geometry, chrome, RIGHT_H, bottomLayout, legend, titleW, subW, stepBodyW, labelGap };
+  };
+  const candidates = input.columnCandidates?.length ? input.columnCandidates : [input.columns];
+  const ranked: Array<{ P: ReturnType<typeof planCandidate>; plan: ReturnType<typeof planCandidate>["plans"][0] }> = [];
+  for (const c of candidates) {
+    const r = planCandidate(c);
+    for (const pl of r.plans.slice(0, 4)) ranked.push({ P: r, plan: pl });
+  }
+  ranked.sort((a, b) => a.plan.score - b.plan.score);
+  const pick = ranked[Math.min(rank, ranked.length - 1)];
+  const { stackSpec, ownerOf, chrome, RIGHT_H, bottomLayout, legend, titleW, subW, stepBodyW } = pick.P;
+  const plan = pick.plan;
+  const { part, model } = plan;
+  const { stacks, band } = model;
+
+  let geo = plan.geo;
+  if (input.reorder) {
+    reorderCards(stacks, part, geo, ownerOf, edges, cardW, GAP_Y, RGAP);
+    // gaps that depend on card order (labelled in-row / in-column edges) may change
+    for (const st of stacks) st.forEach((b) => model.measure(b));
+    band.forEach((b) => model.measure(b));
+    geo = pick.P.geometry(model, part);
+  }
+
+  // ── Content geometry ──────────────────────────────────────────────────────
+  const contentW = geo.innerW + PANEL_PAD * 2;
+  const contentH = geo.innerH + PANEL_PAD * 2;
+  let stepsPosition: LayoutResult["stepsPosition"] = chrome(contentW, contentH).pos;
 
   const contentX = MARGIN;
   const contentY = MARGIN + TITLE_H;
   let content: Rect = { x: contentX, y: contentY, w: contentW, h: contentH };
   let sidebar: Rect = { x: 0, y: 0, w: 0, h: 0 };
-  let stepCards: StepCard[] = [];
+  const stepCards: StepCard[] = [];
   let legendRect: Rect;
 
   {
@@ -353,9 +566,8 @@ export function layoutArchitecture(input: ArchitectureLayoutInput): LayoutResult
     if (need > content.w) content = { ...content, w: Math.round(need) };
   }
   if (stepsPosition === "right") {
-    const sh = rightStepsH();
-    if (sh > content.h) content = { ...content, h: sh };
-    sidebar = { x: contentX + contentW + SIDEBAR_GAP, y: contentY, w: SIDEBAR_W, h: content.h };
+    if (RIGHT_H > content.h) content = { ...content, h: RIGHT_H };
+    sidebar = { x: contentX + content.w + SIDEBAR_GAP, y: contentY, w: SIDEBAR_W, h: content.h };
     let cy = sidebar.y + 52;
     for (const s of steps) {
       const lines = s.description ? wrapText(s.description, FONTS.stepBody, stepBodyW) : [];
@@ -379,13 +591,13 @@ export function layoutArchitecture(input: ArchitectureLayoutInput): LayoutResult
     for (let i = 0; i < steps.length; i += bottomCols) {
       const row = bl.cards.slice(i, i + bottomCols);
       const rh = Math.max(...row.map((c) => c.h));
-      row.forEach((c, k) => {
-        const s = steps[i + k];
+      row.forEach((c, kk) => {
+        const s = steps[i + kk];
         stepCards.push({
           n: s.n,
           label: line(s.label, FONTS.stepTitle, bl.cw - 64),
           lines: c.lines,
-          rect: { x: sidebar.x + k * (bl.cw + 20), y: cy, w: bl.cw, h: rh },
+          rect: { x: sidebar.x + kk * (bl.cw + 20), y: cy, w: bl.cw, h: rh },
         });
       });
       cy += rh + 20;
@@ -395,7 +607,6 @@ export function layoutArchitecture(input: ArchitectureLayoutInput): LayoutResult
     legendRect = { x: contentX, y: contentY + content.h + 18, w: content.w, h: 30 };
   }
 
-  // Stretch content panel to the canvas width (title may be wider)
   const rightEdge = stepsPosition === "right" ? sidebar.x + sidebar.w : contentX + content.w;
   const width = Math.round(rightEdge + MARGIN);
 
@@ -403,11 +614,12 @@ export function layoutArchitecture(input: ArchitectureLayoutInput): LayoutResult
   const placedTiers: PlacedTier[] = [];
   const placedNodes: PlacedNode[] = [];
   let tierCounter = 0;
-  const extraW = content.w - contentW; // grow frames if panel stretched
   const framesX = content.x + PANEL_PAD;
   const framesY = content.y + PANEL_PAD;
-  const availH = content.h - PANEL_PAD * 2 - (band.length ? ROW_GAP + bandH : 0);
-  const colExtra = columns.length ? extraW / columns.length : 0;
+  const innerW = content.w - PANEL_PAD * 2;
+  // Extra height (tall steps panel) goes to the rows evenly
+  const extraH = Math.max(0, content.h - contentH);
+  const perRowH = part.length ? extraH / part.length : 0;
 
   const placeBox = (b: Box, r: Rect, parentId?: string): void => {
     let inner: Rect;
@@ -428,6 +640,7 @@ export function layoutArchitecture(input: ArchitectureLayoutInput): LayoutResult
         parentId,
         kind: g.kind,
         external: isExternalGroup(g),
+        stub: !!g.stub,
         hidden: false,
         accentRole: dominantRole(descendants),
         nodeIds: descendants.map((n) => n.id),
@@ -439,7 +652,7 @@ export function layoutArchitecture(input: ArchitectureLayoutInput): LayoutResult
     const items: Array<{ kind: "block" } | { kind: "box"; box: Box }> = [];
     if (b.nodes.length) items.push({ kind: "block" });
     for (const c of b.children) items.push({ kind: "box", box: c });
-    const gap = b.children.length ? CHILD_GAP + 8 : 0;
+    const gap = b.children.length ? KGAP + 8 : 0;
     const natural = items.map((it) => (it.kind === "block" ? { w: b.blockW, h: b.blockH } : { w: it.box.w, h: it.box.h }));
     const nChildren = b.children.length;
     if (b.layout === "row") {
@@ -473,57 +686,76 @@ export function layoutArchitecture(input: ArchitectureLayoutInput): LayoutResult
     const x0 = slot.x + (slot.w - b.blockW) / 2;
     const y0 = slot.y + (slot.h - b.blockH) / 2;
     const tierId = b.hidden ? undefined : b.id;
+    const rows = Math.ceil(b.nodes.length / b.cols);
+    const rowHs: number[] = [];
+    for (let r = 0; r < rows; r++) rowHs.push(Math.max(...b.nodes.slice(r * b.cols, r * b.cols + b.cols).map(hOf)));
     b.nodes.forEach((n, i) => {
       const col = i % b.cols;
       const row = Math.floor(i / b.cols);
-      // Center a short last row
       const lastRowCount = b.nodes.length - row * b.cols;
       const rowShift = lastRowCount < b.cols ? ((b.cols - lastRowCount) * (cardW + b.gapX)) / 2 : 0;
+      let ry = y0;
+      for (let r = 0; r < row; r++) ry += rowHs[r] + (b.gapY ?? GAP_Y);
+      const h = hOf(n);
       const rect = {
         x: Math.round(x0 + rowShift + col * (cardW + b.gapX)),
-        y: Math.round(y0 + row * (CARD_H + CARD_GAP_Y)),
+        y: Math.round(ry + (rowHs[row] - h) / 2),
         w: cardW,
-        h: CARD_H,
+        h,
       };
       const role = (n.role ?? "default") as NodeRole;
       placedNodes.push({
         id: n.id,
         label: line(n.label, FONTS.cardLabel, textRoom),
         subtitle: n.subtitle ? line(n.subtitle, FONTS.cardSub, textRoom) : undefined,
+        detail: n.detail ? line(n.detail, FONTS.cardSub, textRoom) : undefined,
         rawLabel: n.label,
         rawSubtitle: n.subtitle,
         role,
         icon: resolveMonoIcon(n.icon, role, n.shape),
         rect,
         tierId,
+        stub: !!n.stub,
       });
     });
   };
 
-  let cx = framesX;
-  columns.forEach((col, ci) => {
-    const w = colW[ci] + colExtra;
-    const natural = colH[ci];
-    const extra = Math.max(0, availH - natural);
-    const per = extra / col.length;
-    let y = framesY;
-    for (const b of col) {
-      const h = b.h + per;
-      placeBox(b, { x: Math.round(cx), y: Math.round(y), w: Math.round(w), h: Math.round(h) });
-      y += h + ROW_GAP;
+  let y = framesY;
+  part.forEach((row, r) => {
+    const rowH = geo.rowH[r] + perRowH;
+    const extra = Math.max(0, innerW - geo.rowW[r]);
+    // stub-only stacks (detail views) keep their natural size and float centred
+    const isStub = (si: number) => stacks[si].every((b) => !!b.group?.stub);
+    const growable = row.filter((si) => !isStub(si));
+    const colExtra = growable.length ? extra / growable.length : 0;
+    // an all-stub row spreads its stacks instead of stretching them
+    const spread = growable.length ? 0 : extra / (row.length + 1);
+    let cx = framesX + spread;
+    for (const si of row) {
+      const col = stacks[si];
+      const stubby = isStub(si);
+      const w = geo.colW[si] + (stubby ? 0 : colExtra);
+      const natural = geo.colH[si];
+      const per = stubby ? 0 : Math.max(0, rowH - natural) / Math.max(1, col.length);
+      let by = stubby ? y + Math.max(0, rowH - natural) / 2 : y;
+      for (const b of col) {
+        const h = b.h + per;
+        placeBox(b, { x: Math.round(cx), y: Math.round(by), w: Math.round(w), h: Math.round(h) });
+        by += h + RGAP;
+      }
+      cx += w + geo.gaps[si] + spread;
     }
-    cx += w + gaps[ci];
+    y += rowH + geo.rowGaps[r];
   });
   if (band.length) {
-    const by = content.y + content.h - PANEL_PAD - bandH;
-    const totalW = content.w - PANEL_PAD * 2;
-    const natural = band.reduce((s, b) => s + b.w, 0) + (band.length - 1) * COL_GAP;
-    const per = Math.max(0, totalW - natural) / band.length;
+    const by = content.y + content.h - PANEL_PAD - geo.bandH;
+    const natural = band.reduce((s, b) => s + b.w, 0) + (band.length - 1) * CGAP;
+    const per = Math.max(0, innerW - natural) / band.length;
     let bx = framesX;
     for (const b of band) {
       const w = b.w + per;
-      placeBox(b, { x: Math.round(bx), y: Math.round(by), w: Math.round(w), h: Math.round(bandH) });
-      bx += w + COL_GAP;
+      placeBox(b, { x: Math.round(bx), y: Math.round(by), w: Math.round(w), h: Math.round(geo.bandH) });
+      bx += w + CGAP;
     }
   }
 
@@ -531,14 +763,16 @@ export function layoutArchitecture(input: ArchitectureLayoutInput): LayoutResult
     (stepsPosition === "bottom" ? sidebar.y + sidebar.h : stepsPosition === "none" ? legendRect.y + legendRect.h : content.y + content.h) + 18;
   const height = Math.round(footerY + FOOTER_H - 12 + MARGIN / 2);
 
-  avoidLabelCorridors(placedTiers, placedNodes, input.edges ?? []);
+  avoidLabelCorridors(placedTiers, placedNodes, edges);
 
   const routed = routeEdges({
     nodes: placedNodes,
     tiers: placedTiers,
-    edges: input.edges ?? [],
+    edges,
     area: content,
   });
+
+  const anchors = placeAnchorBadges(steps, routed.edges, placedNodes, placedTiers);
 
   return {
     width,
@@ -548,6 +782,8 @@ export function layoutArchitecture(input: ArchitectureLayoutInput): LayoutResult
     nodes: placedNodes,
     tiers: placedTiers,
     edges: routed.edges,
+    junctions: routed.junctions,
+    anchors,
     steps,
     stepCards,
     stepsPosition,
@@ -558,7 +794,177 @@ export function layoutArchitecture(input: ArchitectureLayoutInput): LayoutResult
     titleRect: { x: MARGIN, y: MARGIN, w: width - MARGIN * 2, h: TITLE_H },
     footerY,
     routeNotes: routed.notes,
+    plan: {
+      rows: part.map((row) => row.map((si) => stackSpec[si])),
+      variant: plan.variant.id,
+      spacing: sp,
+      score: plan.score,
+    },
+    view: input.view,
   };
+}
+
+/**
+ * Barycentric card ordering: inside every zone, swap cards between grid slots
+ * while it shortens the estimated length of their edges (external neighbours
+ * pull a card toward their side, internal neighbours pull cards together).
+ */
+function reorderCards(
+  stacks: Box[][],
+  part: number[][],
+  geo: { colW: number[]; gaps: number[]; rowH: number[]; rowGaps: number[] },
+  ownerOf: Map<string, { s: number; b: number }>,
+  edges: DiagramEdge[],
+  cardW: number,
+  gapY: number,
+  rgap: number,
+): void {
+  // stack / box centres
+  const cx: number[] = [];
+  const cy: number[][] = [];
+  let y = 0;
+  part.forEach((row, r) => {
+    let x = 0;
+    for (const si of row) {
+      cx[si] = x + geo.colW[si] / 2;
+      let by = y;
+      cy[si] = stacks[si].map((b) => {
+        const c = by + b.h / 2;
+        by += b.h + rgap;
+        return c;
+      });
+      x += geo.colW[si] + geo.gaps[si];
+    }
+    y += geo.rowH[r] + geo.rowGaps[r];
+  });
+  const posOf = (id: string) => {
+    const o = ownerOf.get(id);
+    if (!o || o.s < 0 || cx[o.s] == null) return null;
+    return { x: cx[o.s], y: cy[o.s][o.b] };
+  };
+  const visit = (b: Box, center: { x: number; y: number }) => {
+    const n = b.nodes.length;
+    if (n >= 2) {
+      const ids = new Set(b.nodes.map((x) => x.id));
+      const rows = Math.ceil(n / b.cols);
+      const gx = b.gapX;
+      const slots: Array<{ x: number; y: number }> = [];
+      for (let i = 0; i < n; i++) {
+        const col = i % b.cols;
+        const row = Math.floor(i / b.cols);
+        const last = n - row * b.cols;
+        const shift = last < b.cols ? ((b.cols - last) * (cardW + gx)) / 2 : 0;
+        slots.push({
+          x: center.x - b.blockW / 2 + shift + col * (cardW + gx) + cardW / 2,
+          y: center.y - b.blockH / 2 + row * (CARD_H + (b.gapY ?? gapY)) + CARD_H / 2 + (rows === 1 ? 0 : 0),
+        });
+      }
+      const ext = new Map<string, Array<{ x: number; y: number }>>();
+      const internal: Array<[string, string]> = [];
+      for (const e of edges) {
+        for (const [a, o] of [[e.from, e.to], [e.to, e.from]] as const) {
+          if (!ids.has(a)) continue;
+          if (ids.has(o)) {
+            if (a === e.from) internal.push([e.from, e.to]);
+            continue;
+          }
+          const p = posOf(o);
+          if (p) (ext.get(a) ?? ext.set(a, []).get(a)!).push(p);
+        }
+      }
+      if (ext.size || internal.length) {
+        const order = b.nodes.map((x) => x.id);
+        const at = new Map(order.map((id, i) => [id, i]));
+        const cost = () => {
+          let c = 0;
+          for (const [id, ps] of ext) {
+            const s = slots[at.get(id)!];
+            for (const p of ps) c += Math.abs(s.x - p.x) + Math.abs(s.y - p.y);
+          }
+          for (const [a, bb] of internal) {
+            const p = slots[at.get(a)!];
+            const q = slots[at.get(bb)!];
+            c += (Math.abs(p.x - q.x) + Math.abs(p.y - q.y)) * 1.2;
+          }
+          return c;
+        };
+        let best = cost();
+        for (let pass = 0; pass < 6; pass++) {
+          let improved = false;
+          for (let i = 0; i < n; i++) {
+            for (let j = i + 1; j < n; j++) {
+              const a = order[i];
+              const c = order[j];
+              at.set(a, j);
+              at.set(c, i);
+              const v = cost();
+              if (v < best - 0.5) {
+                best = v;
+                order[i] = c;
+                order[j] = a;
+                improved = true;
+              } else {
+                at.set(a, i);
+                at.set(c, j);
+              }
+            }
+          }
+          if (!improved) break;
+        }
+        const byId = new Map(b.nodes.map((x) => [x.id, x]));
+        b.nodes = order.map((id) => byId.get(id)!);
+      }
+    }
+    for (const c of b.children) visit(c, center);
+  };
+  stacks.forEach((col, si) => col.forEach((b, bi) => cx[si] != null && visit(b, { x: cx[si], y: cy[si][bi] })));
+}
+
+function range(a: number, b: number): number[] {
+  const out: number[] = [];
+  for (let i = a; i < b; i++) out.push(i);
+  return out;
+}
+
+export function aspectPenalty(a: number): number {
+  const lo = Math.log(TARGET_ASPECT.min);
+  const hi = Math.log(TARGET_ASPECT.max);
+  const v = Math.log(a);
+  const out = v < lo ? lo - v : v > hi ? v - hi : 0;
+  return out + Math.abs(v - Math.log(TARGET_ASPECT.ideal)) * 0.15;
+}
+
+function widthPenalty(w: number): number {
+  return Math.max(0, w - READABLE_W) / READABLE_W;
+}
+
+/**
+ * Steps without an edge (step.anchor → node / tier id) get a badge pinned to
+ * the anchor's top-right corner, stacked when several share one anchor.
+ */
+function placeAnchorBadges(
+  steps: ArchitectureLayoutInput["steps"],
+  edges: LayoutResult["edges"],
+  nodes: PlacedNode[],
+  tiers: PlacedTier[],
+): LayoutResult["anchors"] {
+  const out: LayoutResult["anchors"] = [];
+  const onEdge = new Set(edges.filter((e) => e.step != null).map((e) => e.step!));
+  const used = new Map<string, number>();
+  for (const s of steps ?? []) {
+    if (!s.anchor || onEdge.has(s.n)) continue;
+    const n = nodes.find((x) => x.id === s.anchor);
+    const t = tiers.find((x) => x.id === s.anchor);
+    const r = n?.rect ?? t?.rect;
+    if (!r) continue;
+    const k = used.get(s.anchor) ?? 0;
+    used.set(s.anchor, k + 1);
+    const at = n
+      ? { x: r.x + r.w - 4 - k * (BADGE_R * 2 + 4), y: r.y }
+      : { x: r.x + r.w - 18 - k * (BADGE_R * 2 + 4), y: r.y + 20 };
+    out.push({ n: s.n, at, anchor: s.anchor });
+  }
+  return out;
 }
 
 /**

@@ -95,6 +95,8 @@ export interface PipelineInput {
   drawio?: string;
   /** Structural QA findings to pass through */
   qa?: QaIssue[];
+  /** Appended after the slugged name with a dot: name.overview.png */
+  suffix?: string;
 }
 
 export async function renderPipeline(input: PipelineInput): Promise<RenderResult> {
@@ -102,7 +104,7 @@ export async function renderPipeline(input: PipelineInput): Promise<RenderResult
   const outDir = path.resolve(input.outputDir ?? DEFAULT_OUTPUT_DIR);
   await fs.mkdir(outDir, { recursive: true });
 
-  const base = slugify(input.name ?? `${input.engine}-${Date.now()}`);
+  const base = slugify(input.name ?? `${input.engine}-${Date.now()}`) + (input.suffix ? `.${input.suffix}` : "");
   const svgPath = path.join(outDir, `${base}.svg`);
   const pngPath = path.join(outDir, `${base}.png`);
 

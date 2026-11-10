@@ -16,6 +16,23 @@ export interface ArchitectureLayoutInput {
   /** Tier ids laid out as one full-width band under the columns. */
   bottomRow?: string[];
   stepsPosition?: "auto" | "right" | "bottom";
+  /** Explicit rows of column stacks (disables auto-wrap) */
+  rows?: string[][][];
+  wrap?: "auto" | "never";
+  /** Alternative column groupings; the planner keeps the one that scores best */
+  columnCandidates?: string[][][];
+  /** Reorder cards inside each zone by neighbour barycentre (fewer crossings) */
+  reorder?: boolean;
+  /** View metadata when this layout is one view of a split diagram */
+  view?: ViewInfo;
+}
+
+export interface ViewInfo {
+  kind: "full" | "overview" | "detail";
+  /** file-name suffix ("overview", tier slug) */
+  key: string;
+  /** detail: the tier ids this view zooms into */
+  focus?: string[];
 }
 
 export interface Rect {
@@ -51,6 +68,8 @@ export interface PlacedNode {
   rect: Rect;
   /** Innermost tier id if any */
   tierId?: string;
+  detail?: TextLine;
+  stub?: boolean;
 }
 
 export interface PlacedTier {
@@ -65,6 +84,7 @@ export interface PlacedTier {
   parentId?: string;
   kind?: DiagramGroup["kind"];
   external: boolean;
+  stub?: boolean;
   /** invisible wrapper for ungrouped nodes */
   hidden: boolean;
   accentRole: NodeRole;
@@ -86,8 +106,17 @@ export interface RoutedEdge {
   toTier: boolean;
   labelRect?: Rect;
   badgeAt?: Point;
-  /** bundle key: edges sharing a port/trunk */
+  /** badge drawn at the left end of the label pill */
+  badgeInLabel?: boolean;
+  /** bundle key: edges sharing a port */
   bundle: string;
+  /** trunk keys: edges sharing any key may share track (intentional bundling) */
+  trunks: string[];
+}
+
+export interface Junction {
+  at: Point;
+  kind: EdgeKind;
 }
 
 export interface StepCard {
@@ -124,6 +153,13 @@ export interface LayoutResult {
   footerY: number;
   /** Diagnostics from the router (unroutable edges, etc.) */
   routeNotes: string[];
+  /** Trunk split / merge points (drawn as dots) */
+  junctions: Junction[];
+  /** Step badges pinned to a node / tier (steps without an edge) */
+  anchors: Array<{ n: number; at: Point; anchor: string }>;
+  /** Chosen wrap plan */
+  plan?: { rows: string[][][]; variant: number; spacing: number; score: number };
+  view?: ViewInfo;
 }
 
 export const BADGE_R = 11;

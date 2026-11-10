@@ -185,7 +185,9 @@ describe("compilers → svg engine", () => {
     expect(r.source).toContain("<svg");
     expect(r.source).toContain("Order");
     expect(Array.isArray(r.qa)).toBe(true);
-    expect(r.drawio).toBeUndefined();
+    // draw.io is on by default; outputs without "drawio" opts out
+    expect(r.drawio).toContain("<mxfile");
+    expect(compileMicroservice({ ...sample, outputs: ["svg", "png"] }).drawio).toBeUndefined();
   });
 
   it("compileCloud returns drawio when requested", () => {
