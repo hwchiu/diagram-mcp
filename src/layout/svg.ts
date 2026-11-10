@@ -4,6 +4,7 @@
 import { getTheme, type ThemePalette } from "../design/themes.js";
 import { MONO_PATHS, type MonoIcon } from "./icons.js";
 import type { LayoutResult, PlacedNode, Point, RoutedEdge } from "./types.js";
+import { edgeLabelSize } from "./routing.js";
 
 export interface ArchTheme {
   canvas: string;
@@ -199,17 +200,24 @@ function renderTier(tier: LayoutResult["tiers"][0], t: ArchTheme): string {
   </g>`;
 }
 
-function renderEdge(e: RoutedEdge, t: ArchTheme, markerId: string): string {
+function renderEdge(e: RoutedEdge, t: ArchTheme, markerId: string, annotations = false): string {
   const color = edgeColor(e.kind, t);
-  const dash = e.kind === "async" ? 'stroke-dasharray="6 4"' : "";
+  const dash = e.kind === "async" ? ' stroke-dasharray="6 4"' : "";
   const d = pathD(e.points, 10);
-  const glow = t.tech ? `filter:url(#edgeGlow);` : "";
+  if (!annotations) {
+    return `
+  <g class="edge">
+    <path class="edge-halo" d="${d}" fill="none" stroke="${t.canvas}" stroke-width="5.5"
+      stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="${d}" fill="none" stroke="${color}" stroke-width="1.5"${dash}
+      marker-end="url(#${markerId})"/>
+  </g>`;
+  }
   // Prefer step badge over duplicating the number inside the pill when both exist
   let label = "";
   if (e.label) {
     const text = e.label;
-    const tw = Math.max(36, text.length * 7.4 + 18);
-    const th = 22;
+    const { w: tw, h: th } = edgeLabelSize(text);
     const lx = e.labelAt.x - tw / 2;
     const ly = e.labelAt.y - th / 2;
     label = `
@@ -240,12 +248,8 @@ function renderEdge(e: RoutedEdge, t: ArchTheme, markerId: string): string {
     <text x="${e.labelAt.x}" y="${e.labelAt.y + 5}" text-anchor="middle" fill="#FFFFFF"
       font-family="${t.sans}" font-size="12" font-weight="700">${esc(text)}</text>`;
   }
-  return `
-  <g class="edge">
-    <path d="${d}" fill="none" stroke="${color}" stroke-width="1.5" ${dash}
-      marker-end="url(#${markerId})" style="${glow}"/>
-    ${label}
-    ${badge}
+  if (!label && !badge) return "";
+  return `<g class="edge-annotations">${label}${badge}
   </g>`;
 }
 
@@ -334,9 +338,6 @@ export function renderArchitectureSvg(layout: LayoutResult, themeId?: string): s
     <filter id="nodeGlow" x="-40%" y="-40%" width="180%" height="180%">
       <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="${t.accent}" flood-opacity="0.35"/>
     </filter>
-    <filter id="edgeGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="${t.accent}" flood-opacity="0.4"/>
-    </filter>
     <filter id="badgeGlow" x="-50%" y="-50%" width="200%" height="200%">
       <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="${t.badge}" flood-opacity="0.7"/>
     </filter>
@@ -364,9 +365,12 @@ export function renderArchitectureSvg(layout: LayoutResult, themeId?: string): s
       return renderEdge(e, t, mid);
     })
     .join("\n");
+  const annotations = layout.edges.map((e) => renderEdge(e, t, "", true)).join("\n");
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+  <desc>Orthogonal architecture diagram. Line crossings are not connections; arrows identify endpoints.</desc>
+  <metadata id="routing-quality">${esc(JSON.stringify(layout.routing))}</metadata>
   ${defs}
   <rect width="100%" height="100%" fill="${t.canvas}"/>
   <rect width="100%" height="100%" fill="url(#dotGrid)"/>
@@ -377,6 +381,7 @@ export function renderArchitectureSvg(layout: LayoutResult, themeId?: string): s
   ${tiers}
   ${edges}
   ${cards}
+  ${annotations}
   ${renderSidebar(layout, t)}
 </svg>`;
 }

@@ -33,7 +33,17 @@ steps?: { n, label, description?, anchor? }[]
 edges?: { from, to, label?, kind?, step? }[]  // from/to may be group ids
 ```
 
-Grid rules: uniform card size per tier, aligned gutters, ~16:9 with docked sidebar, no auto-layout randomness.
+Grid rules: uniform card size per tier, aligned gutters, docked sidebar, no auto-layout randomness. Routing clearance takes priority over a fixed aspect ratio.
+
+### Architecture edge routing
+
+- Ports are counted per endpoint/side and ordered by the opposite endpoint's position, not input edge order. Cards grow for high-degree nodes.
+- `src/layout/routing.ts` builds a compressed rectilinear visibility grid and uses direction-aware A*. Inflated cards and tier headers are hard obstacles; endpoint escape stubs preserve arrow approach directions.
+- Length and bends have a cost; crossings, overlapping tracks, and parallel lines closer than 10px carry larger penalties. Up to three rip-up/reroute passes accept only improvements in the global score.
+- Labels and badges are collision-checked as rectangles and reserve space during routing. A label with a step number is packed together; later routes avoid both. They render after all lines and cards.
+- Gutters and perimeter lanes grow with traffic. If routing or annotation placement fails, layout retries with wider gaps (1×, 1.75×, 3×), then throws `RoutingCapacityError`; it never falls back to drawing through cards or accepting shared line segments.
+- Crossings cannot always be eliminated with fixed node positions and ports. Canvas-colored line halos distinguish crossings from junctions. Edge strokes do not use bounding-box glow filters, which can hide perfectly horizontal/vertical paths.
+- `LayoutResult.routing` and SVG `<metadata id="routing-quality">` expose crossings, collinear overlap length, weighted close-parallel length, total length, and bends. Preferred track spacing is a soft constraint, not a universal minimum-distance guarantee.
 
 ## Themes
 
@@ -59,5 +69,6 @@ Grid rules: uniform card size per tier, aligned gutters, ~16:9 with docked sideb
 
 ## Verification
 
-- Unit tests: deterministic layout, no card overlaps, edge clearance, SVG structure (`src/layout/grid.test.ts`)
+- Unit tests: input-order stability, high-degree ports, dense/reverse/parallel/self-loop connections, exact card clearance, label/badge collisions, impossible routes, and raster visibility of straight edges (`src/layout/grid.test.ts`)
 - Visual QA: full-size + 1600px-wide reads for showcase architecture PNGs
+- Architecture-only showcase regeneration: `npm run showcase -- --architecture-only`

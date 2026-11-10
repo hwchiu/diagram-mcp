@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="2192" height="838" viewBox="0 0 2192 838">
+<svg xmlns="http://www.w3.org/2000/svg" width="2747.6" height="874" viewBox="0 0 2747.6 874">
+  <desc>Orthogonal architecture diagram. Line crossings are not connections; arrows identify endpoints.</desc>
+  <metadata id="routing-quality">{&quot;crossings&quot;:2,&quot;overlapLength&quot;:0,&quot;closeParallelLength&quot;:0,&quot;length&quot;:7290.8,&quot;bends&quot;:40}</metadata>
   
   <defs>
     
@@ -25,9 +27,6 @@
     <filter id="nodeGlow" x="-40%" y="-40%" width="180%" height="180%">
       <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#22D3EE" flood-opacity="0.35"/>
     </filter>
-    <filter id="edgeGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#22D3EE" flood-opacity="0.4"/>
-    </filter>
     <filter id="badgeGlow" x="-50%" y="-50%" width="200%" height="200%">
       <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#22D3EE" flood-opacity="0.7"/>
     </filter>
@@ -38,7 +37,7 @@
   </defs>
   <rect width="100%" height="100%" fill="#0B1020"/>
   <rect width="100%" height="100%" fill="url(#dotGrid)"/>
-  <rect x="26" y="102" width="1816" height="710"
+  <rect x="26" y="102" width="2371.6" height="746"
     fill="url(#tierGlow)" rx="16"/>
   <text x="36" y="64" fill="#E8EEF9"
         font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="30" font-weight="700">Dual-Region Kubernetes Platform</text>
@@ -46,428 +45,450 @@
         font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="14">Global edge · us-east-1 primary · us-west-2 standby</text>
   
   <g class="tier" data-id="clients">
-    <rect x="36" y="112" width="346" height="176" rx="10" ry="10"
+    <rect x="96" y="172" width="388" height="186" rx="10" ry="10"
       fill="rgba(56,189,248,0.04)" stroke="rgba(56,189,248,0.45)" stroke-width="1" stroke-dasharray="5 4"/>
     
-    <path d="M 44 130 L 44 120 L 54 120" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 374 130 L 374 120 L 364 120" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 44 270 L 44 280 L 54 280" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 374 270 L 374 280 L 364 280" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <text x="52" y="134" fill="#8B9BB8" font-family="ui-monospace, JetBrains Mono, SF Mono, Menlo, monospace" font-size="12"
+    <path d="M 104 190 L 104 180 L 114 180" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
+    <path d="M 476 190 L 476 180 L 466 180" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
+    <path d="M 104 340 L 104 350 L 114 350" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
+    <path d="M 476 340 L 476 350 L 466 350" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
+    <text x="112" y="194" fill="#8B9BB8" font-family="ui-monospace, JetBrains Mono, SF Mono, Menlo, monospace" font-size="12"
       letter-spacing="0.12em" font-weight="500">01 / CLIENTS</text>
   </g>
 
   <g class="tier" data-id="global">
-    <rect x="36" y="312" width="346" height="306" rx="10" ry="10"
+    <rect x="96" y="418" width="388" height="360" rx="10" ry="10"
       fill="rgba(56,189,248,0.04)" stroke="rgba(56,189,248,0.45)" stroke-width="1" stroke-dasharray="5 4"/>
     
-    <path d="M 44 330 L 44 320 L 54 320" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 374 330 L 374 320 L 364 320" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 44 600 L 44 610 L 54 610" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 374 600 L 374 610 L 364 610" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <text x="52" y="334" fill="#8B9BB8" font-family="ui-monospace, JetBrains Mono, SF Mono, Menlo, monospace" font-size="12"
+    <path d="M 104 436 L 104 426 L 114 426" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
+    <path d="M 476 436 L 476 426 L 466 426" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
+    <path d="M 104 760 L 104 770 L 114 770" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
+    <path d="M 476 760 L 476 770 L 466 770" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
+    <text x="112" y="440" fill="#8B9BB8" font-family="ui-monospace, JetBrains Mono, SF Mono, Menlo, monospace" font-size="12"
       letter-spacing="0.12em" font-weight="500">02 / GLOBAL EDGE</text>
   </g>
 
   <g class="tier" data-id="east">
-    <rect x="414" y="112" width="504" height="436" rx="10" ry="10"
+    <rect x="577.2" y="172" width="588" height="534" rx="10" ry="10"
       fill="rgba(56,189,248,0.04)" stroke="rgba(56,189,248,0.45)" stroke-width="1" stroke-dasharray="5 4"/>
     
-    <path d="M 422 130 L 422 120 L 432 120" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 910 130 L 910 120 L 900 120" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 422 530 L 422 540 L 432 540" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 910 530 L 910 540 L 900 540" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <text x="430" y="134" fill="#8B9BB8" font-family="ui-monospace, JetBrains Mono, SF Mono, Menlo, monospace" font-size="12"
+    <path d="M 585.2 190 L 585.2 180 L 595.2 180" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
+    <path d="M 1157.2 190 L 1157.2 180 L 1147.2 180" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
+    <path d="M 585.2 688 L 585.2 698 L 595.2 698" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
+    <path d="M 1157.2 688 L 1157.2 698 L 1147.2 698" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
+    <text x="593.2" y="194" fill="#8B9BB8" font-family="ui-monospace, JetBrains Mono, SF Mono, Menlo, monospace" font-size="12"
       letter-spacing="0.12em" font-weight="500">03 / US-EAST-1 PRIMARY</text>
   </g>
 
   <g class="tier" data-id="west">
-    <rect x="950" y="112" width="504" height="306" rx="10" ry="10"
+    <rect x="1258.4" y="172" width="588" height="360" rx="10" ry="10"
       fill="rgba(56,189,248,0.04)" stroke="rgba(56,189,248,0.45)" stroke-width="1" stroke-dasharray="5 4"/>
     
-    <path d="M 958 130 L 958 120 L 968 120" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 1446 130 L 1446 120 L 1436 120" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 958 400 L 958 410 L 968 410" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 1446 400 L 1446 410 L 1436 410" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <text x="966" y="134" fill="#8B9BB8" font-family="ui-monospace, JetBrains Mono, SF Mono, Menlo, monospace" font-size="12"
+    <path d="M 1266.4 190 L 1266.4 180 L 1276.4 180" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
+    <path d="M 1838.4 190 L 1838.4 180 L 1828.4 180" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
+    <path d="M 1266.4 514 L 1266.4 524 L 1276.4 524" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
+    <path d="M 1838.4 514 L 1838.4 524 L 1828.4 524" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
+    <text x="1274.4" y="194" fill="#8B9BB8" font-family="ui-monospace, JetBrains Mono, SF Mono, Menlo, monospace" font-size="12"
       letter-spacing="0.12em" font-weight="500">04 / US-WEST-2 STANDBY</text>
   </g>
 
   <g class="tier" data-id="obs">
-    <rect x="1486" y="112" width="346" height="306" rx="10" ry="10"
+    <rect x="1939.6000000000001" y="172" width="388" height="360" rx="10" ry="10"
       fill="rgba(56,189,248,0.04)" stroke="rgba(56,189,248,0.45)" stroke-width="1" stroke-dasharray="5 4"/>
     
-    <path d="M 1494 130 L 1494 120 L 1504 120" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 1824 130 L 1824 120 L 1814 120" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 1494 400 L 1494 410 L 1504 410" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <path d="M 1824 400 L 1824 410 L 1814 410" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
-    <text x="1502" y="134" fill="#8B9BB8" font-family="ui-monospace, JetBrains Mono, SF Mono, Menlo, monospace" font-size="12"
+    <path d="M 1947.6000000000001 190 L 1947.6000000000001 180 L 1957.6000000000001 180" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
+    <path d="M 2319.6000000000004 190 L 2319.6000000000004 180 L 2309.6000000000004 180" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
+    <path d="M 1947.6000000000001 514 L 1947.6000000000001 524 L 1957.6000000000001 524" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
+    <path d="M 2319.6000000000004 514 L 2319.6000000000004 524 L 2309.6000000000004 524" fill="none" stroke="rgba(56,189,248,0.45)" stroke-width="1.5"/>
+    <text x="1955.6000000000001" y="194" fill="#8B9BB8" font-family="ui-monospace, JetBrains Mono, SF Mono, Menlo, monospace" font-size="12"
       letter-spacing="0.12em" font-weight="500">05 / OBSERVABILITY</text>
   </g>
   
   <g class="edge">
-    <path d="M 105.2 288 L 105.2 312" fill="none" stroke="#22D3EE" stroke-width="1.5" 
-      marker-end="url(#arrow-sync)" style="filter:url(#edgeGlow);"/>
-    
-    
-    <circle cx="123.2" cy="316" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="2"
-      style="filter:url(#badgeGlow)"/>
-    <text x="123.2" y="321" text-anchor="middle" fill="#FFFFFF"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">1</text>
+    <path class="edge-halo" d="M 290 358 L 290 418" fill="none" stroke="#0B1020" stroke-width="5.5"
+      stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M 290 358 L 290 418" fill="none" stroke="#22D3EE" stroke-width="1.5"
+      marker-end="url(#arrow-sync)"/>
   </g>
 
   <g class="edge">
-    <path d="M 382 373.2 L 382 209.2 Q 382 199.2 392 199.2 L 414 199.2" fill="none" stroke="#22D3EE" stroke-width="1.5" 
-      marker-end="url(#arrow-sync)" style="filter:url(#edgeGlow);"/>
-    
-    <rect x="347.1" y="275.2" width="69.80000000000001" height="22" rx="11" ry="11"
-      fill="#0B1020" stroke="#22D3EE" stroke-width="1" opacity="0.95"/>
-    <text x="382" y="291.2" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12" font-weight="600">primary</text>
-    
-    <circle cx="400" cy="345.2" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="2"
-      style="filter:url(#badgeGlow)"/>
-    <text x="400" y="350.2" text-anchor="middle" fill="#FFFFFF"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">2</text>
+    <path class="edge-halo" d="M 484 658 L 489 658 Q 494 658 494 653 L 494 555 Q 494 548 487 548 L 487 548 Q 480 548 480 541 L 480 456 Q 480 446 490 446 L 563.7 446 Q 567.2 446 567.2 442.5 L 567.2 442.5 Q 567.2 439 570.7 439 L 577.2 439" fill="none" stroke="#0B1020" stroke-width="5.5"
+      stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M 484 658 L 489 658 Q 494 658 494 653 L 494 555 Q 494 548 487 548 L 487 548 Q 480 548 480 541 L 480 456 Q 480 446 490 446 L 563.7 446 Q 567.2 446 567.2 442.5 L 567.2 442.5 Q 567.2 439 570.7 439 L 577.2 439" fill="none" stroke="#22D3EE" stroke-width="1.5"
+      marker-end="url(#arrow-sync)"/>
   </g>
 
   <g class="edge">
-    <path d="M 382 434.4 L 940 434.4 Q 950 434.4 950 424.4 L 950 173.2" fill="none" stroke="#22D3EE" stroke-width="1.5" 
-      marker-end="url(#arrow-sync)" style="filter:url(#edgeGlow);"/>
-    
-    <rect x="627.4" y="377" width="77.2" height="22" rx="11" ry="11"
-      fill="#0B1020" stroke="#22D3EE" stroke-width="1" opacity="0.95"/>
-    <text x="666" y="393" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12" font-weight="600">failover</text>
-    
+    <path class="edge-halo" d="M 484 538 L 1238.4 538 Q 1248.4 538 1248.4 528 L 1248.4 357 Q 1248.4 352 1253.4 352 L 1258.4 352" fill="none" stroke="#0B1020" stroke-width="5.5"
+      stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M 484 538 L 1238.4 538 Q 1248.4 538 1248.4 528 L 1248.4 357 Q 1248.4 352 1253.4 352 L 1258.4 352" fill="none" stroke="#22D3EE" stroke-width="1.5"
+      marker-end="url(#arrow-sync)"/>
   </g>
 
   <g class="edge">
-    <path d="M 578 168.8 L 596 168.8" fill="none" stroke="#22D3EE" stroke-width="1.5" 
-      marker-end="url(#arrow-sync)" style="filter:url(#edgeGlow);"/>
-    
-    
-    <circle cx="606" cy="150.8" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="2"
-      style="filter:url(#badgeGlow)"/>
-    <text x="606" y="155.8" text-anchor="middle" fill="#FFFFFF"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">3</text>
+    <path class="edge-halo" d="M 741.2 277 L 801.2 277" fill="none" stroke="#0B1020" stroke-width="5.5"
+      stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M 741.2 277 L 801.2 277" fill="none" stroke="#22D3EE" stroke-width="1.5"
+      marker-end="url(#arrow-sync)"/>
   </g>
 
   <g class="edge">
-    <path d="M 736 168.8 L 754 168.8" fill="none" stroke="#22D3EE" stroke-width="1.5" 
-      marker-end="url(#arrow-sync)" style="filter:url(#edgeGlow);"/>
-    
-    
+    <path class="edge-halo" d="M 941.2 277 L 971.2 277 Q 981.2 277 981.2 267 L 981.2 258.5 Q 981.2 248.5 991.2 248.5 L 1001.2 248.5" fill="none" stroke="#0B1020" stroke-width="5.5"
+      stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M 941.2 277 L 971.2 277 Q 981.2 277 981.2 267 L 981.2 258.5 Q 981.2 248.5 991.2 248.5 L 1001.2 248.5" fill="none" stroke="#22D3EE" stroke-width="1.5"
+      marker-end="url(#arrow-sync)"/>
   </g>
 
   <g class="edge">
-    <path d="M 754 191.6 L 749.5 191.6 Q 745 191.6 745 196.1 L 745 294.3 Q 745 298.8 740.5 298.8 L 736 298.8" fill="none" stroke="#22D3EE" stroke-width="1.5" 
-      marker-end="url(#arrow-sync)" style="filter:url(#edgeGlow);"/>
-    
-    
+    <path class="edge-halo" d="M 1001.2 277 L 996.2 277 Q 991.2 277 991.2 282 L 991.2 441 Q 991.2 451 981.2 451 L 941.2 451" fill="none" stroke="#0B1020" stroke-width="5.5"
+      stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M 1001.2 277 L 996.2 277 Q 991.2 277 991.2 282 L 991.2 441 Q 991.2 451 981.2 451 L 941.2 451" fill="none" stroke="#22D3EE" stroke-width="1.5"
+      marker-end="url(#arrow-sync)"/>
   </g>
 
   <g class="edge">
-    <path d="M 754 214.39999999999998 L 754 418.8 Q 754 428.8 744 428.8 L 578 428.8" fill="none" stroke="#34D399" stroke-width="1.5" 
-      marker-end="url(#arrow-data)" style="filter:url(#edgeGlow);"/>
-    
-    
-    <circle cx="772" cy="242.39999999999998" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="2"
-      style="filter:url(#badgeGlow)"/>
-    <text x="772" y="247.39999999999998" text-anchor="middle" fill="#FFFFFF"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">4</text>
+    <path class="edge-halo" d="M 1001.2 305.5 L 961.2 305.5 Q 951.2 305.5 951.2 315.5 L 951.2 374 Q 951.2 384 941.2 384 L 486 384 Q 476 384 476 394 L 476 436 Q 476 446 466 446 L 320 446 Q 310 446 310 456 L 310 658 Q 310 668 320 668 L 581.2 668 Q 591.2 668 591.2 658 L 591.2 568 Q 591.2 558 601.2 558 L 741.2 558 Q 751.2 558 751.2 568 L 751.2 601 Q 751.2 606 746.2 606 L 741.2 606" fill="none" stroke="#0B1020" stroke-width="5.5"
+      stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M 1001.2 305.5 L 961.2 305.5 Q 951.2 305.5 951.2 315.5 L 951.2 374 Q 951.2 384 941.2 384 L 486 384 Q 476 384 476 394 L 476 436 Q 476 446 466 446 L 320 446 Q 310 446 310 456 L 310 658 Q 310 668 320 668 L 581.2 668 Q 591.2 668 591.2 658 L 591.2 568 Q 591.2 558 601.2 558 L 741.2 558 Q 751.2 558 751.2 568 L 751.2 601 Q 751.2 606 746.2 606 L 741.2 606" fill="none" stroke="#34D399" stroke-width="1.5"
+      marker-end="url(#arrow-data)"/>
   </g>
 
   <g class="edge">
-    <path d="M 578 298.8 L 582.23 298.8 Q 586.46 298.8 586.46 303.03000000000003 L 586.46 424.03000000000003 Q 586.46 428.8 591.23 428.8 L 596 428.8" fill="none" stroke="#34D399" stroke-width="1.5" 
-      marker-end="url(#arrow-data)" style="filter:url(#edgeGlow);"/>
-    
-    
+    <path class="edge-halo" d="M 741.2 451 L 771.2 451 Q 781.2 451 781.2 461 L 781.2 615 Q 781.2 625 791.2 625 L 801.2 625" fill="none" stroke="#0B1020" stroke-width="5.5"
+      stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M 741.2 451 L 771.2 451 Q 781.2 451 781.2 461 L 781.2 615 Q 781.2 625 791.2 625 L 801.2 625" fill="none" stroke="#34D399" stroke-width="1.5"
+      marker-end="url(#arrow-data)"/>
   </g>
 
   <g class="edge">
-    <path d="M 782 260 L 782 276" fill="none" stroke="#A78BFA" stroke-width="1.5" stroke-dasharray="6 4"
-      marker-end="url(#arrow-async)" style="filter:url(#edgeGlow);"/>
-    
-    
-    <circle cx="800" cy="288" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="2"
-      style="filter:url(#badgeGlow)"/>
-    <text x="800" y="293" text-anchor="middle" fill="#FFFFFF"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">5</text>
+    <path class="edge-halo" d="M 1071.2 334 L 1071.2 394" fill="none" stroke="#0B1020" stroke-width="5.5"
+      stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M 1071.2 334 L 1071.2 394" fill="none" stroke="#A78BFA" stroke-width="1.5" stroke-dasharray="6 4"
+      marker-end="url(#arrow-async)"/>
   </g>
 
   <g class="edge">
-    <path d="M 578 451.6 L 964 451.6 Q 974 451.6 974 441.6 L 974 298.8" fill="none" stroke="#A78BFA" stroke-width="1.5" stroke-dasharray="6 4"
-      marker-end="url(#arrow-async)" style="filter:url(#edgeGlow);"/>
-    
-    <rect x="741.1" y="440.6" width="69.80000000000001" height="22" rx="11" ry="11"
-      fill="#0B1020" stroke="#A78BFA" stroke-width="1" opacity="0.95"/>
-    <text x="776" y="456.6" text-anchor="middle" fill="#E8EEF9"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12" font-weight="600">replica</text>
-    
-    <circle cx="606" cy="433.6" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="2"
-      style="filter:url(#badgeGlow)"/>
-    <text x="606" y="438.6" text-anchor="middle" fill="#FFFFFF"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">6</text>
+    <path class="edge-halo" d="M 741.2 644 L 781.2 644 Q 791.2 644 791.2 654 L 791.2 682 Q 791.2 692 801.2 692 L 1622.4 692 Q 1632.4 692 1632.4 682 L 1632.4 394 Q 1632.4 384 1622.4 384 L 1282.4 384 Q 1272.4 384 1272.4 394 L 1272.4 446 Q 1272.4 451 1277.4 451 L 1282.4 451" fill="none" stroke="#0B1020" stroke-width="5.5"
+      stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M 741.2 644 L 781.2 644 Q 791.2 644 791.2 654 L 791.2 682 Q 791.2 692 801.2 692 L 1622.4 692 Q 1632.4 692 1632.4 682 L 1632.4 394 Q 1632.4 384 1622.4 384 L 1282.4 384 Q 1272.4 384 1272.4 394 L 1272.4 446 Q 1272.4 451 1277.4 451 L 1282.4 451" fill="none" stroke="#A78BFA" stroke-width="1.5" stroke-dasharray="6 4"
+      marker-end="url(#arrow-async)"/>
   </g>
 
   <g class="edge">
-    <path d="M 736 428.8 L 1122 428.8 Q 1132 428.8 1132 418.8 L 1132 298.8" fill="none" stroke="#A78BFA" stroke-width="1.5" stroke-dasharray="6 4"
-      marker-end="url(#arrow-async)" style="filter:url(#edgeGlow);"/>
-    
-    
+    <path class="edge-halo" d="M 941.2 625 L 1462.4 625 Q 1472.4 625 1472.4 615 L 1472.4 456 Q 1472.4 451 1477.4 451 L 1482.4 451" fill="none" stroke="#0B1020" stroke-width="5.5"
+      stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M 941.2 625 L 1462.4 625 Q 1472.4 625 1472.4 615 L 1472.4 456 Q 1472.4 451 1477.4 451 L 1482.4 451" fill="none" stroke="#A78BFA" stroke-width="1.5" stroke-dasharray="6 4"
+      marker-end="url(#arrow-async)"/>
   </g>
 
   <g class="edge">
-    <path d="M 918 199.2 L 918 183.2 Q 918 173.2 928 173.2 L 1486 173.2" fill="none" stroke="#A78BFA" stroke-width="1.5" stroke-dasharray="6 4"
-      marker-end="url(#arrow-async)" style="filter:url(#edgeGlow);"/>
-    
-    
-    <circle cx="936" cy="171.2" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="2"
-      style="filter:url(#badgeGlow)"/>
-    <text x="936" y="176.2" text-anchor="middle" fill="#FFFFFF"
-      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">7</text>
+    <path class="edge-halo" d="M 1165.2 439 L 1226.4 439 Q 1236.4 439 1236.4 429 L 1236.4 344 Q 1236.4 334 1246.4 334 L 1263.4 334 Q 1272.4 334 1272.4 343 L 1272.4 343 Q 1272.4 352 1281.4 352 L 1939.6 352" fill="none" stroke="#0B1020" stroke-width="5.5"
+      stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M 1165.2 439 L 1226.4 439 Q 1236.4 439 1236.4 429 L 1236.4 344 Q 1236.4 334 1246.4 334 L 1263.4 334 Q 1272.4 334 1272.4 343 L 1272.4 343 Q 1272.4 352 1281.4 352 L 1939.6 352" fill="none" stroke="#A78BFA" stroke-width="1.5" stroke-dasharray="6 4"
+      marker-end="url(#arrow-async)"/>
   </g>
 
   <g class="edge">
-    <path d="M 1650 168.8 L 1668 168.8" fill="none" stroke="#34D399" stroke-width="1.5" 
-      marker-end="url(#arrow-data)" style="filter:url(#edgeGlow);"/>
-    
-    
+    <path class="edge-halo" d="M 2103.6 277 L 2144.1 277 Q 2153.6 277 2153.6 267.5 L 2153.6 263 Q 2153.6 258 2158.6 258 L 2163.6 258" fill="none" stroke="#0B1020" stroke-width="5.5"
+      stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M 2103.6 277 L 2144.1 277 Q 2153.6 277 2153.6 267.5 L 2153.6 263 Q 2153.6 258 2158.6 258 L 2163.6 258" fill="none" stroke="#34D399" stroke-width="1.5"
+      marker-end="url(#arrow-data)"/>
   </g>
 
   <g class="edge">
-    <path d="M 1668 191.6 L 1668 289.8 Q 1668 298.8 1659 298.8 L 1650 298.8" fill="none" stroke="#22D3EE" stroke-width="1.5" 
-      marker-end="url(#arrow-sync)" style="filter:url(#edgeGlow);"/>
-    
-    
+    <path class="edge-halo" d="M 2163.6 296 L 2123.6 296 Q 2113.6 296 2113.6 306 L 2113.6 446 Q 2113.6 451 2108.6 451 L 2103.6 451" fill="none" stroke="#0B1020" stroke-width="5.5"
+      stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M 2163.6 296 L 2123.6 296 Q 2113.6 296 2113.6 306 L 2113.6 446 Q 2113.6 451 2108.6 451 L 2103.6 451" fill="none" stroke="#22D3EE" stroke-width="1.5"
+      marker-end="url(#arrow-sync)"/>
   </g>
   
   <g class="card" data-id="users">
-    <rect x="60" y="146" width="140" height="114" rx="12" ry="12"
+    <rect x="120" y="220" width="140" height="114" rx="12" ry="12"
       fill="rgba(255,255,255,0.06)" stroke="#94A3B8" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(116, 162)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2 M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg></g>
-    <text x="130" y="204" text-anchor="middle" fill="#E8EEF9"
+    <g transform="translate(176, 236)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2 M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg></g>
+    <text x="190" y="278" text-anchor="middle" fill="#E8EEF9"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">Users</text>
     
   </g>
 
   <g class="card" data-id="apps">
-    <rect x="218" y="146" width="140" height="114" rx="12" ry="12"
+    <rect x="320" y="220" width="140" height="114" rx="12" ry="12"
       fill="rgba(255,255,255,0.06)" stroke="#94A3B8" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(274, 162)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6z M2 10h20"/></svg></g>
-    <text x="288" y="204" text-anchor="middle" fill="#E8EEF9"
+    <g transform="translate(376, 236)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6z M2 10h20"/></svg></g>
+    <text x="390" y="278" text-anchor="middle" fill="#E8EEF9"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">Web / Mobile</text>
     
   </g>
 
   <g class="card" data-id="cf">
-    <rect x="60" y="346" width="140" height="114" rx="12" ry="12"
+    <rect x="120" y="466" width="140" height="114" rx="12" ry="12"
       fill="rgba(255,255,255,0.06)" stroke="#38BDF8" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(116, 362)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M2 12h20 M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></g>
-    <text x="130" y="404" text-anchor="middle" fill="#E8EEF9"
+    <g transform="translate(176, 482)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M2 12h20 M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></g>
+    <text x="190" y="524" text-anchor="middle" fill="#E8EEF9"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">CDN</text>
     
   </g>
 
   <g class="card" data-id="r53">
-    <rect x="218" y="346" width="140" height="114" rx="12" ry="12"
+    <rect x="320" y="466" width="140" height="114" rx="12" ry="12"
       fill="rgba(255,255,255,0.06)" stroke="#38BDF8" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(274, 362)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M2 12h20 M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></g>
-    <text x="288" y="404" text-anchor="middle" fill="#E8EEF9"
+    <g transform="translate(376, 482)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M2 12h20 M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></g>
+    <text x="390" y="524" text-anchor="middle" fill="#E8EEF9"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">DNS</text>
-    <text x="288" y="422" text-anchor="middle" fill="#8B9BB8" font-family="ui-monospace, JetBrains Mono, SF Mono, Menlo, monospace" font-size="11">latency route</text>
+    <text x="390" y="542" text-anchor="middle" fill="#8B9BB8" font-family="ui-monospace, JetBrains Mono, SF Mono, Menlo, monospace" font-size="11">latency route</text>
   </g>
 
   <g class="card" data-id="waf">
-    <rect x="60" y="476" width="140" height="114" rx="12" ry="12"
+    <rect x="120" y="640" width="140" height="114" rx="12" ry="12"
       fill="rgba(255,255,255,0.06)" stroke="#F472B6" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(116, 492)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F472B6" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></g>
-    <text x="130" y="534" text-anchor="middle" fill="#E8EEF9"
+    <g transform="translate(176, 656)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F472B6" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></g>
+    <text x="190" y="698" text-anchor="middle" fill="#E8EEF9"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">WAF</text>
     
   </g>
 
   <g class="card" data-id="alb_e">
-    <rect x="438" y="146" width="140" height="114" rx="12" ry="12"
+    <rect x="601.2" y="220" width="140" height="114" rx="12" ry="12"
       fill="rgba(255,255,255,0.06)" stroke="#FB923C" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(494, 162)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FB923C" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z M2 17l10 5 10-5 M2 12l10 5 10-5"/></svg></g>
-    <text x="508" y="204" text-anchor="middle" fill="#E8EEF9"
+    <g transform="translate(657.2, 236)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FB923C" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z M2 17l10 5 10-5 M2 12l10 5 10-5"/></svg></g>
+    <text x="671.2" y="278" text-anchor="middle" fill="#E8EEF9"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">ALB</text>
     
   </g>
 
   <g class="card" data-id="gw_e">
-    <rect x="596" y="146" width="140" height="114" rx="12" ry="12"
+    <rect x="801.2" y="220" width="140" height="114" rx="12" ry="12"
       fill="rgba(255,255,255,0.06)" stroke="#FB923C" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(652, 162)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FB923C" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z M2 17l10 5 10-5 M2 12l10 5 10-5"/></svg></g>
-    <text x="666" y="204" text-anchor="middle" fill="#E8EEF9"
+    <g transform="translate(857.2, 236)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FB923C" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z M2 17l10 5 10-5 M2 12l10 5 10-5"/></svg></g>
+    <text x="871.2" y="278" text-anchor="middle" fill="#E8EEF9"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">API Gateway</text>
     
   </g>
 
   <g class="card" data-id="order_e">
-    <rect x="754" y="146" width="140" height="114" rx="12" ry="12"
+    <rect x="1001.2" y="220" width="140" height="114" rx="12" ry="12"
       fill="rgba(255,255,255,0.06)" stroke="#22D3EE" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(810, 162)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M4 14h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z M6 8h.01 M6 18h.01"/></svg></g>
-    <text x="824" y="204" text-anchor="middle" fill="#E8EEF9"
+    <g transform="translate(1057.2, 236)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M4 14h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z M6 8h.01 M6 18h.01"/></svg></g>
+    <text x="1071.2" y="278" text-anchor="middle" fill="#E8EEF9"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">order</text>
     
   </g>
 
   <g class="card" data-id="cart_e">
-    <rect x="438" y="276" width="140" height="114" rx="12" ry="12"
+    <rect x="601.2" y="394" width="140" height="114" rx="12" ry="12"
       fill="rgba(255,255,255,0.06)" stroke="#22D3EE" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(494, 292)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M4 14h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z M6 8h.01 M6 18h.01"/></svg></g>
-    <text x="508" y="334" text-anchor="middle" fill="#E8EEF9"
+    <g transform="translate(657.2, 410)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M4 14h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z M6 8h.01 M6 18h.01"/></svg></g>
+    <text x="671.2" y="452" text-anchor="middle" fill="#E8EEF9"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">cart</text>
     
   </g>
 
   <g class="card" data-id="pay_e">
-    <rect x="596" y="276" width="140" height="114" rx="12" ry="12"
+    <rect x="801.2" y="394" width="140" height="114" rx="12" ry="12"
       fill="rgba(255,255,255,0.06)" stroke="#22D3EE" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(652, 292)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M4 14h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z M6 8h.01 M6 18h.01"/></svg></g>
-    <text x="666" y="334" text-anchor="middle" fill="#E8EEF9"
+    <g transform="translate(857.2, 410)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M4 14h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z M6 8h.01 M6 18h.01"/></svg></g>
+    <text x="871.2" y="452" text-anchor="middle" fill="#E8EEF9"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">payment</text>
     
   </g>
 
   <g class="card" data-id="kafka_e">
-    <rect x="754" y="276" width="140" height="114" rx="12" ry="12"
+    <rect x="1001.2" y="394" width="140" height="114" rx="12" ry="12"
       fill="rgba(255,255,255,0.06)" stroke="#A78BFA" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(810, 292)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16 M4 12h16 M4 18h10 M18 16l4 2-4 2"/></svg></g>
-    <text x="824" y="334" text-anchor="middle" fill="#E8EEF9"
+    <g transform="translate(1057.2, 410)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16 M4 12h16 M4 18h10 M18 16l4 2-4 2"/></svg></g>
+    <text x="1071.2" y="452" text-anchor="middle" fill="#E8EEF9"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">MSK</text>
     
   </g>
 
   <g class="card" data-id="aurora_e">
-    <rect x="438" y="406" width="140" height="114" rx="12" ry="12"
+    <rect x="601.2" y="568" width="140" height="114" rx="12" ry="12"
       fill="rgba(255,255,255,0.06)" stroke="#34D399" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(494, 422)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C7 2 3 3.8 3 6v12c0 2.2 4 4 9 4s9-1.8 9-4V6c0-2.2-4-4-9-4z M3 6c0 2.2 4 4 9 4s9-1.8 9-4 M3 12c0 2.2 4 4 9 4s9-1.8 9-4"/></svg></g>
-    <text x="508" y="464" text-anchor="middle" fill="#E8EEF9"
+    <g transform="translate(657.2, 584)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C7 2 3 3.8 3 6v12c0 2.2 4 4 9 4s9-1.8 9-4V6c0-2.2-4-4-9-4z M3 6c0 2.2 4 4 9 4s9-1.8 9-4 M3 12c0 2.2 4 4 9 4s9-1.8 9-4"/></svg></g>
+    <text x="671.2" y="626" text-anchor="middle" fill="#E8EEF9"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">Aurora</text>
     
   </g>
 
   <g class="card" data-id="redis_e">
-    <rect x="596" y="406" width="140" height="114" rx="12" ry="12"
+    <rect x="801.2" y="568" width="140" height="114" rx="12" ry="12"
       fill="rgba(255,255,255,0.06)" stroke="#34D399" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(652, 422)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6 M12 16v6 M4.9 4.9l4.2 4.2 M14.9 14.9l4.2 4.2 M2 12h6 M16 12h6 M4.9 19.1l4.2-4.2 M14.9 9.1l4.2-4.2"/></svg></g>
-    <text x="666" y="464" text-anchor="middle" fill="#E8EEF9"
+    <g transform="translate(857.2, 584)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6 M12 16v6 M4.9 4.9l4.2 4.2 M14.9 14.9l4.2 4.2 M2 12h6 M16 12h6 M4.9 19.1l4.2-4.2 M14.9 9.1l4.2-4.2"/></svg></g>
+    <text x="871.2" y="626" text-anchor="middle" fill="#E8EEF9"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">Redis</text>
     
   </g>
 
   <g class="card" data-id="alb_w">
-    <rect x="974" y="146" width="140" height="114" rx="12" ry="12"
+    <rect x="1282.4" y="220" width="140" height="114" rx="12" ry="12"
       fill="rgba(255,255,255,0.06)" stroke="#FB923C" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(1030, 162)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FB923C" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z M2 17l10 5 10-5 M2 12l10 5 10-5"/></svg></g>
-    <text x="1044" y="204" text-anchor="middle" fill="#E8EEF9"
+    <g transform="translate(1338.4, 236)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FB923C" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z M2 17l10 5 10-5 M2 12l10 5 10-5"/></svg></g>
+    <text x="1352.4" y="278" text-anchor="middle" fill="#E8EEF9"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">ALB</text>
     
   </g>
 
   <g class="card" data-id="order_w">
-    <rect x="1132" y="146" width="140" height="114" rx="12" ry="12"
+    <rect x="1482.4" y="220" width="140" height="114" rx="12" ry="12"
       fill="rgba(255,255,255,0.06)" stroke="#22D3EE" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(1188, 162)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z M2 17l10 5 10-5 M2 12l10 5 10-5"/></svg></g>
-    <text x="1202" y="204" text-anchor="middle" fill="#E8EEF9"
+    <g transform="translate(1538.4, 236)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z M2 17l10 5 10-5 M2 12l10 5 10-5"/></svg></g>
+    <text x="1552.4" y="278" text-anchor="middle" fill="#E8EEF9"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">order</text>
     
   </g>
 
   <g class="card" data-id="cart_w">
-    <rect x="1290" y="146" width="140" height="114" rx="12" ry="12"
+    <rect x="1682.4" y="220" width="140" height="114" rx="12" ry="12"
       fill="rgba(255,255,255,0.06)" stroke="#22D3EE" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(1346, 162)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z M2 17l10 5 10-5 M2 12l10 5 10-5"/></svg></g>
-    <text x="1360" y="204" text-anchor="middle" fill="#E8EEF9"
+    <g transform="translate(1738.4, 236)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z M2 17l10 5 10-5 M2 12l10 5 10-5"/></svg></g>
+    <text x="1752.4" y="278" text-anchor="middle" fill="#E8EEF9"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">cart</text>
     
   </g>
 
   <g class="card" data-id="aurora_w">
-    <rect x="974" y="276" width="140" height="114" rx="12" ry="12"
+    <rect x="1282.4" y="394" width="140" height="114" rx="12" ry="12"
       fill="rgba(255,255,255,0.06)" stroke="#34D399" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(1030, 292)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C7 2 3 3.8 3 6v12c0 2.2 4 4 9 4s9-1.8 9-4V6c0-2.2-4-4-9-4z M3 6c0 2.2 4 4 9 4s9-1.8 9-4 M3 12c0 2.2 4 4 9 4s9-1.8 9-4"/></svg></g>
-    <text x="1044" y="334" text-anchor="middle" fill="#E8EEF9"
+    <g transform="translate(1338.4, 410)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C7 2 3 3.8 3 6v12c0 2.2 4 4 9 4s9-1.8 9-4V6c0-2.2-4-4-9-4z M3 6c0 2.2 4 4 9 4s9-1.8 9-4 M3 12c0 2.2 4 4 9 4s9-1.8 9-4"/></svg></g>
+    <text x="1352.4" y="452" text-anchor="middle" fill="#E8EEF9"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">Aurora replica</text>
     
   </g>
 
   <g class="card" data-id="redis_w">
-    <rect x="1132" y="276" width="140" height="114" rx="12" ry="12"
+    <rect x="1482.4" y="394" width="140" height="114" rx="12" ry="12"
       fill="rgba(255,255,255,0.06)" stroke="#34D399" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(1188, 292)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6 M12 16v6 M4.9 4.9l4.2 4.2 M14.9 14.9l4.2 4.2 M2 12h6 M16 12h6 M4.9 19.1l4.2-4.2 M14.9 9.1l4.2-4.2"/></svg></g>
-    <text x="1202" y="334" text-anchor="middle" fill="#E8EEF9"
+    <g transform="translate(1538.4, 410)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6 M12 16v6 M4.9 4.9l4.2 4.2 M14.9 14.9l4.2 4.2 M2 12h6 M16 12h6 M4.9 19.1l4.2-4.2 M14.9 9.1l4.2-4.2"/></svg></g>
+    <text x="1552.4" y="452" text-anchor="middle" fill="#E8EEF9"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">Redis replica</text>
     
   </g>
 
   <g class="card" data-id="otel">
-    <rect x="1510" y="146" width="140" height="114" rx="12" ry="12"
+    <rect x="1963.6000000000001" y="220" width="140" height="114" rx="12" ry="12"
       fill="rgba(255,255,255,0.06)" stroke="#F472B6" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(1566, 162)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F472B6" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18 M7 14l4-4 4 4 5-6"/></svg></g>
-    <text x="1580" y="204" text-anchor="middle" fill="#E8EEF9"
+    <g transform="translate(2019.6000000000001, 236)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F472B6" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18 M7 14l4-4 4 4 5-6"/></svg></g>
+    <text x="2033.6000000000001" y="278" text-anchor="middle" fill="#E8EEF9"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">OTel</text>
     
   </g>
 
   <g class="card" data-id="prom">
-    <rect x="1668" y="146" width="140" height="114" rx="12" ry="12"
+    <rect x="2163.6000000000004" y="220" width="140" height="114" rx="12" ry="12"
       fill="rgba(255,255,255,0.06)" stroke="#F472B6" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(1724, 162)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F472B6" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18 M7 14l4-4 4 4 5-6"/></svg></g>
-    <text x="1738" y="204" text-anchor="middle" fill="#E8EEF9"
+    <g transform="translate(2219.6000000000004, 236)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F472B6" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18 M7 14l4-4 4 4 5-6"/></svg></g>
+    <text x="2233.6000000000004" y="278" text-anchor="middle" fill="#E8EEF9"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">Prometheus</text>
     
   </g>
 
   <g class="card" data-id="graf">
-    <rect x="1510" y="276" width="140" height="114" rx="12" ry="12"
+    <rect x="1963.6000000000001" y="394" width="140" height="114" rx="12" ry="12"
       fill="rgba(255,255,255,0.06)" stroke="#F472B6" stroke-width="1" style="filter:url(#nodeGlow);"/>
-    <g transform="translate(1566, 292)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F472B6" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18 M7 14l4-4 4 4 5-6"/></svg></g>
-    <text x="1580" y="334" text-anchor="middle" fill="#E8EEF9"
+    <g transform="translate(2019.6000000000001, 410)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F472B6" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18 M7 14l4-4 4 4 5-6"/></svg></g>
+    <text x="2033.6000000000001" y="452" text-anchor="middle" fill="#E8EEF9"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="15" font-weight="600">Grafana</text>
     
   </g>
+  <g class="edge-annotations">
+    <circle cx="290" cy="388" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="2"
+      style="filter:url(#badgeGlow)"/>
+    <text x="290" y="393" text-anchor="middle" fill="#FFFFFF"
+      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">1</text>
+  </g>
+<g class="edge-annotations">
+    <rect x="475.8" y="592" width="72.4" height="22" rx="11" ry="11"
+      fill="#0B1020" stroke="#22D3EE" stroke-width="1" opacity="0.95"/>
+    <text x="512" y="608" text-anchor="middle" fill="#E8EEF9"
+      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12" font-weight="600">primary</text>
+    <circle cx="453.8" cy="603" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="2"
+      style="filter:url(#badgeGlow)"/>
+    <text x="453.8" y="608" text-anchor="middle" fill="#FFFFFF"
+      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">2</text>
+  </g>
+<g class="edge-annotations">
+    <rect x="827.6" y="527" width="77.19999999999999" height="22" rx="11" ry="11"
+      fill="#0B1020" stroke="#22D3EE" stroke-width="1" opacity="0.95"/>
+    <text x="866.2" y="543" text-anchor="middle" fill="#E8EEF9"
+      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12" font-weight="600">failover</text>
+  </g>
+<g class="edge-annotations">
+    <circle cx="771.2" cy="277" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="2"
+      style="filter:url(#badgeGlow)"/>
+    <text x="771.2" y="282" text-anchor="middle" fill="#FFFFFF"
+      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">3</text>
+  </g>
+
+
+<g class="edge-annotations">
+    <circle cx="535.4" cy="384" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="2"
+      style="filter:url(#badgeGlow)"/>
+    <text x="535.4" y="389" text-anchor="middle" fill="#FFFFFF"
+      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">4</text>
+  </g>
+
+<g class="edge-annotations">
+    <circle cx="1071.2" cy="364" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="2"
+      style="filter:url(#badgeGlow)"/>
+    <text x="1071.2" y="369" text-anchor="middle" fill="#FFFFFF"
+      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">5</text>
+  </g>
+<g class="edge-annotations">
+    <rect x="1194.9" y="681" width="69.8" height="22" rx="11" ry="11"
+      fill="#0B1020" stroke="#A78BFA" stroke-width="1" opacity="0.95"/>
+    <text x="1229.8000000000002" y="697" text-anchor="middle" fill="#E8EEF9"
+      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12" font-weight="600">replica</text>
+    <circle cx="1172.9" cy="692" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="2"
+      style="filter:url(#badgeGlow)"/>
+    <text x="1172.9" y="697" text-anchor="middle" fill="#FFFFFF"
+      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">6</text>
+  </g>
+
+<g class="edge-annotations">
+    <circle cx="1856.1999999999998" cy="352" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="2"
+      style="filter:url(#badgeGlow)"/>
+    <text x="1856.1999999999998" y="357" text-anchor="middle" fill="#FFFFFF"
+      font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">7</text>
+  </g>
+
+
   
   <g class="sidebar">
-    <rect x="1856" y="112" width="300" height="690" rx="12" ry="12"
+    <rect x="2411.6" y="112" width="300" height="726" rx="12" ry="12"
       fill="rgba(15,23,42,0.85)" stroke="rgba(148,163,184,0.25)" stroke-width="1"/>
-    <text x="1876" y="140" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="16" font-weight="700">Steps</text>
-    <circle cx="1884" cy="172" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="1.5"/>
-    <text x="1884" y="177" text-anchor="middle" fill="#FFFFFF"
+    <text x="2431.6" y="140" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="16" font-weight="700">Steps</text>
+    <circle cx="2439.6" cy="172" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="1.5"/>
+    <text x="2439.6" y="177" text-anchor="middle" fill="#FFFFFF"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">1</text>
-    <text x="1906" y="168" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="14" font-weight="700">Clients → edge</text><text x="1906" y="186" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">CDN / DNS / WAF</text>
-    <circle cx="1884" cy="218" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="1.5"/>
-    <text x="1884" y="223" text-anchor="middle" fill="#FFFFFF"
+    <text x="2461.6" y="168" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="14" font-weight="700">Clients → edge</text><text x="2461.6" y="186" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">CDN / DNS / WAF</text>
+    <circle cx="2439.6" cy="218" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="1.5"/>
+    <text x="2439.6" y="223" text-anchor="middle" fill="#FFFFFF"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">2</text>
-    <text x="1906" y="214" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="14" font-weight="700">Route primary</text><text x="1906" y="232" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">Latency DNS to us-east-1</text>
-    <circle cx="1884" cy="264" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="1.5"/>
-    <text x="1884" y="269" text-anchor="middle" fill="#FFFFFF"
+    <text x="2461.6" y="214" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="14" font-weight="700">Route primary</text><text x="2461.6" y="232" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">Latency DNS to us-east-1</text>
+    <circle cx="2439.6" cy="264" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="1.5"/>
+    <text x="2439.6" y="269" text-anchor="middle" fill="#FFFFFF"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">3</text>
-    <text x="1906" y="260" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="14" font-weight="700">Ingress</text><text x="1906" y="278" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">ALB → API Gateway → workloads</text>
-    <circle cx="1884" cy="310" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="1.5"/>
-    <text x="1884" y="315" text-anchor="middle" fill="#FFFFFF"
+    <text x="2461.6" y="260" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="14" font-weight="700">Ingress</text><text x="2461.6" y="278" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">ALB → API Gateway → workloads</text>
+    <circle cx="2439.6" cy="310" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="1.5"/>
+    <text x="2439.6" y="315" text-anchor="middle" fill="#FFFFFF"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">4</text>
-    <text x="1906" y="306" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="14" font-weight="700">Persist</text><text x="1906" y="324" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">Aurora / Redis in primary</text>
-    <circle cx="1884" cy="356" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="1.5"/>
-    <text x="1884" y="361" text-anchor="middle" fill="#FFFFFF"
+    <text x="2461.6" y="306" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="14" font-weight="700">Persist</text><text x="2461.6" y="324" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">Aurora / Redis in primary</text>
+    <circle cx="2439.6" cy="356" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="1.5"/>
+    <text x="2439.6" y="361" text-anchor="middle" fill="#FFFFFF"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">5</text>
-    <text x="1906" y="352" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="14" font-weight="700">Events</text><text x="1906" y="370" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">Order publishes to MSK</text>
-    <circle cx="1884" cy="402" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="1.5"/>
-    <text x="1884" y="407" text-anchor="middle" fill="#FFFFFF"
+    <text x="2461.6" y="352" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="14" font-weight="700">Events</text><text x="2461.6" y="370" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">Order publishes to MSK</text>
+    <circle cx="2439.6" cy="402" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="1.5"/>
+    <text x="2439.6" y="407" text-anchor="middle" fill="#FFFFFF"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">6</text>
-    <text x="1906" y="398" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="14" font-weight="700">Replicate</text><text x="1906" y="416" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">Async to us-west-2</text>
-    <circle cx="1884" cy="448" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="1.5"/>
-    <text x="1884" y="453" text-anchor="middle" fill="#FFFFFF"
+    <text x="2461.6" y="398" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="14" font-weight="700">Replicate</text><text x="2461.6" y="416" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">Async to us-west-2</text>
+    <circle cx="2439.6" cy="448" r="12" fill="#22D3EE" stroke="#ECFEFF" stroke-width="1.5"/>
+    <text x="2439.6" y="453" text-anchor="middle" fill="#FFFFFF"
       font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">7</text>
-    <text x="1906" y="444" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="14" font-weight="700">Observe</text><text x="1906" y="462" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">OTel → Prometheus → Grafana</text><text x="1876" y="682" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">Legend</text>
-    <line x1="1876" y1="704" x2="1904" y2="704" stroke="#22D3EE" stroke-width="2" />
-    <text x="1912" y="708" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">Sync / request</text>
-    <line x1="1876" y1="730" x2="1904" y2="730" stroke="#A78BFA" stroke-width="2" stroke-dasharray="4 3"/>
-    <text x="1912" y="734" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">Async / event</text>
-    <line x1="1876" y1="756" x2="1904" y2="756" stroke="#34D399" stroke-width="2" />
-    <text x="1912" y="760" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">Data path</text></g>
+    <text x="2461.6" y="444" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="14" font-weight="700">Observe</text><text x="2461.6" y="462" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">OTel → Prometheus → Grafana</text><text x="2431.6" y="718" fill="#E8EEF9" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="13" font-weight="700">Legend</text>
+    <line x1="2431.6" y1="740" x2="2459.6" y2="740" stroke="#22D3EE" stroke-width="2" />
+    <text x="2467.6" y="744" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">Sync / request</text>
+    <line x1="2431.6" y1="766" x2="2459.6" y2="766" stroke="#A78BFA" stroke-width="2" stroke-dasharray="4 3"/>
+    <text x="2467.6" y="770" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">Async / event</text>
+    <line x1="2431.6" y1="792" x2="2459.6" y2="792" stroke="#34D399" stroke-width="2" />
+    <text x="2467.6" y="796" fill="#8B9BB8" font-family="Inter, Geist, SF Pro Text, system-ui, sans-serif" font-size="12">Data path</text></g>
 </svg>

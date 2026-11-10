@@ -41,6 +41,7 @@ npm run build
 npm test
 npm run examples   # → examples/
 npm run showcase   # → examples/showcase/
+npm run showcase -- --architecture-only  # 僅更新 SVG grid 架構圖
 ```
 
 ## 啟動（stdio）
@@ -81,6 +82,8 @@ node dist/index.js
 - `columns`：決定性欄位堆疊（每欄由上到下）
 - `edges.from/to`：可為 **node id 或 group id**（tier-to-tier）
 - `icon`：請用 monoline key（`server`、`database`、`globe`…），勿用 React/Go 等品牌 logo
+
+架構線路使用方向感知 A* 正交尋路、動態連接埠、通道佔用成本與局部重佈線；標籤和步驟徽章也會預留避讓空間。密集連線會自動加寬間距，避免卡片穿越與共線重疊。固定節點位置下仍可能有交叉，會以線路底色分隔，並在 SVG 的 `routing-quality` metadata 記錄品質指標。若擴充間距後仍無法安全佈線，會明確回報錯誤，不輸出穿越卡片的替代路徑。
 
 ## Showcase
 
