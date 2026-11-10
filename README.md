@@ -14,9 +14,18 @@
 | `create_network_topology` | **網路拓撲**：Internet / DMZ / VPC / subnet / 廠區，CIDR chip、防火牆 / VPN / 路由，allow / deny / VPN 線型 | **SVG grid** |
 | `create_dataflow_trust_boundary` | **DFD + 信任邊界**（威脅建模）：外部實體 / P# 流程 / D# 資料存放、紅色虛線信任邊界、⊗ 跨界標記、`[PII]` 敏感資料標籤 | **SVG grid** |
 | `create_swimlane` | **泳道圖**：每個角色一條 lane，任務自動編號、決策菱形、起訖膠囊、跨 lane 交接 | **SVG swimlane** |
-| `create_flowchart` | 流程圖（支援 swimlane） | Mermaid |
-| `create_decision_diagram` | 決策樹（yes/no 色碼） | Mermaid |
-| `create_dependency_graph` | 套件 / 模組依賴圖 | Graphviz |
+| `create_data_lineage` | **資料血緣**：Source → Staging → Warehouse → BI 分 stage 欄位，batch / stream / CDC 線型，`focus` 上下游追蹤 | **SVG layered** |
+| `create_workflow_dag` | **Workflow / Pipeline DAG**（Airflow / Argo / CI）：狀態 chip、fan-out / fan-in、trigger rule | **SVG layered** |
+| `create_dependency_graph` | 套件 / 模組 / 服務依賴圖 + **影響分析**（`changed` → 受影響路徑高亮、其餘淡化）；相容舊輸入 | **SVG layered** |
+| `create_knowledge_graph` | **Ontology / 知識圖譜**：實體、關係（謂詞 label）、is_a / instance_of 分類邊、`focus` 鄰域 | **SVG layered** |
+| `create_flowchart` | 流程圖：起訖、處理、決策菱形（是 / 否 色碼）、迴圈（回頭虛線）、I/O、子流程；lane 自動轉泳道；相容舊輸入 | **SVG layered** |
+| `create_decision_diagram` | 決策樹（yes / no 色碼）；相容舊輸入 | **SVG layered** |
+| `create_state_machine` | **UML 狀態機**：初始 / 終止、entry / do / exit、複合狀態、choice、event [guard] / action | **SVG layered** |
+| `create_er_diagram` | **ER 圖**：資料表卡（PK / FK / UK、型別、nullable）、crow's foot 基數、主題區框 | **SVG layered** |
+| `create_sequence_diagram` | **循序圖**：參與者標頭、lifeline、編號 sync / async / return 訊息、自呼叫、自動 activation、alt / opt / loop / par 片段、note、divider；長對話自動分 2–3 欄 | **SVG scene** |
+| `create_authorization_matrix` | **權限矩陣**：角色 × 資源 × 動作，allow ✓ / deny ✗ / conditional ◐（附註編號 + 條件面板），`*` 萬用字元 | **SVG scene** |
+| `create_gantt` | **甘特圖**：分組、`after` 自動排程（finish-to-start）、進度、里程碑、關鍵路徑、TODAY 線；日 / 週 / 月 / 季自動刻度 | **SVG scene** |
+| `create_timeline` | **時間軸**：事件卡上下交錯不重疊、era 色帶、里程碑；依時間比例或等距；事件多時分多列 | **SVG scene** |
 | `render_diagram` | 直接渲染原始 D2 / Mermaid / DOT | 依 `engine` |
 | `list_diagram_icons` | 列出 monoline（架構用）與舊版 brand icon | — |
 
@@ -167,9 +176,9 @@ node dist/index.js
 深色樣式、tier 為可拖曳的巢狀 container、卡片內嵌 monoline icon、邊線為 orthogonal + waypoint、
 步驟徽章 / 圖例 / walkthrough 皆為可編輯 cell。可直接用 draw.io / diagrams.net 開啟。
 
-## 圖種（Group 1）
+## 圖種
 
-六個新工具共用同一套 dark Cocoon 視覺、避障正交路由、結構 QA 與 draw.io 輸出（`outputs` 預設 svg + png + drawio），
+所有結構化工具（Group 1–4，共 18 個）都由本專案自己的引擎排版與繪製（**不經過 Mermaid / Graphviz**），共用同一套 dark Cocoon 視覺、避障正交路由、結構 QA 與 draw.io 輸出（`outputs` 預設 svg + png + drawio），
 文字支援繁體中文（Noto Sans / Mono CJK TC 量測與渲染）。範例輸入在 [`examples/types/`](./examples/types)（每種一個小圖 `-s`、一個 12–20 節點的中圖 `-m`）。
 所有工具都接受共用欄位 `title` / `subtitle` / `theme` / `name` / `outputDir` / `outputs` / `steps`（walkthrough）/ `split` / `splitThreshold`。
 
@@ -182,8 +191,37 @@ node dist/index.js
 | `create_dataflow_trust_boundary` | `boundaries[]{trust: untrusted…restricted,parent}`、`externalEntities[]`、`processes[]{number}`、`dataStores[]{number}`、`flows[]{label,data[],protocol,kind}` | 紅色虛線信任邊界 + 鎖頭 + 信任等級 chip；外部實體雙框方塊、流程 P#、資料存放 D#（開口框）；跨界的流用 ⊗ 標記並加光暈；`data` 中的 PII / 機密以紅色 `[TAG]` 標在 pill 上 |
 | `create_swimlane` | `lanes[]{id,label,description}`、`steps[]{id,label,lane,type: start/end/task/decision/document/system/wait,column}`、`flows[]{from,to,label,kind}`、`numbering` | 左側 lane 標頭（LANE 01…）；任務自動編號 chip；決策菱形、起訖膠囊；退回流用紅色點線；寬度太長會自動壓縮欄位或分段 |
 
-QA 規則與架構圖相同（0 error 為必要條件）；`npm test` 會對 `examples/types/` 的 12 份規格檢查 0 error、長寬比 1.4–2.2、
-每條有 label 的邊都有 pill，以及 draw.io XML 可解析。
+### Group 2：分層 DAG（`src/layout/layered.ts`）
+
+自製 Sugiyama 流程：DFS 去環 → longest-path 分層（可指定 stage）→ dummy 節點 → median / barycenter 掃描 + transpose 減少交叉 →
+isotonic（PAV）座標 → 依 label 加寬間距；巢狀群組（複合狀態、task group、主題區）遞迴排成區塊。LR / TB × 1–3 段自動評分，挑最接近 16:9 的版本。
+
+| Tool | 主要欄位 | 視覺特徵 |
+|---|---|---|
+| `create_data_lineage` | `stages[]{id,label,description}`、`datasets[]{id,label,type: source/table/view/file/stream/job/model/dashboard/report/api,stage,system,description,tags}`、`flows[]{from,to,label,kind: batch/stream/cdc/manual}`、`focus{node,direction}` | stage 框 + 系統 chip；資料集依類型換形狀 / icon；stream 紫色、CDC 虛線；focus 外的節點淡化 |
+| `create_workflow_dag` | `schedule`、`tasks[]{id,label,operator,status: success/failed/running/queued/skipped/upstream_failed,group,description}`、`groups[]{parent}`、`dependencies[]{from,to,label,condition: success/failure/always}` | 狀態 chip（綠 / 紅 / 藍 / 灰）；task group 綠框；failure 分支紅色點線 |
+| `create_dependency_graph` | `nodes[]{type: service/library/database/queue/external/app}`、`edges[]{optional}`、`groups[]`、`changed[]`、`impact: dependents/dependencies/both` | 變更節點琥珀光暈、受影響路徑高亮、其餘淡化；optional 依賴虛線 |
+| `create_knowledge_graph` | `types[]`、`entities[]{id,label,type,description,attributes[]}`、`relations[]{from,to,label,kind: relation/is_a/part_of/instance_of,bidirectional}`、`focus` | 依 type 上色 / 分組；屬性列；is_a / instance_of 空心箭頭；謂詞以 pill 標示 |
+| `create_flowchart` | `nodes[]{type: start/end/process/decision/io/subprocess/document/data/wait}`、`edges[]{when,label}`、`groups[]`（kind=lane → 泳道） | 是 / 否 自動判斷（中英）上色；回頭邊畫成紫色虛線 loop |
+| `create_decision_diagram` | `root`、`nodes[]{type: question/outcome/action}`、`edges[]{when}` | 問題菱形、結果膠囊；yes 綠 / no 紅 |
+| `create_state_machine` | `states[]{type: state/initial/final/choice/composite,parent,entry,do,exit}`、`transitions[]{event,guard,action,kind: normal/error/timeout/internal}` | UML 初始黑點 / 終止靶心；複合狀態靛色框；自轉移 loop |
+| `create_er_diagram` | `entities[]{id,label,domain,columns[]{name,type,pk,fk,unique,nullable}}`、`relationships[]{from,to,cardinality:"1:N" / "0..1:N"…,fromEnd,toEnd,label,identifying}`、`domains[]` | 表格卡 + 欄位列；PK / FK chip；crow's foot（one / many / zero-or-one …） |
+
+### Group 3–4：固定格式圖（`src/layout/scene.ts` + 各自排版）
+
+| Tool | 主要欄位 | 視覺特徵 |
+|---|---|---|
+| `create_sequence_diagram` | `participants[]{id,label,type: actor/service/database/queue/external/browser/gateway/security/job,description}`、`messages[]{type: message/note/divider,id,from,to,label,kind: sync/async/return/error,over[],position}`、`fragments[]{kind: alt/opt/loop/par/critical/break/group,label,start,end,sections[]}`、`autonumber`、`activations`、`panels` | 同步實線實心箭頭、非同步開口箭頭、回傳虛線；自動 activation（呼叫 → 回傳）；片段 tab + `[條件]` + else 分隔；長對話分欄並重複標頭 |
+| `create_authorization_matrix` | `roles[]`、`resources[]{actions[]}`、`actions[]`（預設動作）、`permissions[]{role,resource,actions,effect: allow/deny/conditional,condition}`（依序套用、可用 `*`）、`default: none/deny`、`orientation` | 兩層欄標頭（資源 → 動作）；✓ / ✗ / ◐ 色塊；條件附註編號 + CONDITIONS 面板；預設 deny 的格子淡化；太寬會分段或轉置 |
+| `create_gantt` | `groups[]`、`tasks[]{start,end,duration:"5d"/"2w"/"1m",after,progress,milestone,critical,owner,group}`、`today`、`scale` | 兩層時間軸（月 / 日、月 / 週、年 / 月、年 / 季）；週末底色；進度填色；菱形里程碑；finish-to-start 箭頭；紅色 TODAY 線（有給才畫） |
+| `create_timeline` | `events[]{date: YYYY / YYYY-MM / YYYY-MM-DD,label,description,role,milestone}`、`eras[]{label,start,end,role}`、`scale: time/even` | 事件卡上下交錯、分層避免重疊且引線不穿過其他卡；era 色帶 + 名稱；年 / 月刻度；事件多時自動分 2–3 列 |
+
+QA 規則與架構圖相同（0 error 為必要條件）；`npm test` 會對 `examples/types/` 的 34 份規格檢查 0 error、長寬比
+（Group 1：1.4–2.2；Group 2–4：1.3–2.3）、每條有 label 的邊都有 pill，以及 SVG / draw.io XML 可解析。
+固定格式圖另外檢查：文字超出空間、標籤互撞、卡片重疊、超出畫布、長寬比與 1600px 寬下的可讀性。
+
+舊版 `create_flowchart` / `create_decision_diagram` / `create_dependency_graph` 的輸入格式仍可使用（工具名稱不變），
+但改由新引擎繪製並輸出 draw.io；若真的需要 Mermaid / Graphviz，請用 `render_diagram`。
 
 ### 細節圖密度控制（split）
 

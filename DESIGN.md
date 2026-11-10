@@ -17,8 +17,9 @@ Reference images used during development stay local only — third-party samples
 | Network topology | **SVG grid** | same |
 | DFD + trust boundaries | **SVG grid** | same |
 | Swimlane | **SVG swimlane** (`layout/swimlane.ts`) | own rank/lane placement, shared router, QA, SVG, draw.io |
-| Flowchart / decision / sequence | Mermaid | Unchanged |
-| Dependency graph | Graphviz DOT | Unchanged |
+| Data lineage / workflow DAG / dependency + impact / knowledge graph | **SVG layered** (`layout/layered.ts`) | `compilers/kinds/graph-kinds.ts` → `compileModel` with a custom layout |
+| Flowchart / decision / state machine / ERD | **SVG layered** | same (legacy tool names and inputs kept) |
+| Sequence / authorization matrix / gantt / timeline | **SVG scene** (`layout/scene.ts` + `sequence.ts`, `authz.ts`, `gantt.ts`, `timeline.ts`) | `compilers/kinds/scene-kinds.ts`; shared chrome, own SVG / draw.io / QA |
 | Escape hatch | `render_diagram` | Raw D2 / Mermaid / DOT |
 
 Pipeline: `compileArchitecture` → `layoutArchitecture` (`grid.ts`, calls `routeEdges` in `router.ts`) →
@@ -111,7 +112,7 @@ edge needs room for its pill, tier labels shifted out of straight vertical edge 
   given order and the barycentre order are laid out; barycentre is kept only if it removes crossings without routing failures.
 - Short, wide posters (> 2.2) get extra row height instead of shipping a banner (cards stay centred in their zones).
 
-## Diagram kinds (Group 1)
+## Diagram kinds (Group 1 — zone grid)
 
 Every kind compiles to the same `ArchitectureLayoutInput` (zones, nodes, edges, steps) plus a `DiagramProfile`
 (`kind`, footer caption, header nouns) and goes through `compileModel` — split, SVG, draw.io and QA are shared.
@@ -137,6 +138,48 @@ the same column when the cells in between are free); the strict plan wins unless
 draw.io mapping: trust → red dashed container with lock, lanes → native `swimlane` (horizontal=0), decision → `rhombus`,
 datastore → `partialRectangle`, cylinder → `cylinder3`, component → `module`, person → card + head ellipse,
 replicas → offset ghost cells, bidirectional → start arrow, highlighted flows → thicker stroke, tagged labels → red pill border.
+
+## Layered engine (Group 2)
+
+`layoutLayered` (`layout/layered.ts`) is a Sugiyama-style layout that produces the same `LayoutResult` as the grid, so
+the router, SVG, draw.io and QA backends are reused unchanged:
+
+1. **Cycle breaking** — DFS in input order; back edges are reversed for ranking and drawn as returns (flowchart loops).
+2. **Ranking** — longest path from sources, then sources are pulled next to their first successor; optional `stages`
+   pin nodes to stage columns (compact mode = one column per stage).
+3. **Dummy chains** for long edges, then **ordering** by alternating median / barycentre sweeps plus adjacent
+   transposes; the best ordering by `totalCrossings` is kept.
+4. **Coordinates** — `pavPlace` (isotonic regression) puts each node as close as possible to the mean of its neighbours
+   while keeping separations; gutters widen to fit edge labels and parallel tracks.
+5. **Compound clusters** (composite states, task groups, ERD domains) are laid out recursively as blocks;
+   `blockDir: "auto"` lets the inner direction differ from the outer one.
+6. **Candidates** — LR / TB × 1–3 bands, scored by aspect penalty (16:9), a preferred-direction bonus and a band
+   penalty; very wide / tall results get their cross-axis gaps stretched. Stage frames become tiers of kind `stage`,
+   self-loops are drawn as small arcs with reserved space.
+
+Notation lives in the compilers: lineage dataset types → shapes / icons, workflow status chips, impact analysis
+(`reach()` → `emphasis: changed / impacted` + `dim`), flowchart yes / no (`branchKind`, CJK aware), UML state
+pseudo-states, ERD tables (`rows`) with crow's-foot `startMark` / `endMark` (`parseCardinality`).
+
+## Scene kinds (Groups 3–4)
+
+Sequence, authorization matrix, gantt and timeline are not node-link graphs, so they emit a flat **scene graph**
+(`rect`, `text`, `line`, `circle`, `poly`, `icon`, each with a paint + alpha) in content coordinates. `frameScene`
+adds the shared chrome (title, meta, panel, wrapped legend, footer); `renderSceneSvg` reuses the architecture
+chrome so all kinds look identical, `renderSceneDrawio` maps every primitive to an editable cell, and `runSceneQa`
+checks out-of-bounds, text overflow (`maxW`), label collisions, card overlap, aspect 1.3–2.3 and readability.
+
+- **Sequence** — column gaps solved from label-width constraints; rows for messages / self calls / notes / dividers /
+  fragment headers and else-sections; activation stacks (sync opens the callee, return closes it, the first caller gets an
+  implicit bar); long conversations are cut at top-level boundaries into 1–3 panels (headers repeated) or the columns are
+  stretched up to 1.5× — whichever lands nearest 16:9.
+- **Authorization matrix** — permissions applied in order (wildcards), conditional cells numbered by distinct condition;
+  candidates: roles-as-rows, column chunks stacked (split at resource boundaries) or transposed, with the conditions panel
+  right or below.
+- **Gantt** — `after` dependencies resolved recursively (cycle check), unit picked from the span (day / week / month /
+  quarter) and coarsened until the minimum tick width fits; chart width targets ~1.6 aspect.
+- **Timeline** — cards alternate sides; each side stacks levels greedily and rejects placements where a stem would pass
+  through another card; axis lengths 900–2700 and 1–3 rows are scored for aspect, blocked stems and level depth.
 
 ## Router
 
